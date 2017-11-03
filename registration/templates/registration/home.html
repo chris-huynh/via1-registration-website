@@ -5,12 +5,12 @@
 </head>
 <body>
     {% if user.is_authenticated %}
-    <p>hello</p>
-    <p>welcome {{ user.username }}</p>
-    <p><a href="/registration/logout">Logout</a></p>
+        <p>Welcome {{ user.first_name }} {{ user.last_name }}. You are now logged in.</p>
+        <p>This is a placeholder page until the landing page is complete.</p>
+        <p><a href="/registration/logout">Logout</a></p>
     {% else %}
-    <p><a href="/registration/login">Login</a></p>
-    <p><a href="/registration/register">Register</a></p>
+        <p>You are NOT logged in.</p>
+        <p><a href="/registration/login">Login</a></p>
     {% endif %}
 </body>
 </html>

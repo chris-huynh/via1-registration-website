@@ -1,30 +1,40 @@
-/* label color */
-
-   /* label focus color */
+    /* label focus color */
    .input-field input[type=text]:focus + label {
-     color: #000;
+       color: #000;
    }
-   /* label underline focus color
-   .input-field input[type=text]:focus {
-     border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
-   }*/
+   /* label underline focus color */
+   .input-field input:focus {
+       border-bottom: 1px solid #e97d15 !important;
+       box-shadow: 0 1px 0 0 #e97d15 !important;
+   }
    /* valid color */
    .input-field input[type=text].valid {
-     border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
+       border-bottom: 1px solid #000;
+       box-shadow: 0 1px 0 0 #000;
    }
    /* invalid color */
    .input-field input[type=text].invalid {
-     border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
+       border-bottom: 1px solid #000;
+       box-shadow: 0 1px 0 0 #000;
    }
 
    /* icon prefix focus color */
    .input-field .prefix.active {
-     color: #e97d15;
+       color: #e97d15;
    }
    .input-field label.active {
        color: #e97d15;
    }
 
+   .back_button {
+       color: white;
+   }
+   .back_button:hover {
+       color: #e97d15;
+       transition: .5s;
+   }
+
+   .hover_black:hover {
+       color: #000 !important;
+       transition: .5s;
+   }

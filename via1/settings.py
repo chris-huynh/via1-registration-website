@@ -24,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = "n9cxfco)5l_u73_4=0z5^-rr878t)2%c&t6%f83nvz73d(al))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -79,18 +79,23 @@ WSGI_APPLICATION = 'via1.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
+    # Uncomment this one and comment out the other ones before pushing code to Heroku
     'default': dj_database_url.config()
-    # 'default': {
-    #         'ENGINE': 'django.db.backends.sqlite3',
-    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
+
+    # # I recommend using this setting (Postgres) for dev because it matches the prod environment
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'postgres',
+    #     'NAME': 'via1',
     #     'USER': 'postgres',
     #     'PASSWORD': 'WackyTabacky123',
     #     'HOST': 'localhost',
     #     'PORT': 5432
+    # }
+
+    # This is the default setting. Leaving this here in-case you want to test with SQLite
+    # 'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
 }
 
@@ -142,4 +147,20 @@ STATICFILES_DIRS = [
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Where the user will be redirected upon a successful login
 LOGIN_REDIRECT_URL = '/registration/home'
+
+# Points to the location of the custom User (in Models.py)
+AUTH_USER_MODEL = 'registration.User'
+
+# For testing
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# NEED TO CHANGE THIS TO THE OFFICIAL UVSA-EMAIL WHEN WE LAUNCH
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'via1tester@gmail.com'
+EMAIL_HOST_PASSWORD = 'WackyTabacky123'
+EMAIL_USE_TLS = True
+
