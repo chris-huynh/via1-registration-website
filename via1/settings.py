@@ -24,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = "n9cxfco)5l_u73_4=0z5^-rr878t)2%c&t6%f83nvz73d(al))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -80,17 +80,17 @@ WSGI_APPLICATION = 'via1.wsgi.application'
 
 DATABASES = {
     # Uncomment this one and comment out the other ones before pushing code to Heroku
-    #'default': dj_database_url.config()
+    'default': dj_database_url.config()
 
-    # I recommend using this setting (Postgres) for dev because it matches the prod environment
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'via1',
-        'USER': 'postgres',
-        'PASSWORD': 'WackyTabacky123',
-        'HOST': 'localhost',
-        'PORT': 5432
-    }
+    # # I recommend using this setting (Postgres) for dev because it matches the prod environment
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'via1',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'WackyTabacky123',
+    #     'HOST': 'localhost',
+    #     'PORT': 5432
+    # }
 
     # This is the default setting. Leaving this here in-case you want to test with SQLite
     # 'default': {
@@ -163,3 +163,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'via1tester@gmail.com'
 EMAIL_HOST_PASSWORD = 'WackyTabacky123'
 EMAIL_USE_TLS = True
+
