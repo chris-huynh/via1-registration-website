@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b68691f-a01a-47b3-8bd5-e3deb649193c" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/registration/templates/registration/register.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/login.html" afterPath="$PROJECT_DIR$/registration/templates/registration/login.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/login_base.html" afterPath="$PROJECT_DIR$/registration/templates/registration/login_base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/urls.py" afterPath="$PROJECT_DIR$/registration/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/views.py" afterPath="$PROJECT_DIR$/registration/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/via1/settings.py" afterPath="$PROJECT_DIR$/via1/settings.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -59,15 +54,15 @@
       <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/registration/templates/registration/login.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="70" column="18" lean-forward="true" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
+            <state relative-caret-position="191">
+              <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
               <folding>
                 <element signature="e#157#207#0#HTML" expanded="true" />
                 <element signature="e#357#413#0#HTML" expanded="true" />
                 <element signature="e#697#722#0#HTML" expanded="true" />
                 <element signature="e#768#793#0#HTML" expanded="true" />
-                <element signature="e#1007#1031#0#HTML" expanded="true" />
-                <element signature="e#1500#1525#0#HTML" expanded="true" />
+                <element signature="e#1034#1058#0#HTML" expanded="true" />
+                <element signature="e#1527#1552#0#HTML" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -86,8 +81,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/registration/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+            <state relative-caret-position="412">
+              <caret line="29" column="13" lean-forward="false" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -186,8 +181,8 @@
         <option value="$PROJECT_DIR$/registration/templates/registration/password_reset_complete.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/login_base.html" />
         <option value="$PROJECT_DIR$/registration/urls.py" />
-        <option value="$PROJECT_DIR$/registration/templates/registration/login.html" />
         <option value="$PROJECT_DIR$/registration/views.py" />
+        <option value="$PROJECT_DIR$/registration/templates/registration/login.html" />
         <option value="$PROJECT_DIR$/via1/settings.py" />
       </list>
     </option>
@@ -198,7 +193,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="683" />
     <option name="height" value="738" />
   </component>
@@ -326,7 +321,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -593,27 +588,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/registration/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="412">
+          <caret line="29" column="13" lean-forward="false" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/registration/templates/registration/login.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="70" column="18" lean-forward="true" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
+        <state relative-caret-position="191">
+          <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
           <folding>
             <element signature="e#157#207#0#HTML" expanded="true" />
             <element signature="e#357#413#0#HTML" expanded="true" />
             <element signature="e#697#722#0#HTML" expanded="true" />
             <element signature="e#768#793#0#HTML" expanded="true" />
-            <element signature="e#1007#1031#0#HTML" expanded="true" />
-            <element signature="e#1500#1525#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/registration/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#1034#1058#0#HTML" expanded="true" />
+            <element signature="e#1527#1552#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>

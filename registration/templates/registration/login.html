@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="row">
-                    <form class="col s12" method="post">
+                    <form class="col s12" method="post" action="{% url 'login' %}">
                         {% csrf_token %}
                         <div class="row" style="margin-bottom:0;">
                             <div class="input-field col s10 offset-s1">
@@ -73,17 +73,17 @@
                 <div class="row">
                     <div class="input-field col s4 offset-s2">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" required>
+                        <input type="text" id="first_name" name="first_name" value="{{ reg_form.first_name|default_if_none:"" }}" required>
                     </div>
                     <div class="input-field col s4">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" required>
+                        <input type="text" id="last_name" name="last_name" value="{{ reg_form.last_name|default_if_none:"" }}" required>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s8 offset-s2">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" value="{{ reg_form.email|default_if_none:"" }}" required>
                     </div>
                 </div>
                 <div class="row">

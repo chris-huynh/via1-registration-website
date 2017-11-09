@@ -47,6 +47,7 @@ def register(request):
             # This will send them to the index view, which will then redirect again appropriately
             return HttpResponseRedirect('/')
         else:
-            return redirect('/registration/login')
+            # Render the login page again and pass back the fields that the user inputted (so we can auto-populate the form)
+            return render(request, 'registration/login.html', {'reg_form': form})
 
 
