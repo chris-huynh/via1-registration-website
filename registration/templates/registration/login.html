@@ -15,39 +15,17 @@
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 0;">
-                    <p class="center-align" style="font-weight: 500;">VIA-1 LOGIN</p>
+                    <p class="center-align" style="font-weight: 300;">VIA-1 LOGIN</p>
                 </div>
-
-                {# If LOGIN errors exist, they'll appear here #}
-                {% if form.non_field_errors %}
-                <div class="row">
-                    <div class="center-align">
-                        {% for error in form.non_field_errors %}
-                            <p class="red-text"><i class="material-icons tiny">error_outline</i> Login: {{ error|safe }}</p>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-
-                {# If errors exist, they will appear here. Use the messages package in views.py to create messages #}
-                {% if messages %}
-                <div class="row">
-                    <div class="center-align">
-                        {% for message in messages %}
-                            <p class="red-text"><i class="material-icons tiny">error_outline</i> Account creation: {{ message|safe }}</p>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
 
                 <div class="row">
                     <form class="col s12" method="post">
                         {% csrf_token %}
-                        <div class="row">
+                        <div class="row" style="margin-bottom:0;">
                             <div class="input-field col s10 offset-s1">
                                 <i class="material-icons prefix">person_outline</i>
                                 <label for="username">Email</label>
-                                <input type="text" id="username" name="username">
+                                <input type="email" id="username" name="username" value="{{ form.username.value|default_if_none:"" }}">
                             </div>
                         </div>
                         <div class="row" style="margin-bottom: 0;">
@@ -67,7 +45,7 @@
 
                         <div class="row">
                             <div class="center-align">
-                                <button type="submit" class="z-depth-2 waves-effect waves-light orange btn"><i class="material-icons right">chevron_right</i>Login</button>
+                                <button type="submit" class="z-depth-3 waves-effect waves-light orange btn"><i class="material-icons right">chevron_right</i>Login</button>
                             </div>
                         </div>
                     </form>
@@ -88,9 +66,9 @@
     <div class="modal-content">
         <div class="row">
             <div class="center-align">
-                <img width="100" src="http://via1.org/registration/images/logos/via1black.png">
+                <img width="100" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">
             </div>
-            <form method="POST" action="/registration/register/">
+            <form method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
                 <div class="row">
                     <div class="input-field col s4 offset-s2">
@@ -105,7 +83,7 @@
                 <div class="row">
                     <div class="input-field col s8 offset-s2">
                         <label for="email">Email</label>
-                        <input type="text" id="email" name="email" required>
+                        <input type="email" id="email" name="email" required>
                     </div>
                 </div>
                 <div class="row">
@@ -121,7 +99,7 @@
 
                 <div class="row">
                     <div class="center-align">
-                        <button type="submit" class="z-depth-2 waves-effect waves-light orange btn">Register</button>
+                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn">Register</button>
                     </div>
                 </div>
             </form>
