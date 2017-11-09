@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
-#from django.core.mail import send_mail
+from django.core.mail import send_mail
 
 
 from .managers import UserManager
@@ -25,6 +25,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    email_confirmed = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     objects = UserManager()
 
@@ -37,6 +39,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.first_name
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        '''
+        Sends an email to this User.
+        '''
+        send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
 # class User(AbstractBaseUser, PermissionsMixin):

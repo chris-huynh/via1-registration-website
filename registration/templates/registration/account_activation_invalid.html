@@ -1,0 +1,34 @@
+{% extends 'registration/login_base.html' %}
+
+{% block title %}VIA-1 - Account Activation{% endblock %}
+
+{% block content %}
+
+<div class="valign-wrapper" style="width:100%;height:100%;position: absolute;">
+    <div class="container">
+        <div class="row">
+            <div class="z-depth-4 grey lighten-4 col s10 m8 l6 offset-s1 offset-m2 offset-l3" style="padding: 24px 0px 0 0px; border: 1px solid #EEE;">
+                <div class="row">
+                    <div class="center-align">
+                        <img width="100" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s10 offset-s1 center-align">
+                        <p>
+                            The activation link you used is no longer valid.
+                        </p>
+                        <p>
+                            If you continue to experience issues, please contact <b>via1staff@uvsamidwest.org</b>
+                        </p>
+                        <a href="/registration/login" class="z-depth-3 waves-effect waves-light orange btn">Login Page</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

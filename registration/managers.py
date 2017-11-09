@@ -22,18 +22,22 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', False)
+        # Set them to non-active because they need to verify email first
+        extra_fields.setdefault('is_active', False)
         return self._create_user(email, password, first_name, last_name, **extra_fields)
 
     def create_superuser(self, email, password, first_name, last_name, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
+        # When we create super users, we don't really care if their email works. Only admins will be creating superusers
+        extra_fields.setdefault('email_confirmed', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(email, password, first_name, last_name, **extra_fields)
 
 
 # class UserManager(BaseUserManager):
