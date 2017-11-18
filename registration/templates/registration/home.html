@@ -7,6 +7,16 @@
     {% if user.is_authenticated %}
         <p>Welcome {{ user.first_name }} {{ user.last_name }}. You are now logged in.</p>
         <p>This is a placeholder page until the landing page is complete.</p>
+
+        <p>Datetime right now: {{ today }}</p>
+        <p>opening date: {{ open_date }}</p>
+
+        {% if early_reg_open %}
+            <p>early reg is open</p>
+        {% else %}
+            <p>early reg is NOT open</p>
+        {% endif %}
+
         <p><a href="/registration/logout">Logout</a></p>
     {% else %}
         <p>You are NOT logged in.</p>

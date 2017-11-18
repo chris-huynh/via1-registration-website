@@ -12,6 +12,9 @@ from registration.tokens import account_activation_token
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 
+import datetime
+from registration import regutils
+
 
 # Need to use get_user_model() because we have a custom auth user model
 User = get_user_model()
@@ -25,7 +28,14 @@ def index(request):
 
 
 def home(request):
-    return render(request, 'registration/home.html')
+    if request.user.is_authenticated:
+        today = datetime.datetime.now()
+
+        early_reg_open = True if today > regutils.early_reg_date else False
+        context = {'early_reg_open': early_reg_open, 'today': today, 'open_date': regutils.early_reg_date}
+        return render(request, 'registration/home.html', context)
+    else:
+        return redirect('/registration/login')
 
 
 def register(request):
