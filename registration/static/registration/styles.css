@@ -38,3 +38,7 @@
        color: #000 !important;
        transition: .5s;
    }
+
+    ul li.active {
+       background-color: #ffa726  !important;
+   }

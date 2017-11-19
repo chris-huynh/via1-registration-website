@@ -15,41 +15,53 @@
 </head>
 
 <body>
+
+    {# Navigation #}
+    <ul id="slide-out" class="side-nav fixed grey lighten-5">
+        <div class="center-align" style="margin: 20px 0 20px 0;">
+            <img width="50" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">
+        </div>
+
+        <li class="active"><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Home"><i class="material-icons black-text">home</i></a></li>
+        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Profile"><i class="material-icons black-text">person</i></a></li>
+        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Hotel"><i class="material-icons black-text">hotel</i></a></li>
+        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Workshops"><i class="material-icons black-text">speaker_notes</i></a></li>
+        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families"><i class="material-icons black-text">group</i></a></li>
+        <li><div class="divider"></div></li>
+        <li><a href="/registration/logout" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Log Out"><i class="material-icons black-text">subdirectory_arrow_left</i></a></li>
+    </ul>
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons black-text">menu</i></a>
+
+
 {% block content %}
 {% endblock %}
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-    {# For Materalize Modal windows #}
+
+    {# Miscellaneous #}
     <script>
+        // Initialize collapse button
+        $(".button-collapse").sideNav({
+            menuWidth: 80
+        });
+        // Initialize collapsible (uncomment the line below if you use the dropdown variation)
+        //$('.collapsible').collapsible();
+
         $(document).ready(function(){
-            $('.modal').modal();
+            $('.tooltipped').tooltip({delay: 50});
         });
     </script>
 
-    {# If LOGIN errors exist, they'll appear here #}
-    {% if form.non_field_errors %}
-        {% for error in form.non_field_errors %}
-            <script>
-                $(document).ready(function(){
-                    Materialize.toast('<i class="material-icons tiny">error_outline</i> Login Failed: {{ error|safe }}', 8000);
-                });
-            </script>
-        {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+    {# To show currently selected page on the side-nav #}
+    <script>
+        var selector = '.side-nav li';
 
-    {# If errors exist, they will appear here. Use the messages package in views.py to create messages #}
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                $(document).ready(function(){
-                    Materialize.toast('<i class="material-icons tiny">error_outline</i> Account Creation Failed: {{ message|safe }}', 8000);
-                });
-            </script>
-        {% endfor %}
-    {% endif %}
+        $(selector).on('click', function(){
+            $(selector).removeClass('active');
+            $(this).addClass('active');
+        });
+    </script>
 
 </body>
 </html>

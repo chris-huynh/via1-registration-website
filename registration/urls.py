@@ -7,7 +7,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^login/$', auth_views.login, name='login'),
-    url(r'^logout/$', auth_views.logout, name='logout'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/registration/login'}, name='logout'),
     url(r'^home/$', views.home, name='home'),
     url(r'^register/$', views.register, name='register'),
     url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
