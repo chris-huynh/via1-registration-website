@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b68691f-a01a-47b3-8bd5-e3deb649193c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/static/registration/styles.css" afterPath="$PROJECT_DIR$/registration/static/registration/styles.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/home.html" afterPath="$PROJECT_DIR$/registration/templates/registration/home.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/home_base.html" afterPath="$PROJECT_DIR$/registration/templates/registration/home_base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/login.html" afterPath="$PROJECT_DIR$/registration/templates/registration/login.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/urls.py" afterPath="$PROJECT_DIR$/registration/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/via1/settings.py" afterPath="$PROJECT_DIR$/via1/settings.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/via1/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="120" column="13" lean-forward="true" selection-start-line="120" selection-start-column="13" selection-end-line="120" selection-end-column="28" />
+            <state relative-caret-position="442">
+              <caret line="26" column="13" lean-forward="false" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
               <folding>
                 <element signature="e#324#333#0" expanded="true" />
               </folding>
@@ -34,7 +28,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="home.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/registration/templates/registration/home.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="306">
@@ -161,10 +155,10 @@
         <option value="$PROJECT_DIR$/registration/templates/registration/login_base.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/login.html" />
         <option value="$PROJECT_DIR$/registration/static/registration/styles.css" />
-        <option value="$PROJECT_DIR$/via1/settings.py" />
         <option value="$PROJECT_DIR$/registration/urls.py" />
         <option value="$PROJECT_DIR$/registration/templates/registration/home_base.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/home.html" />
+        <option value="$PROJECT_DIR$/via1/settings.py" />
       </list>
     </option>
   </component>
@@ -676,22 +670,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/via1/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="120" column="13" lean-forward="true" selection-start-line="120" selection-start-column="13" selection-end-line="120" selection-end-column="28" />
-          <folding>
-            <element signature="e#324#333#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/registration/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1598">
           <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
           <folding>
             <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/registration/templates/registration/home_base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="30" column="42" lean-forward="false" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#ul#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -712,21 +706,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/registration/templates/registration/home_base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="30" column="42" lean-forward="false" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#ul#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/registration/templates/registration/home.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="18" column="27" lean-forward="false" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/via1/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="13" lean-forward="false" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding>
+            <element signature="e#324#333#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
