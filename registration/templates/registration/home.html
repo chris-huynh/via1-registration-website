@@ -1,26 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home</title>
-</head>
-<body>
-    {% if user.is_authenticated %}
-        <p>Welcome {{ user.first_name }} {{ user.last_name }}. You are now logged in.</p>
-        <p>This is a placeholder page until the landing page is complete.</p>
+{% extends 'registration/home_base.html' %}
 
-        <p>Datetime right now: {{ today }}</p>
-        <p>opening date: {{ open_date }}</p>
+{% block title %}VIA-1 - Home{% endblock %}
 
-        {% if early_reg_open %}
-            <p>early reg is open</p>
-        {% else %}
-            <p>early reg is NOT open</p>
-        {% endif %}
+{% block content %}
+    <div class="container" style="border: 1px solid #000; margin-top: 50px;">
+        <div class="row" style="margin: auto; border: 1px solid #000">
+            <div class="col s3">
+                <p class="flow-text">hello</p>
+            </div>
 
-        <p><a href="/registration/logout">Logout</a></p>
-    {% else %}
-        <p>You are NOT logged in.</p>
-        <p><a href="/registration/login">Login</a></p>
-    {% endif %}
-</body>
-</html>
+            <div class="col s9" style="border: 1px solid #000">
+                <p class="flow-text">Welcome {{ user.first_name }} {{ user.last_name }}. You are now logged in.</p>
+                <p class="flow-text">This is a placeholder page until the landing page is complete.</p>
+
+                <p class="flow-text">Today's date and time: {{ today }}</p>
+                <p class="flow-text">Early Reg Open Date: {{ open_date }}</p>
+
+                {% if early_reg_open %}
+                    <p class="flow-text">Early Registration is currently open.</p>
+                {% else %}
+                    <p class="flow-text">Early Registration is currently NOT open.</p>
+                {% endif %}
+
+                <p><a href="/registration/logout">Logout</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
