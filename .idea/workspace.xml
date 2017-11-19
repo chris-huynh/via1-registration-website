@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4b68691f-a01a-47b3-8bd5-e3deb649193c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/login.html" afterPath="$PROJECT_DIR$/registration/templates/registration/login.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/registration/templates/registration/login_base.html" afterPath="$PROJECT_DIR$/registration/templates/registration/login_base.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,11 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/via1/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="748">
-              <caret line="69" column="27" lean-forward="true" selection-start-line="69" selection-start-column="27" selection-end-line="69" selection-end-column="27" />
+            <state relative-caret-position="17">
+              <caret line="26" column="13" lean-forward="false" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
               <folding>
                 <element signature="e#324#333#0" expanded="true" />
               </folding>
@@ -56,8 +57,8 @@
       <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/registration/templates/registration/home.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+            <state relative-caret-position="68">
+              <caret line="4" column="19" lean-forward="true" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
               <folding>
                 <element signature="e#137#186#0#HTML" expanded="true" />
                 <element signature="e#213#257#0#HTML" expanded="true" />
@@ -80,18 +81,20 @@
       <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/registration/templates/registration/login.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="77" lean-forward="false" selection-start-line="7" selection-start-column="69" selection-end-line="7" selection-end-column="77" />
-              <folding />
+            <state relative-caret-position="153">
+              <caret line="9" column="44" lean-forward="false" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+              <folding>
+                <element signature="e#244#290#0#HTML" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login_base.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="login_base.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/registration/templates/registration/login_base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="2" selection-end-line="21" selection-end-column="14" />
+            <state relative-caret-position="323">
+              <caret line="19" column="169" lean-forward="false" selection-start-line="19" selection-start-column="169" selection-end-line="19" selection-end-column="169" />
               <folding />
             </state>
           </provider>
@@ -162,7 +165,6 @@
         <option value="$PROJECT_DIR$/registration/templates/registration/password_reset_done.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/password_reset_form.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/password_reset_complete.html" />
-        <option value="$PROJECT_DIR$/registration/templates/registration/login.html" />
         <option value="$PROJECT_DIR$/registration/tokens.py" />
         <option value="$PROJECT_DIR$/registration/managers.py" />
         <option value="$PROJECT_DIR$/registration/models.py" />
@@ -175,6 +177,7 @@
         <option value="$PROJECT_DIR$/registration/templates/registration/home_base.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/home.html" />
         <option value="$PROJECT_DIR$/registration/templates/registration/login_base.html" />
+        <option value="$PROJECT_DIR$/registration/templates/registration/login.html" />
         <option value="$PROJECT_DIR$/via1/settings.py" />
       </list>
     </option>
@@ -371,7 +374,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1717">
           <caret line="101" column="24" lean-forward="false" selection-start-line="101" selection-start-column="24" selection-end-line="101" selection-end-column="117" />
-          <folding />
+          <folding>
+            <element signature="e#244#290#0#HTML" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -651,8 +656,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/registration/templates/registration/home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+        <state relative-caret-position="68">
+          <caret line="4" column="19" lean-forward="true" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
           <folding>
             <element signature="e#137#186#0#HTML" expanded="true" />
             <element signature="e#213#257#0#HTML" expanded="true" />
@@ -661,29 +666,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/via1/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="26" column="13" lean-forward="false" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding>
+            <element signature="e#324#333#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/registration/templates/registration/login.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="77" lean-forward="false" selection-start-line="7" selection-start-column="69" selection-end-line="7" selection-end-column="77" />
-          <folding />
+        <state relative-caret-position="153">
+          <caret line="9" column="44" lean-forward="false" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+          <folding>
+            <element signature="e#244#290#0#HTML" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/registration/templates/registration/login_base.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="2" selection-end-line="21" selection-end-column="14" />
+        <state relative-caret-position="323">
+          <caret line="19" column="169" lean-forward="false" selection-start-line="19" selection-start-column="169" selection-end-line="19" selection-end-column="169" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/via1/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="69" column="27" lean-forward="true" selection-start-line="69" selection-start-column="27" selection-end-line="69" selection-end-column="27" />
-          <folding>
-            <element signature="e#324#333#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
