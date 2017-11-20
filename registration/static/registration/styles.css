@@ -42,3 +42,8 @@
     ul li.active {
        background-color: #ffa726  !important;
    }
+
+    ul li:hover {
+        background-color: #ffa726;
+        transition: 1.5s;
+    }
