@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_active', False)
         return self._create_user(email, password, first_name, last_name, **extra_fields)
 
-    def create_superuser(self, email, password, first_name, last_name, **extra_fields):
+    def create_superuser(self, email, password, first_name=None, last_name=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)

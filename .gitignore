@@ -2,3 +2,6 @@ venv
 *.pyc
 staticfiles
 .env
+*.iws
+workspace.xml
+tasks.xml
