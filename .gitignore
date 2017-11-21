@@ -5,4 +5,4 @@ staticfiles
 *.iws
 workspace.xml
 tasks.xml
-.idea/
+.idea/*
