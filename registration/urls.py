@@ -19,5 +19,8 @@ urlpatterns = [
         views.activate, name='activate'),
     url(r'^account_activation_sent/$', TemplateView.as_view(template_name='registration/account_activation_sent.html')),
     url(r'^account_activation_invalid/',
-        TemplateView.as_view(template_name='registration/account_activation_invalid.html'))
+        TemplateView.as_view(template_name='registration/account_activation_invalid.html')),
+    url(r'^home/payment_processing/$', views.payment_processing, name='payment_processing'),
+    url(r'^home/payment_listener/$', views.payment_listener, name='payment_listener'),
+    url(r'^home/payment_canceled/$', views.payment_canceled, name='payment_canceled'),
 ]

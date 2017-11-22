@@ -4,6 +4,13 @@ import datetime
 early_reg_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
 
 
+# For PayPal Buttons (see views.py)
+paypal_email = 'finance@uvsamidwest.org'
+event_name = 'VIA-1 2017'
+
+
+# For PayPal SANDBOX (use these for testing)
+pp_sandbox_merchant_email = 'via1-merchant@uvsamidwest.org'
 
 
 # List of email handles of all UVSA-MW member schools

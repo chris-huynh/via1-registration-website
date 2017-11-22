@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -164,3 +165,6 @@ EMAIL_HOST_USER = 'via1tester@gmail.com'
 EMAIL_HOST_PASSWORD = 'WackyTabacky123'
 EMAIL_USE_TLS = True
 
+
+# To use Paypal Sandbox set to True
+PAYPAL_TEST = True
