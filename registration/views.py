@@ -31,24 +31,52 @@ def index(request):
 def home(request):
     if request.user.is_authenticated:
         # Start Scratch -- Just some scratch code for now... Might use later.
-        today = datetime.datetime.now()
-        early_reg_open = True if today > regutils.early_reg_date else False
+        todays_date = datetime.datetime.now()
+        is_early_reg_open = True if todays_date > regutils.early_reg_date else False
         # End Scratch
 
-        paypal_dict = {
+        early_reg_pp_dict = {
             "business": regutils.pp_sandbox_merchant_email,
-            "amount": "1.00",
+            "amount": regutils.early_reg_price,
             "item_name": (regutils.event_name + ' Registration'),
             "invoice": request.user.id,
             "notify_url": request.build_absolute_uri(reverse('payment_listener')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
-            #"custom": "premium_plan",  # Custom command to correlate to some function later (optional)
+            "custom": "early_registration",  # Custom command to correlate to some function later
         }
 
-        pp_button_one = PayPalPaymentsForm(initial=paypal_dict)
+        regular_reg_pp_dict = {
+            "business": regutils.pp_sandbox_merchant_email,
+            "amount": regutils.regular_reg_price,
+            "item_name": (regutils.event_name + ' Registration'),
+            "invoice": request.user.id,
+            "notify_url": request.build_absolute_uri(reverse('payment_listener')),
+            "return_url": request.build_absolute_uri(reverse('payment_processing')),
+            "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
+            "custom": "regular_registration",  # Custom command to correlate to some function later
+        }
 
-        context = {'early_reg_open': early_reg_open, 'today': today, 'open_date': regutils.early_reg_date, 'pp_button_one': pp_button_one}
+        alumni_reg_pp_dict = {
+            "business": regutils.pp_sandbox_merchant_email,
+            "amount": regutils.alumni_reg_price,
+            "item_name": (regutils.event_name + ' Registration'),
+            "invoice": request.user.id,
+            "notify_url": request.build_absolute_uri(reverse('payment_listener')),
+            "return_url": request.build_absolute_uri(reverse('payment_processing')),
+            "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
+            "custom": "alumni_registration",  # Custom command to correlate to some function later
+        }
+
+        early_reg_pp_button = PayPalPaymentsForm(initial=early_reg_pp_dict)
+        regular_reg_pp_button = PayPalPaymentsForm(initial=regular_reg_pp_dict)
+        alumni_reg_pp_button = PayPalPaymentsForm(initial=alumni_reg_pp_dict)
+
+        context = {'is_early_reg_open': is_early_reg_open, 'todays_date': todays_date,
+                   'open_date': regutils.early_reg_date, 'early_reg_pp_button': early_reg_pp_button,
+                   'regular_reg_pp_button': regular_reg_pp_button, 'alumni_reg_pp_button': alumni_reg_pp_button,
+                   'early_reg_price': regutils.early_reg_price, 'regular_reg_price': regutils.regular_reg_price,
+                   'alumni_reg_price': regutils.alumni_reg_price}
         return render(request, 'registration/home.html', context)
     else:
         return redirect('/registration/login')

@@ -3,24 +3,109 @@
 {% block title %}VIA-1 - Home{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col s12 l6 offset-l3">
-                <p class="flow-text">Welcome {{ user.first_name }} {{ user.last_name }}. You are now logged in.</p>
-                <p class="flow-text">This is a placeholder page until the landing page is complete.</p>
-
-                <p class="flow-text">Today's date and time: {{ today }} CST</p>
-                <p class="flow-text">Early Reg Open Date: {{ open_date }} CST</p>
-
-                {% if early_reg_open %}
-                    <p class="flow-text">Early Registration is currently open.</p>
-                {% else %}
-                    <p class="flow-text">Early Registration is currently NOT open.</p>
-                {% endif %}
-
-{#                Hiding this for now...#}
-{#                {{ pp_button_one.render }}#}
+    <div id="welcome_banner" class="parallax-container">
+        <div class="parallax">
+            <div class="banner_overlay"></div>
+            <img src="http://via1.org/registration/images/cincinnati.JPG" width="100">
+            <div class="valign-wrapper" style="width: 100%; height: 100%; position: absolute; z-index: 100">
+                <div class="row center-align white-text">
+                    <p class="flow-text" style="font-weight: 100; font-size: 48px; margin-bottom: 0">Hi, {{ user.first_name }}.
+                    <br>
+                    Welcome to VIA-1</p>
+                    <p class="flow-text">Today's date and time: {{ todays_date }} CST</p>
+                    <p class="flow-text">Early Reg Open Date: {{ open_date }} CST</p>
+                    <p class="flow-text">Early Registration is currently {% if not is_early_reg_open %}NOT {% endif %}open.</p>
+                </div>
             </div>
         </div>
+      </div>
     </div>
+
+    <div class="container">
+        <div class="row" style="margin-top: 50px;">
+            <div class="col s12 l10 offset-l1 center-align">
+                <div class="z-depth-1 col s12 m4 l4 hoverable" style="padding-bottom: 25px">
+                    <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">EARLY</p>
+                    <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan. 3</b>
+                    <p style="font-style: italic">Exclusive to UVSA-Midwest member schools</p>
+                    <p style="font-weight: 300; font-size: 24px">${{ early_reg_price }}</p>
+
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+                        <input type="hidden" name="business" value="{{ early_reg_pp_button.business.value }}" id="id_business" />
+                        <input type="hidden" name="amount" value="{{ early_reg_pp_button.amount.value }}" id="id_amount" />
+                        <input type="hidden" name="item_name" value="{{ early_reg_pp_button.item_name.value }}" id="id_item_name" />
+                        <input type="hidden" name="notify_url" value="{{ early_reg_pp_button.notify_url.value }}" id="id_notify_url" />
+                        <input type="hidden" name="cancel_return" value="{{ early_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
+                        <input id="id_return_url" name="return" type="hidden" value="{{ early_reg_pp_button.return_url.value }}" />
+                        <input type="hidden" name="custom" value="{{ early_reg_pp_button.custom.value }}" id="id_custom" />
+                        <input type="hidden" name="invoice" value="1" id="{{ early_reg_pp_button.invoice.value }}" />
+                        <input type="hidden" name="cmd" value="_xclick" id="{{ early_reg_pp_button.cmd.value }}" />
+                        <input type="hidden" name="charset" value="utf-8" id="{{ early_reg_pp_button.charset.value }}" />
+                        <input type="hidden" name="currency_code" value="USD" id="{{ early_reg_pp_button.currency_code.value }}" />
+                        <input type="hidden" name="no_shipping" value="1" id="{{ early_reg_pp_button.no_shipping.value }}" />
+                        <button type="submit" {% if not False %}disabled{% endif %} class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
+                    </form>
+                </div>
+                <div class="z-depth-3 col s12 m4 l4 hoverable" style="padding-bottom: 25px">
+                    <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">REGULAR</p>
+                    <b class="orange-text" style="font-size: 16px">Jan. 3 - ???</b>
+                    <p style="font-style: italic">Open exclusively to UVSA-Midwest member schools</p>
+                    <p style="font-weight: 300; font-size: 24px">${{ regular_reg_price }}</p>
+
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+                        <input type="hidden" name="business" value="{{ regular_reg_pp_button.business.value }}" id="id_business" />
+                        <input type="hidden" name="amount" value="{{ regular_reg_pp_button.amount.value }}" id="id_amount" />
+                        <input type="hidden" name="item_name" value="{{ regular_reg_pp_button.item_name.value }}" id="id_item_name" />
+                        <input type="hidden" name="notify_url" value="{{ regular_reg_pp_button.notify_url.value }}" id="id_notify_url" />
+                        <input type="hidden" name="cancel_return" value="{{ regular_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
+                        <input id="id_return_url" name="return" type="hidden" value="{{ regular_reg_pp_button.return_url.value }}" />
+                        <input type="hidden" name="custom" value="{{ regular_reg_pp_button.custom.value }}" id="id_custom" />
+                        <input type="hidden" name="invoice" value="1" id="{{ regular_reg_pp_button.invoice.value }}" />
+                        <input type="hidden" name="cmd" value="_xclick" id="{{ regular_reg_pp_button.cmd.value }}" />
+                        <input type="hidden" name="charset" value="utf-8" id="{{ regular_reg_pp_button.charset.value }}" />
+                        <input type="hidden" name="currency_code" value="USD" id="{{ regular_reg_pp_button.currency_code.value }}" />
+                        <input type="hidden" name="no_shipping" value="1" id="{{ regular_reg_pp_button.no_shipping.value }}" />
+                        <button type="submit" {% if not False %}disabled{% endif %} class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
+                    </form>
+                </div>
+                <div class="z-depth-1 col s12 m4 l4 hoverable" style="padding-bottom: 25px">
+                    <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
+                    <b class="orange-text" style="font-size: 16px">Dec. 14 - ???</b>
+                    <p style="font-style: italic">You must first verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option</p>
+                    <p style="font-weight: 300; font-size: 24px">${{ alumni_reg_price }}</p>
+
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+                        <input type="hidden" name="business" value="{{ alumni_reg_pp_button.business.value }}" id="id_business" />
+                        <input type="hidden" name="amount" value="{{ alumni_reg_pp_button.amount.value }}" id="id_amount" />
+                        <input type="hidden" name="item_name" value="{{ alumni_reg_pp_button.item_name.value }}" id="id_item_name" />
+                        <input type="hidden" name="notify_url" value="{{ alumni_reg_pp_button.notify_url.value }}" id="id_notify_url" />
+                        <input type="hidden" name="cancel_return" value="{{ alumni_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
+                        <input id="id_return_url" name="return" type="hidden" value="{{ alumni_reg_pp_button.return_url.value }}" />
+                        <input type="hidden" name="custom" value="{{ alumni_reg_pp_button.custom.value }}" id="id_custom" />
+                        <input type="hidden" name="invoice" value="1" id="{{ alumni_reg_pp_button.invoice.value }}" />
+                        <input type="hidden" name="cmd" value="_xclick" id="{{ alumni_reg_pp_button.cmd.value }}" />
+                        <input type="hidden" name="charset" value="utf-8" id="{{ alumni_reg_pp_button.charset.value }}" />
+                        <input type="hidden" name="currency_code" value="USD" id="{{ alumni_reg_pp_button.currency_code.value }}" />
+                        <input type="hidden" name="no_shipping" value="1" id="{{ alumni_reg_pp_button.no_shipping.value }}" />
+                        <button type="submit" {% if not False %}disabled{% endif %} class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+
+    {# Alumni Info Pop-up Modal #}
+    <div id="alumni_info_modal" class="modal">
+        <div class="modal-content flow-text">
+            <h5>Who Qualifies As Alumni?</h5>
+            <p>A bunch of text</p>
+            <h5>Why Should I Register As Alumni?</h5>
+            <p>A bunch of text</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="z-depth-3 modal-action modal-close waves-effect waves-light btn orange">Got it!</a>
+        </div>
+    </div>
+
 {% endblock %}

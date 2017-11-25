@@ -2,7 +2,11 @@ import datetime
 
 # 12-14-2017 @ 1800/6:00p CENTRAL (timezone is in settings.py)
 early_reg_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
+early_reg_price = '75.00'
 
+regular_reg_price = '85.00'
+
+alumni_reg_price = '85.00'
 
 # For PayPal Buttons (see views.py)
 paypal_email = 'finance@uvsamidwest.org'

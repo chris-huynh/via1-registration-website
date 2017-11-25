@@ -13,6 +13,12 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'registration/styles.css' %}" />
 
+    <style>
+        body, html {
+            height: 100%;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -31,11 +37,11 @@
         <li><div class="divider"></div></li>
         <li><a href="/registration/logout" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Log Out"><i class="material-icons black-text">subdirectory_arrow_left</i></a></li>
     </ul>
-    <a href="#" data-activates="slide-out" class="button-collapse z-depth-2 btn-floating btn-medium waves-effect waves-orange white" style="margin: 15px"><i class="small material-icons black-text">menu</i></a>
+    <a href="#" data-activates="slide-out" class="button-collapse z-depth-2 btn-floating btn-medium waves-effect waves-orange white left" style="margin: 15px; position: absolute"><i class="small material-icons black-text">menu</i></a>
 
-    <div class="right hide-on-large-only" style="margin: 15px;">
-        <img width="40" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">
-    </div>
+{#    <div class="right hide-on-large-only" style="margin: 15px; position:">#}
+{#        <img width="40" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">#}
+{#    </div>#}
 
 
 {% block content %}
@@ -56,6 +62,16 @@
         $(document).ready(function(){
             $('.tooltipped').tooltip({delay: 50});
         });
+
+        // For Materalize modal windows
+        $(document).ready(function(){
+            $('.modal').modal();
+        });
+
+        // Parallax Scrolling
+        $(document).ready(function(){
+            $('.parallax').parallax();
+        });
     </script>
 
     {# To show currently selected page on the side-nav #}
@@ -65,6 +81,21 @@
         $(selector).on('click', function(){
             $(selector).removeClass('active');
             $(this).addClass('active');
+        });
+    </script>
+
+    {# Scrollfire on home page #}
+    <script>
+        $(document).ready(function() {
+          var options = [{
+              selector: '#welcome_banner',
+              offset: 1,
+              callback: function (el) {
+                  Materialize.fadeInImage($(el));
+              }
+          }];
+
+          Materialize.scrollFire(options);
         });
     </script>
 

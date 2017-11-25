@@ -168,3 +168,4 @@ EMAIL_USE_TLS = True
 
 # To use Paypal Sandbox set to True
 PAYPAL_TEST = True
+PAYPAL_BUY_BUTTON_IMAGE = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-small.png'
