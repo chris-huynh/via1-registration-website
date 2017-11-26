@@ -32,8 +32,9 @@ def index(request):
 def home(request):
     if request.user.is_authenticated:
         todays_date = datetime.datetime.now()
-        is_early_reg_open = True if todays_date > regutils.early_reg_date else False
-        is_regular_reg_open = False
+        is_early_reg_open = True if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
+        is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
+        is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
         early_reg_pp_dict = {
             "business": regutils.pp_sandbox_merchant_email,
@@ -72,12 +73,19 @@ def home(request):
         regular_reg_pp_button = PayPalPaymentsForm(initial=regular_reg_pp_dict)
         alumni_reg_pp_button = PayPalPaymentsForm(initial=alumni_reg_pp_dict)
 
-        context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'todays_date': todays_date,
-                   'open_date': regutils.early_reg_date, 'early_reg_pp_button': early_reg_pp_button,
+        context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
+                   'todays_date': todays_date, 'open_date': regutils.early_reg_open_date, 'early_reg_pp_button': early_reg_pp_button,
                    'regular_reg_pp_button': regular_reg_pp_button, 'alumni_reg_pp_button': alumni_reg_pp_button,
                    'early_reg_price': regutils.early_reg_price, 'regular_reg_price': regutils.regular_reg_price,
                    'alumni_reg_price': regutils.alumni_reg_price, 'member_school_names': regutils.member_school_names}
         return render(request, 'registration/home.html', context)
+    else:
+        return redirect('/registration/login')
+
+
+def profile(request):
+    if request.user.is_authenticated:
+        return render(request, 'registration/profile.html')
     else:
         return redirect('/registration/login')
 

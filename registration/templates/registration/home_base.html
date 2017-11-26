@@ -29,8 +29,8 @@
             <img width="50" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">
         </div>
 
-        <li class="active"><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Home"><i class="material-icons black-text">home</i></a></li>
-        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Profile"><i class="material-icons black-text">person</i></a></li>
+        <li><a href="{% url 'home' %}" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Home"><i class="material-icons black-text">home</i></a></li>
+        <li><a href="{% url 'profile' %}" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Profile"><i class="material-icons black-text">person</i></a></li>
         <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Hotel"><i class="material-icons black-text">hotel</i></a></li>
         <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Workshops"><i class="material-icons black-text">speaker_notes</i></a></li>
         <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families"><i class="material-icons black-text">group</i></a></li>
@@ -88,12 +88,19 @@
 
     {# To show currently selected page on the side-nav #}
     <script>
-        var selector = '.side-nav li';
-
-        $(selector).on('click', function(){
-            $(selector).removeClass('active');
-            $(this).addClass('active');
-        });
+        {# This WILL break if the "tooltipped" class is removed from the a tag in the menu #}
+        {# There's definitely a better way to do this but I ran out of time #}
+        $(function(){
+            var current = location.pathname;
+            $('#slide-out li').each(function(){
+                var $li = $(this);
+                var $a = $(this).children(".tooltipped");
+                // if the current path is like this link, make it active
+                if($a.attr('href').indexOf(current) !== -1){
+                    $li.addClass('active');
+                }
+            })
+        })
     </script>
 
     {# Scrollfire on home page #}

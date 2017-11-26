@@ -23,9 +23,13 @@
     <div class="container">
         <div id="payment-section" class="row section scrollspy" style="margin-top: 50px;">
             <div class="col s12 l10 offset-l1 center-align">
-                <div class="z-depth-1 col s12 m4 l4 hoverable" style="padding-bottom: 25px">
+                <h2 style="font-weight: 300">Conference Registration</h2>
+                <h5 style="font-weight: 100; margin-bottom: 30px">Register now to attend VIA-1</h5>
+            </div>
+            <div class="col s12 l10 offset-l1 center-align" style="display: flex; flex-wrap: wrap;">
+                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">EARLY <a class="orange-text hover_black modal-trigger" href="#early_reg_info_modal"><i class="material-icons">info_outline</i></a></p>
-                    <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan. 3</b>
+                    <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan. 2</b>
                     <p style="font-style: italic">Exclusive to UVSA-Midwest member schools</p>
                     <p style="font-weight: 300; font-size: 24px">${{ early_reg_price }}</p>
 
@@ -50,10 +54,10 @@
                         </form>
                     {% endif %}
                 </div>
-                <div class="z-depth-3 col s12 m4 l4 hoverable" style="padding-bottom: 25px">
+                <div class="z-depth-3 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">REGULAR</p>
-                    <b class="orange-text" style="font-size: 16px">Jan. 3 - ???</b>
-                    <p style="font-style: italic">Open exclusively to UVSA-Midwest member schools</p>
+                    <b class="orange-text" style="font-size: 16px">Jan. 3 - Jan. 14</b>
+                    <p style="font-style: italic">Mihoy minoy</p>
                     <p style="font-weight: 300; font-size: 24px">${{ regular_reg_price }}</p>
 
                     {# Displaying a disabled submit button so users can't view source and find out the form info ahead of time #}
@@ -77,14 +81,14 @@
                         </form>
                     {% endif %}
                 </div>
-                <div class="z-depth-1 col s12 m4 l4 hoverable" style="padding-bottom: 25px">
+                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
-                    <b class="orange-text" style="font-size: 16px">Dec. 14 - ???</b>
+                    <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan 14</b>
                     <p style="font-style: italic">You must first verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option</p>
                     <p style="font-weight: 300; font-size: 24px">${{ alumni_reg_price }}</p>
 
                     {# Displaying a disabled submit button so users can't view source and find out the form info #}
-                    {% if not False %}
+                    {% if not user.is_alumni or not is_alumni_reg_open %}
                         <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
                     {% else %}
                         <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
@@ -106,7 +110,7 @@
                 </div>
             </div>
         </div>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br>
     </div>
 
     {# Alumni Info Pop-up Modal #}

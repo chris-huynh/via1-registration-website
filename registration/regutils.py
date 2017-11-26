@@ -1,15 +1,31 @@
-from collections import defaultdict
+# All static variables should be declared and initialized in this file.
+# Since each conference from year to year will have different prices, dates, etc -- make sure you
+# go in here and change the variables accordingly
 
 import datetime
 
 
-# 12-14-2017 @ 1800/6:00p CENTRAL (timezone is in settings.py)
-early_reg_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
+# Open 12-14-2017 @ 1800/6:00p CENTRAL (timezone is set in settings.py)
+# Close 1-2-2018 @ 11:59:59
+early_reg_open_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
+early_reg_close_date = datetime.datetime(2018, 1, 2, 23, 59, 59)
 early_reg_price = '75.00'
+early_reg_cap = 80  # Not official
 
+# Open 1-3-2018 @ 12:00a CENTRAL
+# Close 1-14-2018 @ 6:00p
+regular_reg_open_date = datetime.datetime(2018, 1, 3, 0, 0, 0)
+regular_reg_close_date = datetime.datetime(2018, 1, 14, 18, 0, 0)
 regular_reg_price = '85.00'
+regular_reg_cap = 280  # Not official
 
+# Open 12-14-2017 @ 6:00p CENTRAL
+# Close 1-14-2018 @ 6:00p
+alumni_reg_open_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
+alumni_reg_close_date = datetime.datetime(2018, 1, 14, 18, 0, 0)
 alumni_reg_price = '75.00'
+alumni_reg_cap = 30  # Not official
+
 
 # For PayPal Buttons (see views.py)
 paypal_email = 'finance@uvsamidwest.org'

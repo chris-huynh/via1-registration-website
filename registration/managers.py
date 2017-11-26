@@ -29,6 +29,7 @@ class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', False)
         extra_fields.setdefault('is_member_school', False)
+        extra_fields.setdefault('is_alumni', False)
         # Set them to non-active because they need to verify email first
         extra_fields.setdefault('is_active', False)
         return self._create_user(email, password, first_name, last_name, **extra_fields)
