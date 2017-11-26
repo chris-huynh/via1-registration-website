@@ -4,12 +4,13 @@ from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
 from paypal.standard.forms import PayPalPaymentsForm
+from django.core.mail import send_mail
 
 # Need these for email activation
 from django.utils.http import urlsafe_base64_encode
 from django.utils.http import urlsafe_base64_decode
 from django.template.loader import render_to_string
-from registration.tokens import account_activation_token
+from registration.tokens import account_activation_token, member_school_verification_token
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 
@@ -30,10 +31,9 @@ def index(request):
 
 def home(request):
     if request.user.is_authenticated:
-        # Start Scratch -- Just some scratch code for now... Might use later.
         todays_date = datetime.datetime.now()
         is_early_reg_open = True if todays_date > regutils.early_reg_date else False
-        # End Scratch
+        is_regular_reg_open = False
 
         early_reg_pp_dict = {
             "business": regutils.pp_sandbox_merchant_email,
@@ -72,11 +72,11 @@ def home(request):
         regular_reg_pp_button = PayPalPaymentsForm(initial=regular_reg_pp_dict)
         alumni_reg_pp_button = PayPalPaymentsForm(initial=alumni_reg_pp_dict)
 
-        context = {'is_early_reg_open': is_early_reg_open, 'todays_date': todays_date,
+        context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'todays_date': todays_date,
                    'open_date': regutils.early_reg_date, 'early_reg_pp_button': early_reg_pp_button,
                    'regular_reg_pp_button': regular_reg_pp_button, 'alumni_reg_pp_button': alumni_reg_pp_button,
                    'early_reg_price': regutils.early_reg_price, 'regular_reg_price': regutils.regular_reg_price,
-                   'alumni_reg_price': regutils.alumni_reg_price}
+                   'alumni_reg_price': regutils.alumni_reg_price, 'member_school_names': regutils.member_school_names}
         return render(request, 'registration/home.html', context)
     else:
         return redirect('/registration/login')
@@ -118,6 +118,8 @@ def register(request):
             # Render the login page again and pass back the fields that the user inputted
             # (so we can auto-populate the form)
             return render(request, 'registration/login.html', {'reg_form': form})
+    else:
+        return redirect('/registration/login')
 
 
 def activate(request, uidb64, token):
@@ -147,3 +149,60 @@ def payment_listener(request, **kwargs):
 
 def payment_canceled(request):
     return redirect('index')
+
+
+def member_school_verification_processing(request):
+    if request.method == 'POST':
+        form = request.POST
+        user = request.user
+
+        # Lambda expression will always return 1 object because our member_school_presidents list only has unique entries
+        president = list(filter(lambda x: x.school == form['school_association'], regutils.member_school_presidents))[0]
+
+        current_site = get_current_site(request)
+        subject = 'A VIA-1 Attendee Requests Member School Approval'
+        message = render_to_string('registration/mem_school_verif_email.html', {
+            'name': user.get_full_name(),
+            'email': form['email'],
+            'phone_number': form['phone_number'],
+            'school': form['school_association'],
+            'president_name': president.name,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': member_school_verification_token.make_token(user),
+        })
+        send_mail(subject, "", None, [president.email], False, None, None, None, message)
+        return redirect('index')
+    else:
+        return redirect('index')
+
+
+def member_school_verification_approve(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and member_school_verification_token.check_token(user, token):
+        user.is_member_school = True
+        user.save()
+        return redirect('/registration/member_school_verification_approved')
+    else:
+        return redirect('/registration/member_school_verification_invalid')
+
+
+def member_school_verification_deny(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and member_school_verification_token.check_token(user, token):
+        user.is_member_school = False
+        user.save()
+        # We don't need to do anything here. check_token already invalidates the token, which is all we need.
+        return redirect('/registration/member_school_verification_denied')
+    else:
+        return redirect('/registration/member_school_verification_invalid')

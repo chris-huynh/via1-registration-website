@@ -26,6 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     email_confirmed = models.BooleanField(default=False)
+    is_member_school = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     objects = UserManager()

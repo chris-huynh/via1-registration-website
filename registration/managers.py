@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 
+from registration import regutils
 
 class UserManager(BaseUserManager):
     """
@@ -17,11 +18,17 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.first_name = first_name
         user.last_name = last_name
+
+        email_handle = email.split("@", 1)[1]
+        if email_handle in regutils.member_school_emails:
+            user.is_member_school = True
+
         user.save()
         return user
 
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault('is_member_school', False)
         # Set them to non-active because they need to verify email first
         extra_fields.setdefault('is_active', False)
         return self._create_user(email, password, first_name, last_name, **extra_fields)

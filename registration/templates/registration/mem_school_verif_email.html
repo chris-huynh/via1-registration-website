@@ -1,0 +1,31 @@
+{% autoescape off %}
+    Hi {{ president_name }},
+    <br><br>
+    <p>A VIA-1 registree by the name of <b>{{ name }}</b> has identified themself as a member of your local VSA.</p>
+    <br>
+    <p>If you know this individual and vouch for their membership, please approve their request using the button below.
+    If you do NOT know this individual, please deny their request.</p>
+    <br>
+    <p>Here is their contact information if you would like to speak with them:
+    <br>
+    <b>Email:</b> {{ email }}
+    <br>
+    <b>Phone Number:</b> {{ phone_number }}
+    </p>
+
+    <br>
+
+    <a href="http://{{ domain }}{% url 'member_school_verification_approve' uidb64=uid token=token %}" style="margin-right: 10px;">
+        <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 15px; text-align: center;
+        display: inline-block; font-size: 16px; text-decoration: none">Approve</button>
+    </a>
+    <a href="http://{{ domain }}{% url 'member_school_verification_deny' uidb64=uid token=token %}">
+        <button style="background-color: #BB2200; border: none; color: white; padding: 10px 15px; text-align: center;
+        display: inline-block; font-size: 16px; text-decoration: none">Deny</button>
+    </a>
+
+    <br><br><br>
+    Sincerely,
+    <br>
+    <b>The VIA-1 IT Team</b>
+{% endautoescape %}
