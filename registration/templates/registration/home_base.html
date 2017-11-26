@@ -111,5 +111,16 @@
         });
     </script>
 
+    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                $(document).ready(function(){
+                    Materialize.toast('{{ message|safe }}', 8000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
 </body>
 </html>

@@ -156,7 +156,7 @@ def member_school_verification_processing(request):
         form = request.POST
         user = request.user
 
-        # Lambda expression will always return 1 object because our member_school_presidents list only has unique entries
+        # This lambda expression will always return 1 object because our member_school_presidents list only has unique entries
         president = list(filter(lambda x: x.school == form['school_association'], regutils.member_school_presidents))[0]
 
         current_site = get_current_site(request)
@@ -172,12 +172,14 @@ def member_school_verification_processing(request):
             'token': member_school_verification_token.make_token(user),
         })
         send_mail(subject, "", None, [president.email], False, None, None, None, message)
+
+        messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
         return redirect('index')
     else:
         return redirect('index')
 
 
-def member_school_verification_approve(request, uidb64, token):
+def member_school_verification_approve(request, uidb64, token, school):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -186,13 +188,23 @@ def member_school_verification_approve(request, uidb64, token):
 
     if user is not None and member_school_verification_token.check_token(user, token):
         user.is_member_school = True
+        user.school = school
         user.save()
+
+        subject = 'Your VIA-1 Member School Verification Has Been Approved'
+        message = render_to_string('registration/mem_school_verif_approved_email.html', {
+            'name': user.first_name,
+            'email': user.email,
+            'school': school,
+        })
+        send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
         return redirect('/registration/member_school_verification_approved')
     else:
         return redirect('/registration/member_school_verification_invalid')
 
 
-def member_school_verification_deny(request, uidb64, token):
+def member_school_verification_deny(request, uidb64, token, school):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -200,9 +212,15 @@ def member_school_verification_deny(request, uidb64, token):
         user = None
 
     if user is not None and member_school_verification_token.check_token(user, token):
-        user.is_member_school = False
-        user.save()
-        # We don't need to do anything here. check_token already invalidates the token, which is all we need.
+        # We don't need to do anything here with the data here. Just send an email to the user letting them know they were denied
+        subject = 'Your VIA-1 Member School Verification Has Been Denied'
+        message = render_to_string('registration/mem_school_verif_denied_email.html', {
+            'name': user.first_name,
+            'email': user.email,
+            'school': school,
+        })
+        send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
         return redirect('/registration/member_school_verification_denied')
     else:
         return redirect('/registration/member_school_verification_invalid')

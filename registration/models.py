@@ -28,6 +28,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email_confirmed = models.BooleanField(default=False)
     is_member_school = models.BooleanField(default=False)
 
+    school = models.CharField(_('school'), max_length=50, blank=True, null=True)
+
     USERNAME_FIELD = 'email'
     objects = UserManager()
 
