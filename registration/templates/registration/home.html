@@ -31,25 +31,42 @@
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">EARLY <a class="orange-text hover_black modal-trigger" href="#early_reg_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan. 2</b>
                     <p style="font-style: italic">Exclusive to UVSA-Midwest member schools</p>
-                    <p style="font-weight: 300; font-size: 24px">${{ early_reg_price }}</p>
+                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ early_reg_price }}</p>
 
                     {# Displaying a disabled submit button so users can't view source and find out the form info #}
                     {% if not user.is_member_school or not is_early_reg_open %}
+                        <div class="input-field col s10 offset-s1">
+                            <select disabled>
+                                <option value="Early Registration">Registration Only ($75.00)</option>
+                                <option value="Early Registration + Hotel">Registration + Hotel ($135.00)</option>
+                            </select>
+                        </div>
                         <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
                     {% else %}
                         <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
                             <input type="hidden" name="business" value="{{ early_reg_pp_button.business.value }}" id="id_business" />
-                            <input type="hidden" name="amount" value="{{ early_reg_pp_button.amount.value }}" id="id_amount" />
+
                             <input type="hidden" name="item_name" value="{{ early_reg_pp_button.item_name.value }}" id="id_item_name" />
                             <input type="hidden" name="notify_url" value="{{ early_reg_pp_button.notify_url.value }}" id="id_notify_url" />
                             <input type="hidden" name="cancel_return" value="{{ early_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
                             <input id="id_return_url" name="return" type="hidden" value="{{ early_reg_pp_button.return_url.value }}" />
                             <input type="hidden" name="custom" value="{{ early_reg_pp_button.custom.value }}" id="id_custom" />
-                            <input type="hidden" name="invoice" value="1" id="{{ early_reg_pp_button.invoice.value }}" />
-                            <input type="hidden" name="cmd" value="_xclick" id="{{ early_reg_pp_button.cmd.value }}" />
-                            <input type="hidden" name="charset" value="utf-8" id="{{ early_reg_pp_button.charset.value }}" />
-                            <input type="hidden" name="currency_code" value="USD" id="{{ early_reg_pp_button.currency_code.value }}" />
-                            <input type="hidden" name="no_shipping" value="1" id="{{ early_reg_pp_button.no_shipping.value }}" />
+                            <input type="hidden" name="invoice" value="{{ early_reg_pp_button.invoice.value }}" id="id_invoice" />
+                            <input type="hidden" name="cmd" value="{{ early_reg_pp_button.cmd.value }}" id="id_cmd" />
+                            <input type="hidden" name="charset" value="{{ early_reg_pp_button.charset.value }}" id="id_charset" />
+                            <input type="hidden" name="currency_code" value="{{ early_reg_pp_button.currency_code.value }}" id="id_currency_code" />
+                            <input type="hidden" name="no_shipping" value="{{ early_reg_pp_button.no_shipping.value }}" id="id_no_shipping" />
+                            <input type="hidden" name="on0" value="Options">
+                            <div class="input-field col s10 offset-s1">
+                                <select name="os0">
+                                    <option value="Early Registration">Registration Only ($75.00)</option>
+                                    <option value="Early Registration + Hotel">Registration + Hotel ($135.00)</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="option_select0" value="Early Registration">
+                            <input type="hidden" name="option_amount0" value="75.00">
+                            <input type="hidden" name="option_select1" value="Early Registration + Hotel">
+                            <input type="hidden" name="option_amount1" value="135.00">
                             <button type="submit" class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
                         </form>
                     {% endif %}
@@ -58,25 +75,42 @@
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">REGULAR</p>
                     <b class="orange-text" style="font-size: 16px">Jan. 3 - Jan. 14</b>
                     <p style="font-style: italic">Mihoy minoy</p>
-                    <p style="font-weight: 300; font-size: 24px">${{ regular_reg_price }}</p>
+                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ regular_reg_price }}</p>
 
                     {# Displaying a disabled submit button so users can't view source and find out the form info ahead of time #}
                     {% if not is_regular_reg_open %}
+                        <div class="input-field col s10 offset-s1">
+                            <select disabled>
+                                <option value="Regular Registration">Registration Only ($85.00)</option>
+                                <option value="Regular Registration + Hotel">Registration + Hotel ($145.00)</option>
+                            </select>
+                        </div>
                         <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
                     {% else %}
                         <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
                             <input type="hidden" name="business" value="{{ regular_reg_pp_button.business.value }}" id="id_business" />
-                            <input type="hidden" name="amount" value="{{ regular_reg_pp_button.amount.value }}" id="id_amount" />
+
                             <input type="hidden" name="item_name" value="{{ regular_reg_pp_button.item_name.value }}" id="id_item_name" />
                             <input type="hidden" name="notify_url" value="{{ regular_reg_pp_button.notify_url.value }}" id="id_notify_url" />
                             <input type="hidden" name="cancel_return" value="{{ regular_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
                             <input id="id_return_url" name="return" type="hidden" value="{{ regular_reg_pp_button.return_url.value }}" />
                             <input type="hidden" name="custom" value="{{ regular_reg_pp_button.custom.value }}" id="id_custom" />
-                            <input type="hidden" name="invoice" value="1" id="{{ regular_reg_pp_button.invoice.value }}" />
-                            <input type="hidden" name="cmd" value="_xclick" id="{{ regular_reg_pp_button.cmd.value }}" />
-                            <input type="hidden" name="charset" value="utf-8" id="{{ regular_reg_pp_button.charset.value }}" />
-                            <input type="hidden" name="currency_code" value="USD" id="{{ regular_reg_pp_button.currency_code.value }}" />
-                            <input type="hidden" name="no_shipping" value="1" id="{{ regular_reg_pp_button.no_shipping.value }}" />
+                            <input type="hidden" name="invoice" value="{{ regular_reg_pp_button.invoice.value }}" id="id_invoice" />
+                            <input type="hidden" name="cmd" value="{{ regular_reg_pp_button.cmd.value }}" id="id_cmd" />
+                            <input type="hidden" name="charset" value="{{ regular_reg_pp_button.charset.value }}" id="id_charset" />
+                            <input type="hidden" name="currency_code" value="{{ regular_reg_pp_button.currency_code.value }}" id="id_currency_code" />
+                            <input type="hidden" name="no_shipping" value="{{ regular_reg_pp_button.no_shipping.value }}" id="id_no_shipping" />
+                            <input type="hidden" name="on0" value="Options">
+                            <div class="input-field col s10 offset-s1">
+                                <select name="os0">
+                                    <option value="Regular Registration">Registration Only ($85.00)</option>
+                                    <option value="Regular Registration + Hotel">Registration + Hotel ($145.00)</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="option_select0" value="Regular Registration">
+                            <input type="hidden" name="option_amount0" value="85.00">
+                            <input type="hidden" name="option_select1" value="Regular Registration + Hotel">
+                            <input type="hidden" name="option_amount1" value="145.00">
                             <button type="submit" class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
                         </form>
                     {% endif %}
@@ -85,25 +119,42 @@
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan 14</b>
                     <p style="font-style: italic">You must first verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option</p>
-                    <p style="font-weight: 300; font-size: 24px">${{ alumni_reg_price }}</p>
+                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ alumni_reg_price }}</p>
 
                     {# Displaying a disabled submit button so users can't view source and find out the form info #}
                     {% if not user.is_alumni or not is_alumni_reg_open %}
+                        <div class="input-field col s10 offset-s1">
+                            <select disabled>
+                                <option value="Alumni Registration">Registration Only ($75.00)</option>
+                                <option value="Alumni Registration + Hotel">Registration + Hotel ($135.00)</option>
+                            </select>
+                        </div>
                         <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
                     {% else %}
                         <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
                             <input type="hidden" name="business" value="{{ alumni_reg_pp_button.business.value }}" id="id_business" />
-                            <input type="hidden" name="amount" value="{{ alumni_reg_pp_button.amount.value }}" id="id_amount" />
+
                             <input type="hidden" name="item_name" value="{{ alumni_reg_pp_button.item_name.value }}" id="id_item_name" />
                             <input type="hidden" name="notify_url" value="{{ alumni_reg_pp_button.notify_url.value }}" id="id_notify_url" />
                             <input type="hidden" name="cancel_return" value="{{ alumni_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
                             <input id="id_return_url" name="return" type="hidden" value="{{ alumni_reg_pp_button.return_url.value }}" />
                             <input type="hidden" name="custom" value="{{ alumni_reg_pp_button.custom.value }}" id="id_custom" />
-                            <input type="hidden" name="invoice" value="1" id="{{ alumni_reg_pp_button.invoice.value }}" />
-                            <input type="hidden" name="cmd" value="_xclick" id="{{ alumni_reg_pp_button.cmd.value }}" />
-                            <input type="hidden" name="charset" value="utf-8" id="{{ alumni_reg_pp_button.charset.value }}" />
-                            <input type="hidden" name="currency_code" value="USD" id="{{ alumni_reg_pp_button.currency_code.value }}" />
-                            <input type="hidden" name="no_shipping" value="1" id="{{ alumni_reg_pp_button.no_shipping.value }}" />
+                            <input type="hidden" name="invoice" value="{{ alumni_reg_pp_button.invoice.value }}" id="id_invoice" />
+                            <input type="hidden" name="cmd" value="{{ alumni_reg_pp_button.cmd.value }}" id="id_cmd" />
+                            <input type="hidden" name="charset" value="{{ alumni_reg_pp_button.charset.value }}" id="id_charset" />
+                            <input type="hidden" name="currency_code" value="{{ alumni_reg_pp_button.currency_code.value }}" id="id_currency_code" />
+                            <input type="hidden" name="no_shipping" value="{{ alumni_reg_pp_button.no_shipping.value }}" id="id_no_shipping" />
+                            <input type="hidden" name="on0" value="Options">
+                            <div class="input-field col s10 offset-s1">
+                                <select name="os0">
+                                    <option value="Alumni Registration">Registration Only ($75.00)</option>
+                                    <option value="Alumni Registration + Hotel">Registration + Hotel ($135.00)</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="option_select0" value="Alumni Registration">
+                            <input type="hidden" name="option_amount0" value="75.00">
+                            <input type="hidden" name="option_select1" value="Alumni Registration + Hotel">
+                            <input type="hidden" name="option_amount1" value="135.00">
                             <button type="submit" class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
                         </form>
                     {% endif %}
@@ -197,4 +248,33 @@
         </div>
     </div>
 
+{% endblock %}
+
+
+{% block additional_scripts %}
+    {# Scrollfire on home page -- for fade-in header/banner #}
+    <script>
+        $(document).ready(function() {
+          var options = [{
+              selector: '#welcome_banner',
+              offset: 1,
+              callback: function (el) {
+                  Materialize.fadeInImage($(el));
+              }
+          }];
+
+          Materialize.scrollFire(options);
+        });
+    </script>
+
+    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                $(document).ready(function(){
+                    Materialize.toast('{{ message|safe }}', 8000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

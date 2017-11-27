@@ -26,6 +26,11 @@
         color: #e97d15;
     }
 
+    /* Text color for materialize form select dropdown */
+    ul.dropdown-content.select-dropdown li span {
+        color: #000; /* no need for !important */
+    }
+
     .back_button {
        color: white;
     }

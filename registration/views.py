@@ -38,9 +38,9 @@ def home(request):
 
         early_reg_pp_dict = {
             "business": regutils.pp_sandbox_merchant_email,
-            "amount": regutils.early_reg_price,
-            "item_name": (regutils.event_name + ' Registration'),
-            "invoice": request.user.id,
+            "amount": regutils.early_reg_price, # Might not need this now that there's a dropdown. Maybe wanna keep if we pass in the hotel price
+            "item_name": (regutils.event_name + ' Early Registration'),
+            "invoice": ('via1-2018-reg-' + str(request.user.id)),
             "notify_url": request.build_absolute_uri(reverse('payment_listener')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
@@ -50,8 +50,8 @@ def home(request):
         regular_reg_pp_dict = {
             "business": regutils.pp_sandbox_merchant_email,
             "amount": regutils.regular_reg_price,
-            "item_name": (regutils.event_name + ' Registration'),
-            "invoice": request.user.id,
+            "item_name": (regutils.event_name + ' Regular Registration'),
+            "invoice": ('via1-2018-reg-' + str(request.user.id)),
             "notify_url": request.build_absolute_uri(reverse('payment_listener')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
@@ -61,8 +61,8 @@ def home(request):
         alumni_reg_pp_dict = {
             "business": regutils.pp_sandbox_merchant_email,
             "amount": regutils.alumni_reg_price,
-            "item_name": (regutils.event_name + ' Registration'),
-            "invoice": request.user.id,
+            "item_name": (regutils.event_name + ' Alumni Registration'),
+            "invoice": ('via1-2018-reg-' + str(request.user.id)),
             "notify_url": request.build_absolute_uri(reverse('payment_listener')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),

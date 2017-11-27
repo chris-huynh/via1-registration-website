@@ -39,16 +39,14 @@
     </ul>
     <a href="#" data-activates="slide-out" class="button-collapse z-depth-2 btn-floating btn-medium waves-effect waves-orange white left" style="margin: 15px; position: absolute; z-index: 998;"><i class="small material-icons black-text">menu</i></a>
 
-{#    <div class="right hide-on-large-only" style="margin: 15px; position:">#}
-{#        <img width="40" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">#}
-{#    </div>#}
-
-
 {% block content %}
 {% endblock %}
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    {% block additional_scripts %}
+    {% endblock %}
 
     {# Miscellaneous #}
     <script>
@@ -90,11 +88,12 @@
     <script>
         {# This WILL break if the "tooltipped" class is removed from the a tag in the menu #}
         {# There's definitely a better way to do this but I ran out of time #}
+        {# This is also giving some weird TypeError in the browser dev tools #}
         $(function(){
             var current = location.pathname;
             $('#slide-out li').each(function(){
                 var $li = $(this);
-                var $a = $(this).children(".tooltipped");
+                var $a = $(this).children(".tooltipped");   /* Very hacky. working off our knowledge that .tooltipped is there */
                 // if the current path is like this link, make it active
                 if($a.attr('href').indexOf(current) !== -1){
                     $li.addClass('active');
@@ -102,32 +101,6 @@
             })
         })
     </script>
-
-    {# Scrollfire on home page #}
-    <script>
-        $(document).ready(function() {
-          var options = [{
-              selector: '#welcome_banner',
-              offset: 1,
-              callback: function (el) {
-                  Materialize.fadeInImage($(el));
-              }
-          }];
-
-          Materialize.scrollFire(options);
-        });
-    </script>
-
-    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                $(document).ready(function(){
-                    Materialize.toast('{{ message|safe }}', 8000);
-                });
-            </script>
-        {% endfor %}
-    {% endif %}
 
 </body>
 </html>

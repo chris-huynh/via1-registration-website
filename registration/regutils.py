@@ -29,7 +29,7 @@ alumni_reg_cap = 30  # Not official
 
 # For PayPal Buttons (see views.py)
 paypal_email = 'finance@uvsamidwest.org'
-event_name = 'VIA-1 2017'
+event_name = 'VIA-1 2018'
 
 
 # For PayPal SANDBOX (use these for testing)
