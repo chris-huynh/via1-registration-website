@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.activate, name='activate'),
     url(r'^account_activation_sent/$', TemplateView.as_view(template_name='registration/account_activation_sent.html')),
     url(r'^account_activation_invalid/', TemplateView.as_view(template_name='registration/account_activation_invalid.html')),
+    url(r'^paypal/', include('paypal.standard.ipn.urls')),
     url(r'^home/payment_processing/$', views.payment_processing, name='payment_processing'),
     url(r'^home/payment_listener/$', views.payment_listener, name='payment_listener'),
     url(r'^home/payment_canceled/$', views.payment_canceled, name='payment_canceled'),

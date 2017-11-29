@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
-from paypal.standard.forms import PayPalPaymentsForm
 from django.core.mail import send_mail
 
 # Need these for email activation
@@ -13,6 +12,12 @@ from django.template.loader import render_to_string
 from registration.tokens import account_activation_token, member_school_verification_token
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
+
+# PayPal
+from paypal.standard.forms import PayPalPaymentsForm
+from paypal.standard.models import ST_PP_COMPLETED
+from paypal.standard.ipn.signals import valid_ipn_received, invalid_ipn_received
+from paypal.standard.ipn.models import PayPalIPN
 
 import datetime
 from registration import regutils
@@ -41,7 +46,7 @@ def home(request):
             "amount": regutils.early_reg_price, # Might not need this now that there's a dropdown. Maybe wanna keep if we pass in the hotel price
             "item_name": (regutils.event_name + ' Early Registration'),
             "invoice": ('via1-2018-reg-' + str(request.user.id)),
-            "notify_url": request.build_absolute_uri(reverse('payment_listener')),
+            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
             "custom": "early_registration",  # Custom command to correlate to some function later
@@ -52,7 +57,7 @@ def home(request):
             "amount": regutils.regular_reg_price,
             "item_name": (regutils.event_name + ' Regular Registration'),
             "invoice": ('via1-2018-reg-' + str(request.user.id)),
-            "notify_url": request.build_absolute_uri(reverse('payment_listener')),
+            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
             "custom": "regular_registration",  # Custom command to correlate to some function later
@@ -63,7 +68,7 @@ def home(request):
             "amount": regutils.alumni_reg_price,
             "item_name": (regutils.event_name + ' Alumni Registration'),
             "invoice": ('via1-2018-reg-' + str(request.user.id)),
-            "notify_url": request.build_absolute_uri(reverse('payment_listener')),
+            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return_url": request.build_absolute_uri(reverse('payment_processing')),
             "cancel_return": request.build_absolute_uri(reverse('payment_canceled')),
             "custom": "alumni_registration",  # Custom command to correlate to some function later
@@ -151,8 +156,39 @@ def payment_processing(request):
     return redirect('index')
 
 
-def payment_listener(request, **kwargs):
+def payment_listener(sender, **kwargs):
+    ipn_object = sender
+
+    if ipn_object.payment_status == ST_PP_COMPLETED:
+        if ipn_object.business != regutils.pp_sandbox_merchant_email:
+            return
+        if ipn_object.receiver_email != regutils.pp_sandbox_merchant_email:
+            return
+        if ipn_object.custom == 'early_registration':
+            if ipn_object.amount != regutils.early_reg_price:
+                return
+        elif ipn_object.custom == 'regular_registration':
+            if ipn_object.amount != regutils.regular_reg_price:
+                return
+        elif ipn_object.custom == 'alumni_registration':
+            if ipn_object.amount != regutils.alumni_reg_price:
+                return
+        else:
+            return
+
+        # If the payment passed all of the validation, update the user's data and increment capacity count
+        # Get the UID from the invoice
+        uid = ipn_object.invoice.replace('via1-2018-reg-', '')
+        user = User.objects.get(pk=uid)
+        # TODO: need to add a column for has_paid, time paid (from time_created maybe?), type of registration (from custom)
+        # TODO: add new table that contains capacities (call the table conf_vars ?)
+        # TODO: Probably don't need a processing state... IPN should trigger pretty quickly. Also, dunno when we would change a db value to "processing"
+
     return redirect('index')
+
+
+# def tester(sender, **kwargs):
+#     print('tester\n')
 
 
 def payment_canceled(request):
@@ -232,3 +268,7 @@ def member_school_verification_deny(request, uidb64, token, school):
         return redirect('/registration/member_school_verification_denied')
     else:
         return redirect('/registration/member_school_verification_invalid')
+
+
+# valid_ipn_received.connect(payment_listener)
+# invalid_ipn_received.connect(tester)
