@@ -1,0 +1,28 @@
+{% autoescape off %}
+    Hi Finance Committee,
+    <br><br>
+    <p>A VIA-1 attendee by the name of <b>{{ name }}</b> has requested a registration refund.</p>
+
+    <p>The user paid for registration using the following PayPal information:<br>
+    <b>Name:</b> {{ pp_name }}<br>
+    <b>Email:</b> {{ pp_email }}<br>
+    </p>
+
+    <p>The attendee's VIA-1 email address is <b>{{ email }}</b> if you need to follow up with them.</p>
+
+    <br>
+
+    <p><b style="font-size: 24px;">! IMPORTANT !</b><br>
+    <b>Once you issue the refund, come back to this email IMMEDIATELY and click the "Complete Refund" button below. This will "un-register" the attendee from conference.</b>
+    </p>
+
+    <a href="http://{{ domain }}{% url 'refund_request_complete' uidb64=uid token=token pp_email=pp_email %}" style="margin-right: 10px;">
+        <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 15px; text-align: center;
+        display: inline-block; font-size: 16px; text-decoration: none">Complete Refund</button>
+    </a>
+
+    <br><br><br>
+    Sincerely,
+    <br>
+    <b>The VIA-1 IT Team</b>
+{% endautoescape %}

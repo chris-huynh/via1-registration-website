@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.http import urlsafe_base64_decode
 from django.template.loader import render_to_string
-from registration.tokens import account_activation_token, member_school_verification_token
+from registration.tokens import account_activation_token, member_school_verification_token, refund_request_token
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 
@@ -48,7 +48,7 @@ def index(request):
 def home(request):
     if request.user.is_authenticated:
         todays_date = datetime.datetime.now()
-        is_early_reg_open = True if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
+        is_early_reg_open = True #if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
         is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
@@ -126,7 +126,8 @@ def activate(request, uidb64, token):
         return redirect('/registration/account_activation_invalid')
 
 
-def member_school_verification_processing(request):
+# TODO Need to make adjustments for schools with no contact -- waiting on Nathan to give more info
+def member_school_verification_request(request):
     if request.method == 'POST':
         form = request.POST
         user = request.user
@@ -257,78 +258,90 @@ def update_paid_attendee(request):
                 return JsonResponse({})
 
 
-# TODO This doesn't work. the paypalrestsdk only allows refunds using the trans ID of the MERCHANT. New process will be:
-# TODO Kick off an email with a button that'll set the user to "unregistered". Notify Finance in the email that they need to refund
-# TODO this user manually via Paypal. Make requesting user fill out first last name and email on paypal account used.
-# Have an input field and let the user type in the transaction ID from their email
-# check if sale exists, if so, complete refund and change user's has_paid to false, time_paid to null, reg_type to null and decrement attendee count
-@login_required()
-def refund_registration(request):
+def refund_request(request):
     if request.method == 'POST':
-        user = User.objects.get(pk=request.user.id)
+        form = request.POST
+        user = request.user
 
+        # Only proceed if the user has paid
         if user.has_paid:
-            sale = paypalrestsdk.Sale.find(request.POST['trans_id'])
+            current_site = get_current_site(request)
+            subject = '[REFUND REQUEST] A VIA-1 Attendee Requests A Registration Refund'
+            message = render_to_string('registration/refund_request_email.html', {
+                'name': user.get_full_name(),
+                'email': user.email,
+                'pp_name': form['pp_name'],
+                'pp_email': form['pp_email'],
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': refund_request_token.make_token(user),
+            })
+            # TODO change to_email to Finance uvsa email
+            send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
 
-            if sale:
-                # Set the total based on the package they initially purchased
-                if user.reg_type == regutils.RegisterTypes.EARLY_REG:
-                    total = regutils.RegisterPrices.EARLY_REG_PRICE
-                elif user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
-                    total = regutils.RegisterPrices.EARLY_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-                elif user.reg_type == regutils.RegisterTypes.REGULAR_REG:
-                    total = regutils.RegisterPrices.REGULAR_REG_PRICE
-                elif user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
-                    total = regutils.RegisterPrices.REGULAR_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-                elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG:
-                    total = regutils.RegisterPrices.ALUMNI_REG_PRICE
-                elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
-                    total = regutils.RegisterPrices.ALUMNI_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-                elif user.reg_type == regutils.RegisterTypes.STAFF_REG:
-                    total = regutils.RegisterPrices.STAFF_REG_PRICE
-                elif user.reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
-                    total = regutils.RegisterPrices.STAFF_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-
-                refund = sale.refund({
-                    "amount": {
-                        "total": str(total),
-                        "currency": 'USD'
-                    }
-                })
-
-                if refund.success():
-                    # Decrement attendee count for appropriate attendee_type
-                    conf_vars = ConferenceVars.objects.get(pk=1)
-                    if user.reg_type == regutils.RegisterTypes.EARLY_REG or regutils.RegisterTypes.EARLY_REG_HOTEL:
-                        conf_vars.early_attendee_count -= 1
-                    elif user.reg_type == regutils.RegisterTypes.REGULAR_REG or regutils.RegisterTypes.REGULAR_REG_HOTEL:
-                        conf_vars.regular_attendee_count -= 1
-                    elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG or regutils.RegisterTypes.ALUMNI_REG_HOTEL:
-                        conf_vars.alumni_attendee_count -= 1
-                    elif user.reg_type == regutils.RegisterTypes.STAFF_REG or regutils.RegisterTypes.STAFF_REG_HOTEL:
-                        conf_vars.staff_attendee_count -= 1
-                    conf_vars.save()
-
-                    # Need to change user's payment status
-                    user.has_paid = False
-                    user.time_paid = None
-                    # This has to be done before reg_type gets set to None
-                    if (user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL or user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL or
-                        user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL or regutils.RegisterTypes.STAFF_REG_HOTEL):
-                        user.has_paid_hotel = False
-                    user.reg_type = None
-
-                    user.save()
-
-                    return render(request, 'registration/reg_refund_complete.html', {'is_refund_successful': True, 'refund_amount': total})
-                else:
-                    return render(request, 'registration/reg_refund_complete.html', {'is_refund_successful': False})
+            messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
+            return redirect('index')
+    else:
+        return redirect('index')
 
 
-def validate_trans_id(request):
-    # This will throw a 404 if nothing is found. Thus, the ajax call to this endpoint will fail.
-    sale = paypalrestsdk.Sale.find(request.GET.get('trans_id', None))
+def refund_request_complete(request, uidb64, token, pp_email):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
 
-    # If the line above succeeds, then we can just return an empty 200
-    return JsonResponse({})
+    if user is not None and refund_request_token.check_token(user, token):
+        if user.reg_type == regutils.RegisterTypes.EARLY_REG:
+            amount = regutils.RegisterPrices.EARLY_REG_PRICE
+        elif user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
+            amount = regutils.RegisterPrices.EARLY_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG:
+            amount = regutils.RegisterPrices.REGULAR_REG_PRICE
+        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
+            amount = regutils.RegisterPrices.REGULAR_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG:
+            amount = regutils.RegisterPrices.ALUMNI_REG_PRICE
+        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
+            amount = regutils.RegisterPrices.ALUMNI_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+        elif user.reg_type == regutils.RegisterTypes.STAFF_REG:
+            amount = regutils.RegisterPrices.STAFF_REG_PRICE
+        elif user.reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
+            amount = regutils.RegisterPrices.STAFF_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+
+        # Decrement attendee count for appropriate attendee_type
+        conf_vars = ConferenceVars.objects.get(pk=1)
+        if user.reg_type == regutils.RegisterTypes.EARLY_REG or regutils.RegisterTypes.EARLY_REG_HOTEL:
+            conf_vars.early_attendee_count -= 1
+        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG or regutils.RegisterTypes.REGULAR_REG_HOTEL:
+            conf_vars.regular_attendee_count -= 1
+        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG or regutils.RegisterTypes.ALUMNI_REG_HOTEL:
+            conf_vars.alumni_attendee_count -= 1
+        elif user.reg_type == regutils.RegisterTypes.STAFF_REG or regutils.RegisterTypes.STAFF_REG_HOTEL:
+            conf_vars.staff_attendee_count -= 1
+        conf_vars.save()
+
+        # Need to change user's payment status
+        user.has_paid = False
+        user.time_paid = None
+        # This has to be done before reg_type gets set to None
+        if (user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL or user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL or
+                    user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL or regutils.RegisterTypes.STAFF_REG_HOTEL):
+            user.has_paid_hotel = False
+        user.reg_type = None
+
+        user.save()
+
+        # Send an email to the user letting them know that their refund has been fulfilled
+        subject = 'Your VIA-1 Registration Refund Has Been Fulfilled'
+        message = render_to_string('registration/refund_request_complete_email.html', {
+            'name': user.first_name,
+            'pp_email': pp_email,
+            'amount': str(amount)
+        })
+        send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
+        return redirect('/registration/refund_request_complete')
+
 

@@ -2,6 +2,8 @@
 # Since each conference from year to year will have different prices, dates, etc -- make sure you
 # go in here and change the variables accordingly
 
+# TODO Don't forget to remove fake school below
+
 import datetime
 
 
