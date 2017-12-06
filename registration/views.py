@@ -21,9 +21,9 @@ from django.utils.encoding import force_text
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
 paypalrestsdk.configure({
-    "mode": "live",  # sandbox or live
-    "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
-    "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
+    "mode": "sandbox",  # sandbox or live
+    "client_id": settings.PAYPAL_SANDBOX_CLIENT_ID,
+    "client_secret": settings.PAYPAL_SANDBOX_CLIENT_SECRET})
 
 
 import datetime
