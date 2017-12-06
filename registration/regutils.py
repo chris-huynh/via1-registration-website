@@ -5,34 +5,66 @@
 import datetime
 
 
+class AttendeeTypes:
+    EARLY_REG_ATTENDEE = '1'
+    REGULAR_REG_ATTENDEE = '2'
+    ALUMNI_REG_ATTENDEE = '3'
+    STAFF_REG_ATTENDEE = '4'
+
+
+class RegisterTypes:
+    EARLY_REG = 'early_registration'
+    EARLY_REG_HOTEL = 'early_registration_and_hotel'
+    REGULAR_REG = 'regular_registration'
+    REGULAR_REG_HOTEL = 'regular_registration_and_hotel'
+    ALUMNI_REG = 'alumni_registration'
+    ALUMNI_REG_HOTEL = 'alumni_registration_and_hotel'
+    STAFF_REG = 'staff_registration'
+    STAFF_REG_HOTEL = 'staff_registration_and_hotel'
+
+
+class RegisterPrices:
+    EARLY_REG_PRICE = 75
+    REGULAR_REG_PRICE = 85
+    ALUMNI_REG_PRICE = 75
+    STAFF_REG_PRICE = 75
+    BANQUET_PRICE = 50     # Probably don't need -- banquet-only will probably be handled manually
+    HOTEL_BUNDLE_PRICE = 60
+    HOTEL_PRICE = 65   # Hotel purchased separately is an additional $5
+
+
+class RegisterCaps:
+    EARLY_REG_CAP = 80
+    REGULAR_REG_CAP = 200
+    ALUMNI_REG_CAP = 30
+    STAFF_REG_CAP = 80
+
+
 # Open 12-14-2017 @ 1800/6:00p CENTRAL (timezone is set in settings.py)
-# Close 1-2-2018 @ 11:59:59
+# Close 1-3-2018 @ 11:59:59
 early_reg_open_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
 early_reg_close_date = datetime.datetime(2018, 1, 3, 23, 59, 59)
-early_reg_price = '75.00'
-early_reg_cap = 80  # Not official
 
-# Open 1-3-2018 @ 12:00a CENTRAL
-# Close 1-14-2018 @ 6:00p
+# Open 1-4-2018 @ 6:00p CENTRAL
+# Close 1-18-2018 @ 11:59p
 regular_reg_open_date = datetime.datetime(2018, 1, 4, 18, 0, 0)
 regular_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
-regular_reg_price = '85.00'
-regular_reg_cap = 280  # Not official
 
-# Open 12-14-2017 @ 6:00p CENTRAL
-# Close 1-14-2018 @ 6:00p
+# Open 1-4-2017 @ 6:00p CENTRAL
+# Close 1-18-2018 @ 11:59p
 alumni_reg_open_date = datetime.datetime(2018, 1, 4, 18, 0, 0)
 alumni_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
-alumni_reg_price = '75.00'
-alumni_reg_cap = 30  # Not official
+
+refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
 
 
 # For PayPal Buttons (see views.py)
+# TODO delete this later once we confirm that we don't need it
 paypal_email = 'finance@uvsamidwest.org'
-event_name = 'VIA-1 2018'
 
 
 # For PayPal SANDBOX (use these for testing)
+# TODO delete this later once we confirm that we don't need it
 pp_sandbox_merchant_email = 'via1-merchant@uvsamidwest.org'
 
 

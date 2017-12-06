@@ -2,7 +2,12 @@
 
 {% block title %}VIA-1 - Home{% endblock %}
 
+{% block additional_head %}
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+{% endblock %}
+
 {% block content %}
+    {# Welcome Banner / Header #}
     <div id="welcome_banner" class="parallax-container">
         <div class="parallax">
             <div class="banner_overlay"></div>
@@ -13,164 +18,154 @@
                 <p class="flow-text" style="font-weight: 100; font-size: 48px; margin-bottom: 0">Hi, {{ user.first_name }}.
                 <br>
                 Welcome to VIA-1</p>
-                <p class="flow-text">Today's date and time: {{ todays_date }} CST</p>
-                <p class="flow-text">Early Registration Opens On: {{ open_date }} CST</p>
-                <a href="#payment-section" class="white-text" style="cursor: pointer"><i class="material-icons medium hover_orange hover_move_down">keyboard_arrow_down</i></a>
+                <p class="flow-text">Registration is currently {% if is_early_reg_open or is_regular_reg_open or is_alumni_reg_open %} <strong class="orange-text">OPEN</strong> {% else %} <strong class="orange-text">CLOSED</strong> {% endif %}</p>
+                <p class="flow-text">Your Registration Status: {% if user.has_paid %} <strong class="orange-text">PAID</strong> {% else %} <strong class="orange-text">UNPAID</strong> {% endif %}</p>
+
+                {% if user.has_paid %}
+                    <p class="flow-text">The deadline to refund is {{ refund_deadline }} CST</p>
+                    <a href="{% url 'reg_refund' %}" class="btn waves-effect waves-light orange hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>REFUND</a>
+                {% else %}
+                    <a href="#payment-section" class="white-text" style="cursor: pointer"><i class="material-icons medium hover_orange hover_move_down">keyboard_arrow_down</i></a>
+                {% endif %}
             </div>
         </div>
     </div>
 
+    {# Payment section -- Hide once the user has paid #}
+    {% if not user.has_paid %}
     <div class="container">
         <div id="payment-section" class="row section scrollspy" style="margin-top: 50px;">
             <div class="col s12 l10 offset-l1 center-align">
                 <h2 style="font-weight: 300">Conference Registration</h2>
                 <h5 style="font-weight: 100; margin-bottom: 30px">Register now to attend VIA-1</h5>
+                <p class="orange-text" style="font-weight:300; font-style: italic">
+                    <i class="material-icons small pulse hover_orange hover_move_down">attach_money</i>
+                    <br>
+                    Bundle with hotel to save money!</p>
             </div>
+
             <div class="col s12 l10 offset-l1 center-align" style="display: flex; flex-wrap: wrap;">
+                {# Early registration card #}
                 <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">EARLY <a class="orange-text hover_black modal-trigger" href="#early_reg_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan. 2</b>
                     <p style="font-style: italic">Exclusive to UVSA-Midwest member schools</p>
-                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ early_reg_price }}</p>
+                    <p style="font-weight: 300; font-size: 24px; margin-bottom:0;">${{ register_prices.EARLY_REG_PRICE }}</p>
 
-                    {# Displaying a disabled submit button so users can't view source and find out the form info #}
-                    {% if not user.is_member_school or not is_early_reg_open %}
+                    <div class="row">
                         <div class="input-field col s10 offset-s1">
-                            <select disabled>
-                                <option value="Early Registration">Registration Only ($75.00)</option>
-                                <option value="Early Registration + Hotel">Registration + Hotel ($135.00)</option>
-                            </select>
-                        </div>
-                        <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
-                    {% else %}
-                        <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-                            <input type="hidden" name="business" value="{{ early_reg_pp_button.business.value }}" id="id_business" />
 
-                            <input type="hidden" name="item_name" value="{{ early_reg_pp_button.item_name.value }}" id="id_item_name" />
-                            <input type="hidden" name="notify_url" value="{{ early_reg_pp_button.notify_url.value }}" id="id_notify_url" />
-                            <input type="hidden" name="cancel_return" value="{{ early_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
-                            <input id="id_return_url" name="return" type="hidden" value="{{ early_reg_pp_button.return_url.value }}" />
-                            <input type="hidden" name="custom" value="{{ early_reg_pp_button.custom.value }}" id="id_custom" />
-                            <input type="hidden" name="invoice" value="{{ early_reg_pp_button.invoice.value }}" id="id_invoice" />
-                            <input type="hidden" name="cmd" value="{{ early_reg_pp_button.cmd.value }}" id="id_cmd" />
-                            <input type="hidden" name="charset" value="{{ early_reg_pp_button.charset.value }}" id="id_charset" />
-                            <input type="hidden" name="currency_code" value="{{ early_reg_pp_button.currency_code.value }}" id="id_currency_code" />
-                            <input type="hidden" name="no_shipping" value="{{ early_reg_pp_button.no_shipping.value }}" id="id_no_shipping" />
-                            <input type="hidden" name="on0" value="Options">
-                            <div class="input-field col s10 offset-s1">
-                                <select name="os0">
-                                    <option value="Early Registration">Registration Only ($75.00)</option>
-                                    <option value="Early Registration + Hotel">Registration + Hotel ($135.00)</option>
-                                </select>
-                            </div>
-                            <input type="hidden" name="option_select0" value="Early Registration">
-                            <input type="hidden" name="option_amount0" value="75.00">
-                            <input type="hidden" name="option_select1" value="Early Registration + Hotel">
-                            <input type="hidden" name="option_amount1" value="135.00">
-                            <button type="submit" class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
-                        </form>
-                    {% endif %}
+                        {# display a disabled BUY NOW button when reg isn't open, otherwise render a PayPal button #}
+                        {% if not is_early_reg_open or not user.is_member_school %}
+                            <select id="id_early_reg_select" disabled>
+                                <option value="reg_only">Early Registration ($75.00)</option>
+                                <option value="reg_and_hotel">Early Registration + Hotel ($135)</option>
+                            </select>
+                        <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
+                        {% else %}
+                            <select id="id_early_reg_select">
+                                <option value="reg_only">Early Registration ($75.00)</option>
+                                <option value="reg_and_hotel">Early Registration + Hotel ($135)</option>
+                            </select>
+                            <div id="id_early_reg_pp_button"></div>
+                        {% endif %}
+
+                        </div>
+                    </div>
+
                 </div>
+                {# Regular registration card #}
                 <div class="z-depth-3 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">REGULAR</p>
                     <b class="orange-text" style="font-size: 16px">Jan. 3 - Jan. 14</b>
                     <p style="font-style: italic">Mihoy minoy</p>
-                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ regular_reg_price }}</p>
+                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ register_prices.REGULAR_REG_PRICE }}</p>
 
-                    {# Displaying a disabled submit button so users can't view source and find out the form info ahead of time #}
-                    {% if not is_regular_reg_open %}
+                    <div class="row">
                         <div class="input-field col s10 offset-s1">
-                            <select disabled>
-                                <option value="Regular Registration">Registration Only ($85.00)</option>
-                                <option value="Regular Registration + Hotel">Registration + Hotel ($145.00)</option>
-                            </select>
-                        </div>
-                        <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
-                    {% else %}
-                        <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-                            <input type="hidden" name="business" value="{{ regular_reg_pp_button.business.value }}" id="id_business" />
 
-                            <input type="hidden" name="item_name" value="{{ regular_reg_pp_button.item_name.value }}" id="id_item_name" />
-                            <input type="hidden" name="notify_url" value="{{ regular_reg_pp_button.notify_url.value }}" id="id_notify_url" />
-                            <input type="hidden" name="cancel_return" value="{{ regular_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
-                            <input id="id_return_url" name="return" type="hidden" value="{{ regular_reg_pp_button.return_url.value }}" />
-                            <input type="hidden" name="custom" value="{{ regular_reg_pp_button.custom.value }}" id="id_custom" />
-                            <input type="hidden" name="invoice" value="{{ regular_reg_pp_button.invoice.value }}" id="id_invoice" />
-                            <input type="hidden" name="cmd" value="{{ regular_reg_pp_button.cmd.value }}" id="id_cmd" />
-                            <input type="hidden" name="charset" value="{{ regular_reg_pp_button.charset.value }}" id="id_charset" />
-                            <input type="hidden" name="currency_code" value="{{ regular_reg_pp_button.currency_code.value }}" id="id_currency_code" />
-                            <input type="hidden" name="no_shipping" value="{{ regular_reg_pp_button.no_shipping.value }}" id="id_no_shipping" />
-                            <input type="hidden" name="on0" value="Options">
-                            <div class="input-field col s10 offset-s1">
-                                <select name="os0">
-                                    <option value="Regular Registration">Registration Only ($85.00)</option>
-                                    <option value="Regular Registration + Hotel">Registration + Hotel ($145.00)</option>
-                                </select>
-                            </div>
-                            <input type="hidden" name="option_select0" value="Regular Registration">
-                            <input type="hidden" name="option_amount0" value="85.00">
-                            <input type="hidden" name="option_select1" value="Regular Registration + Hotel">
-                            <input type="hidden" name="option_amount1" value="145.00">
-                            <button type="submit" class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
-                        </form>
-                    {% endif %}
+                        {# display a disabled BUY NOW button when reg isn't open, otherwise render a PayPal button #}
+                        {% if not is_regular_reg_open %}
+                            <select id="id_regular_reg_select" disabled>
+                                <option value="reg_only">Regular Registration ($85.00)</option>
+                                <option value="reg_and_hotel">Regular Registration + Hotel ($145)</option>
+                            </select>
+                            <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
+                        {% else %}
+                            <select id="id_regular_reg_select">
+                                <option value="reg_only">Regular Registration ($85.00)</option>
+                                <option value="reg_and_hotel">Regular Registration + Hotel ($145)</option>
+                            </select>
+                            <div id="id_regular_reg_pp_button"></div>
+                        {% endif %}
+
+                        </div>
+                    </div>
+
                 </div>
+                {# Alumni registration card #}
                 <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan 14</b>
                     <p style="font-style: italic">You must first verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option</p>
-                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ alumni_reg_price }}</p>
+                    <p style="font-weight: 300; font-size: 24px; margin-bottom: 0;">${{ register_prices.ALUMNI_REG_PRICE }}</p>
 
-                    {# Displaying a disabled submit button so users can't view source and find out the form info #}
-                    {% if not user.is_alumni or not is_alumni_reg_open %}
+                    <div class="row">
                         <div class="input-field col s10 offset-s1">
-                            <select disabled>
-                                <option value="Alumni Registration">Registration Only ($75.00)</option>
-                                <option value="Alumni Registration + Hotel">Registration + Hotel ($135.00)</option>
-                            </select>
-                        </div>
-                        <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
-                    {% else %}
-                        <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-                            <input type="hidden" name="business" value="{{ alumni_reg_pp_button.business.value }}" id="id_business" />
 
-                            <input type="hidden" name="item_name" value="{{ alumni_reg_pp_button.item_name.value }}" id="id_item_name" />
-                            <input type="hidden" name="notify_url" value="{{ alumni_reg_pp_button.notify_url.value }}" id="id_notify_url" />
-                            <input type="hidden" name="cancel_return" value="{{ alumni_reg_pp_button.cancel_return.value }}" id="id_cancel_return" />
-                            <input id="id_return_url" name="return" type="hidden" value="{{ alumni_reg_pp_button.return_url.value }}" />
-                            <input type="hidden" name="custom" value="{{ alumni_reg_pp_button.custom.value }}" id="id_custom" />
-                            <input type="hidden" name="invoice" value="{{ alumni_reg_pp_button.invoice.value }}" id="id_invoice" />
-                            <input type="hidden" name="cmd" value="{{ alumni_reg_pp_button.cmd.value }}" id="id_cmd" />
-                            <input type="hidden" name="charset" value="{{ alumni_reg_pp_button.charset.value }}" id="id_charset" />
-                            <input type="hidden" name="currency_code" value="{{ alumni_reg_pp_button.currency_code.value }}" id="id_currency_code" />
-                            <input type="hidden" name="no_shipping" value="{{ alumni_reg_pp_button.no_shipping.value }}" id="id_no_shipping" />
-                            <input type="hidden" name="on0" value="Options">
-                            <div class="input-field col s10 offset-s1">
-                                <select name="os0">
-                                    <option value="Alumni Registration">Registration Only ($75.00)</option>
-                                    <option value="Alumni Registration + Hotel">Registration + Hotel ($135.00)</option>
-                                </select>
-                            </div>
-                            <input type="hidden" name="option_select0" value="Alumni Registration">
-                            <input type="hidden" name="option_amount0" value="75.00">
-                            <input type="hidden" name="option_select1" value="Alumni Registration + Hotel">
-                            <input type="hidden" name="option_amount1" value="135.00">
-                            <button type="submit" class="btn waves-effect waves-light orange" name="submit">BUY NOW</button>
-                        </form>
-                    {% endif %}
+                        {# display a disabled BUY NOW button when reg isn't open, otherwise render a PayPal button #}
+                        {% if not is_alumni_reg_open or not user.is_alumni %}
+                            <select id="id_alumni_reg_select" disabled>
+                                <option value="reg_only">Alumni Registration ($75.00)</option>
+                                <option value="reg_and_hotel">Alumni Registration + Hotel ($135)</option>
+                            </select>
+                            <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
+                        {% else %}
+                            <select id="id_alumni_reg_select">
+                                <option value="reg_only">Alumni Registration ($75.00)</option>
+                                <option value="reg_and_hotel">Alumni Registration + Hotel ($135)</option>
+                            </select>
+                            <div id="id_alumni_reg_pp_button"></div>
+                        {% endif %}
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
         <br><br><br><br>
     </div>
+    {% endif %}
 
     {# Alumni Info Pop-up Modal #}
     <div id="alumni_info_modal" class="modal modal-fixed-footer">
         <div class="modal-content flow-text">
-            <h5>Who Qualifies As Alumni?</h5>
-            <p>A bunch of text</p>
-            <h5>Why Should I Register As Alumni?</h5>
-            <p>A bunch of text</p>
+            <h4>Who qualifies as Alumni?</h4>
+            <p>Those who qualify for alumni programming will be members that have fulfilled a full term as a part of staff for a UVSA-Midwest event or position such as the following:</p>
+            <p>- Executive Board<br>
+                - Executive Directors<br>
+                - VIA-1 Committee Director / Staff<br>
+                - Leadership Summit Staff<br>
+                - Board of Directors
+            </p>
+            <p>Note: If you fulfill any of the following roles, you are eligible to participate in Alumni Programming events:</p>
+            <p>- Workshop Presenter<br>
+                - Performer<br>
+                - Silver Tier Sponsor and above
+            </p>
+            <h4>Why should I register as an Alumni?</h4>
+            <p>This year UVSA-Midwest will be creating programming specifically catered to our wonderful alumni community.
+                Our goal this year is to reconnect, reignite passions, and to provide various opportunities for alumni to
+                remain involved even past graduation. We have done away with banquet-only registration in the interest of
+                providing you a weekend full of value outside of the traditional banquet-only experience we used to offer
+                in the past. Programming you may look forward to includes (but certainly not limited to):
+            </p>
+            <p>- Separate Alumni breakfast<br>
+                - Separate Alumni catered lunch<br>
+                - Separate workshop for Alumni<br>
+                - Option to participate in our new Anh/Chi/Em program
+            </p>
         </div>
         <div class="modal-footer">
             <a href="#!" class="z-depth-3 modal-action modal-close waves-effect waves-light btn orange">Got it!</a>
@@ -180,11 +175,11 @@
     {# Early Registration Info Pop-up Modal #}
     <div id="early_reg_info_modal" class="modal modal-fixed-footer">
         <div class="modal-content flow-text">
-            <h5>How do I qualify for early registration?</h5>
+            <h4>How do I qualify for early registration?</h4>
             <p>In order to access early registration, your account must be created using a UVSA-Midwest member school email address
             (e.g. @mail.uc.edu, @umn.edu, etc.)</p>
             <p>A list of eligible schools can be found <a href="http://bit.ly/2hJhW1m" target="_blank" class="orange-text hover_black">here</a></p>
-            <h5>I associate with a qualified member school but do not have a school email -- what should I do?</h5>
+            <h4>I associate with a qualified member school but do not have a school email -- what should I do?</h4>
             <p>You can apply for access <a href="#mem_school_verify_modal" class="modal-trigger modal-close orange-text hover_black">here</a>.
             Upon submission, an email will be sent to the appropriate school's president and they will either approve or deny your request.
             If approved, access to early registration will be granted.
@@ -252,6 +247,435 @@
 
 
 {% block additional_scripts %}
+    {# Paypal Express Check Out for Early Reg Button #}
+    {% if not user.has_paid and is_early_reg_open and user.is_member_school %}
+        <script>
+            // Global variable so it can be used in both the payment and onAuthorize contexts
+            var reg_type;
+
+            paypal.Button.render({
+
+                env: 'sandbox', // 'sandbox' or 'production'
+
+                client: {
+                    sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',
+                    production: 'AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I'
+                },
+
+                commit: true, // Show a 'Pay Now' button
+
+                style: {
+                    color:  'black',
+                    size:   'responsive',
+                    shape:  'rect',
+                    label:  'pay',
+                    tagline: false
+                },
+
+                payment: function(data, actions) {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
+                    xhttp.send();
+                    var json_data = JSON.parse(xhttp.responseText);
+
+                    if (!json_data.is_early_reg_full) {
+                        var price, description, invoice_prefix;
+
+                        // Get the user's package choice (Reg only or Reg + Hotel)
+                        var price_dropdown = document.getElementById("id_early_reg_select");
+                        var price_choice = price_dropdown.options[price_dropdown.selectedIndex].value;
+
+                        // Generate a random 9-digit number for the invoice
+                        var invoice_number = Math.floor(Math.random() * 899999999 + 100000000);
+
+                        // Set variables based on package choice (Reg only or Reg + Hotel)
+                        if (price_choice === 'reg_only') {
+                            price = {{ register_prices.EARLY_REG_PRICE }};
+                            description = '2018 VIA-1 Early Registration';
+                            invoice_prefix = 'via1-2018-reg-';
+                            reg_type = '{{ register_types.EARLY_REG }}';
+                        } else {
+                            price = {{ register_prices.EARLY_REG_PRICE }} + {{ register_prices.HOTEL_BUNDLE_PRICE }};
+                            description = '2018 VIA-1 Early Registration + Hotel';
+                            invoice_prefix = 'via1-2018-reg-hotel-';
+                            reg_type = '{{ register_types.EARLY_REG_HOTEL }}';
+                        }
+
+                        return actions.payment.create({
+                            payment: {
+                                transactions: [
+                                    {
+                                        amount: {
+                                            total: price,
+                                            currency: 'USD'
+                                        },
+                                        description: description,
+                                        item_list: {
+                                            items: [
+                                                {
+                                                    name: description,  // We can just use the description for the item name, too
+                                                    price: price,
+                                                    currency: 'USD',
+                                                    quantity: 1
+                                                }
+                                            ]
+                                        },
+                                        invoice_number: invoice_prefix + {{ user.id }} + '-' + invoice_number,
+                                        custom: reg_type
+                                    }
+                                ],
+                                redirect_urls: {
+                                    return_url: '{% url 'index' %}',
+                                    cancel_url: '{% url 'index' %}'
+                                }
+                            },
+                            experience: {
+                                input_fields: {
+                                    no_shipping: 1
+                                }
+                            }
+                        });
+                    } else {
+                        //return actions.payment.close()
+                        // This will close the dialog and return the user back to the home page
+                        top.location.replace(document.location);
+                        // Need to re-direct user to a page? or maybe replace button with a "conference has reached capacity"? or maybe display a modal
+                    }
+
+                },
+
+                onAuthorize: function(data, actions) {
+                    // Payment is complete but still needs to be submitted. First check if capacity was hit during the transaction, if so, cancel payment. Otherwise, continue
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
+                    xhttp.send();
+                    var json_data = JSON.parse(xhttp.responseText);
+
+                    if (!json_data.is_early_reg_full) {
+                        return actions.payment.execute().then(function(payment) {
+                            // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
+                            // The total attendee count will also be incremented
+                            $.ajax({
+                                url: '{% url 'update_paid_attendee' %}',
+                                data: {
+                                    'paymentID': data.paymentID,
+                                    'reg_type': reg_type
+                                }
+                            });
+
+                            window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
+                            // The payment is complete!
+                            // Redirect user to home page
+                            window.location.replace('{% url 'home' %}')
+                        });
+                    } else {
+                        // We don't have to do anything to "cancel" the order. So at this point, we can just show a dialog that says reg is full
+                        window.alert('Payment could not be processed. Conference is at capacity.')
+                    }
+                },
+
+                onCancel: function(data, actions) {
+                    // Don't have to do anything on cancel
+                },
+
+                onError: function(err) {
+                    // This alert might be ugly on mobile. TBD
+                    window.alert('An error occurred while checking out. Please try again. If the problem persists, contact via1staff@uvsamidwest.org')
+                    // onError seems to be called for scenarios like invoice ID being used twice etc
+                    // Maybe we want to display a toast that says an error occurred while paying. Try again
+                }
+
+            }, '#id_early_reg_pp_button');
+        </script>
+    {% endif %}
+
+
+    {# Paypal Express Check Out for Regular Reg Button #}
+    {% if not user.has_paid and is_regular_reg_open %}
+        <script>
+            // Global variable so it can be used in both the payment and onAuthorize contexts
+            var reg_type;
+
+            paypal.Button.render({
+
+                env: 'sandbox', // 'sandbox' or 'production'
+
+                client: {
+                    sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',
+                    production: 'AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I'
+                },
+
+                commit: true, // Show a 'Pay Now' button
+
+                style: {
+                    color:  'black',
+                    size:   'responsive',
+                    shape:  'rect',
+                    label:  'pay',
+                    tagline: false
+                },
+
+                payment: function(data, actions) {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
+                    xhttp.send();
+                    var json_data = JSON.parse(xhttp.responseText);
+
+                    if (!json_data.is_regular_reg_full) {
+                        var price, description, invoice_prefix;
+
+                        // Get the user's package choice (Reg only or Reg + Hotel)
+                        var price_dropdown = document.getElementById("id_regular_reg_select");
+                        var price_choice = price_dropdown.options[price_dropdown.selectedIndex].value;
+
+                        // Generate a random 9-digit number for the invoice
+                        var invoice_number = Math.floor(Math.random() * 899999999 + 100000000);
+
+                        // Set variables based on package choice (Reg only or Reg + Hotel)
+                        if (price_choice === 'reg_only') {
+                            price = {{ register_prices.REGULAR_REG_PRICE }};
+                            description = '2018 VIA-1 Regular Registration';
+                            invoice_prefix = 'via1-2018-reg-';
+                            reg_type = '{{ register_types.REGULAR_REG }}';
+                        } else {
+                            price = {{ register_prices.REGULAR_REG_PRICE }} + {{ register_prices.HOTEL_BUNDLE_PRICE }};
+                            description = '2018 VIA-1 Regular Registration + Hotel';
+                            invoice_prefix = 'via1-2018-reg-hotel-';
+                            reg_type = '{{ register_types.REGULAR_REG_HOTEL }}';
+                        }
+
+                        return actions.payment.create({
+                            payment: {
+                                transactions: [
+                                    {
+                                        amount: {
+                                            total: price,
+                                            currency: 'USD'
+                                        },
+                                        description: description,
+                                        item_list: {
+                                            items: [
+                                                {
+                                                    name: description,  // We can just use the description for the item name, too
+                                                    price: price,
+                                                    currency: 'USD',
+                                                    quantity: 1
+                                                }
+                                            ]
+                                        },
+                                        invoice_number: invoice_prefix + {{ user.id }} + '-' + invoice_number,
+                                        custom: reg_type
+                                    }
+                                ],
+                                redirect_urls: {
+                                    return_url: '{% url 'index' %}',
+                                    cancel_url: '{% url 'index' %}'
+                                }
+                            },
+                            experience: {
+                                input_fields: {
+                                    no_shipping: 1
+                                }
+                            }
+                        });
+                    } else {
+                        //return actions.payment.close()
+                        // This will close the dialog and return the user back to the home page
+                        top.location.replace(document.location);
+                        // Need to re-direct user to a page? or maybe replace button with a "conference has reached capacity"? or maybe display a modal
+                    }
+
+                },
+
+                onAuthorize: function(data, actions) {
+                    // Payment is complete but still needs to be submitted. First check if capacity was hit during the transaction, if so, cancel payment. Otherwise, continue
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
+                    xhttp.send();
+                    var json_data = JSON.parse(xhttp.responseText);
+
+                    if (!json_data.is_regular_reg_full) {
+                        return actions.payment.execute().then(function(payment) {
+                            // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
+                            // The total attendee count will also be incremented
+                            $.ajax({
+                                url: '{% url 'update_paid_attendee' %}',
+                                data: {
+                                    'paymentID': data.paymentID,
+                                    'reg_type': reg_type
+                                }
+                            });
+
+                            window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
+                            // The payment is complete!
+                            // Redirect user to home page
+                            window.location.replace('{% url 'home' %}')
+                        });
+                    } else {
+                        // We don't have to do anything to "cancel" the order. So at this point, we can just show a dialog that says reg is full
+                        window.alert('Payment could not be processed. Conference is at capacity.')
+                    }
+                },
+
+                onCancel: function(data, actions) {
+                    // Don't have to do anything on cancel
+                },
+
+                onError: function(err) {
+                    // This alert might be ugly on mobile. TBD
+                    window.alert('An error occurred while checking out. Please try again. If the problem persists, contact via1staff@uvsamidwest.org')
+                    // onError seems to be called for scenarios like invoice ID being used twice etc
+                    // Maybe we want to display a toast that says an error occurred while paying. Try again
+                }
+
+            }, '#id_regular_reg_pp_button');
+        </script>
+    {% endif %}
+
+
+    {# Paypal Express Check Out for Early Reg Button #}
+    {% if not user.has_paid and is_alumni_reg_open and user.is_alumni %}
+        <script>
+            // Global variable so it can be used in both the payment and onAuthorize contexts
+            var reg_type;
+
+            paypal.Button.render({
+
+                env: 'sandbox', // 'sandbox' or 'production'
+
+                client: {
+                    sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',
+                    production: 'AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I'
+                },
+
+                commit: true, // Show a 'Pay Now' button
+
+                style: {
+                    color:  'black',
+                    size:   'responsive',
+                    shape:  'rect',
+                    label:  'pay',
+                    tagline: false
+                },
+
+                payment: function(data, actions) {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
+                    xhttp.send();
+                    var json_data = JSON.parse(xhttp.responseText);
+
+                    if (!json_data.is_alumni_reg_full) {
+                        var price, description, invoice_prefix;
+
+                        // Get the user's package choice (Reg only or Reg + Hotel)
+                        var price_dropdown = document.getElementById("id_alumni_reg_select");
+                        var price_choice = price_dropdown.options[price_dropdown.selectedIndex].value;
+
+                        // Generate a random 9-digit number for the invoice
+                        var invoice_number = Math.floor(Math.random() * 899999999 + 100000000);
+
+                        // Set variables based on package choice (Reg only or Reg + Hotel)
+                        if (price_choice === 'reg_only') {
+                            price = {{ register_prices.ALUMNI_REG_PRICE }};
+                            description = '2018 VIA-1 Alumni Registration';
+                            invoice_prefix = 'via1-2018-reg-';
+                            reg_type = '{{ register_types.ALUMNI_REG }}';
+                        } else {
+                            price = {{ register_prices.ALUMNI_REG_PRICE }} + {{ register_prices.HOTEL_BUNDLE_PRICE }};
+                            description = '2018 VIA-1 Alumni Registration + Hotel';
+                            invoice_prefix = 'via1-2018-reg-hotel-';
+                            reg_type = '{{ register_types.ALUMNI_REG_HOTEL }}';
+                        }
+
+                        return actions.payment.create({
+                            payment: {
+                                transactions: [
+                                    {
+                                        amount: {
+                                            total: price,
+                                            currency: 'USD'
+                                        },
+                                        description: description,
+                                        item_list: {
+                                            items: [
+                                                {
+                                                    name: description,  // We can just use the description for the item name, too
+                                                    price: price,
+                                                    currency: 'USD',
+                                                    quantity: 1
+                                                }
+                                            ]
+                                        },
+                                        invoice_number: invoice_prefix + {{ user.id }} + '-' + invoice_number,
+                                        custom: reg_type
+                                    }
+                                ],
+                                redirect_urls: {
+                                    return_url: '{% url 'index' %}',
+                                    cancel_url: '{% url 'index' %}'
+                                }
+                            },
+                            experience: {
+                                input_fields: {
+                                    no_shipping: 1
+                                }
+                            }
+                        });
+                    } else {
+                        //return actions.payment.close()
+                        // This will close the dialog and return the user back to the home page
+                        top.location.replace(document.location);
+                        // Need to re-direct user to a page? or maybe replace button with a "conference has reached capacity"? or maybe display a modal
+                    }
+
+                },
+
+                onAuthorize: function(data, actions) {
+                    // Payment is complete but still needs to be submitted. First check if capacity was hit during the transaction, if so, cancel payment. Otherwise, continue
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
+                    xhttp.send();
+                    var json_data = JSON.parse(xhttp.responseText);
+
+                    if (!json_data.is_alumni_reg_full) {
+                        return actions.payment.execute().then(function(payment) {
+                            // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
+                            // The total attendee count will also be incremented
+                            $.ajax({
+                                url: '{% url 'update_paid_attendee' %}',
+                                data: {
+                                    'paymentID': data.paymentID,
+                                    'reg_type': reg_type
+                                }
+                            });
+
+                            window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
+                            // The payment is complete!
+                            // Redirect user to home page
+                            window.location.replace('{% url 'home' %}')
+                        });
+                    } else {
+                        // We don't have to do anything to "cancel" the order. So at this point, we can just show a dialog that says reg is full
+                        window.alert('Payment could not be processed. Conference is at capacity.')
+                    }
+                },
+
+                onCancel: function(data, actions) {
+                    // Don't have to do anything on cancel
+                },
+
+                onError: function(err) {
+                    // This alert might be ugly on mobile. TBD
+                    window.alert('An error occurred while checking out. Please try again. If the problem persists, contact via1staff@uvsamidwest.org')
+                    // onError seems to be called for scenarios like invoice ID being used twice etc
+                    // Maybe we want to display a toast that says an error occurred while paying. Try again
+                }
+
+            }, '#id_alumni_reg_pp_button');
+        </script>
+    {% endif %}
+
+
     {# Scrollfire on home page -- for fade-in header/banner #}
     <script>
         $(document).ready(function() {

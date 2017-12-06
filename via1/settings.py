@@ -24,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = "n9cxfco)5l_u73_4=0z5^-rr878t)2%c&t6%f83nvz73d(al))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Application definition
 
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -81,17 +80,17 @@ WSGI_APPLICATION = 'via1.wsgi.application'
 
 DATABASES = {
     # Uncomment this one and comment out the other ones before pushing code to Heroku
-    'default': dj_database_url.config()
+    #'default': dj_database_url.config()
 
     # I recommend using this setting (Postgres) for dev because it matches the prod environment
-    #  'default': {
-    #      'ENGINE': 'django.db.backends.postgresql',
-    #      'NAME': 'via1',
-    #      'USER': 'postgres',
-    #      'PASSWORD': 'postgres',
-    #      'HOST': 'localhost',
-    #      'PORT': 5432
-    #  }
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'via1',
+         'USER': 'postgres',
+         'PASSWORD': 'postgres',
+         'HOST': 'localhost',
+         'PORT': 5432
+     }
 
     # This is the default setting. Leaving this here in-case you want to test with SQLite
     # 'default': {
@@ -166,6 +165,8 @@ EMAIL_HOST_PASSWORD = 'WackyTabacky123'
 EMAIL_USE_TLS = True
 
 
-# To use Paypal Sandbox set to True
-PAYPAL_TEST = True
-PAYPAL_BUY_BUTTON_IMAGE = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-small.png'
+PAYPAL_SANDBOX_CLIENT_ID = "Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV"
+PAYPAL_SANDBOX_CLIENT_SECRET = "EAUCTgUATGWkIRJGMJBp1iYJ9AnvJPcoOxr-hL8FOuvTOTFsLeeSWIc5DhZlVONwxOLJKRjw5hgtLYA3"
+
+PAYPAL_LIVE_CLIENT_ID = "AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I"
+PAYPAL_LIVE_CLIENT_SECRET = "EACFieh0hoaWUjw5NFEGKeg5LTeiOtMrxQUBl7oocj0kgLmGnuChT5LHCbb7SlVHK9bGRK78MwOWZyya"

@@ -13,6 +13,9 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'registration/styles.css' %}" />
 
+    {% block additional_head %}
+    {% endblock %}
+
     <style>
         body, html {
             height: 100%;
@@ -38,6 +41,24 @@
         <li><a href="/registration/logout" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Log Out"><i class="material-icons black-text">subdirectory_arrow_left</i></a></li>
     </ul>
     <a href="#" data-activates="slide-out" class="button-collapse z-depth-2 btn-floating btn-medium waves-effect waves-orange white left" style="margin: 15px; position: absolute; z-index: 998;"><i class="small material-icons black-text">menu</i></a>
+
+    {# Loading overlay. Can be used with Ajax calls. "display: none" to hide it initially #}
+    <div id="loading_overlay" style="display: none">
+        <div class="right-align"><i id="close_loading_overlay" class="material-icons white-text" style="cursor: pointer; margin-top: 15px; margin-right: 15px;">close</i></div>
+        <div class="valign-wrapper" style="width: 100%; height: 100%; position: fixed;">
+            <div class="row center-align orange-text">
+                <div class="sk-folding-cube" style="margin-top: 0;">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
+                <p class="flow-text" style="font-weight: 300;">Loading...</p>
+            </div>
+        </div>
+
+
+    </div>
 
 {% block content %}
 {% endblock %}
@@ -100,6 +121,28 @@
                 }
             })
         })
+    </script>
+
+    {# usage: add onclick="$(this).showLoader()" to button #}
+    {# Don't need to automatically close it if you add this to a button that'll result in a page change. But if you use #}
+    {# it for ajax calls and the page doesn't change, make sure you have this at the end of the ajax call: #}
+    {#    }).always(function() { #}
+    {#        $('#loading_overlay').hide(); #}
+    {#    }) #}
+    <script>
+        (function($){
+            $.fn.showLoader = function() {
+                $('#loading_overlay').show();
+            }
+        })(jQuery);
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $("#close_loading_overlay").click(function() {
+                $("#loading_overlay").hide();
+            });
+        });
     </script>
 
 </body>

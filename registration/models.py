@@ -29,7 +29,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_member_school = models.BooleanField(default=False)
     is_alumni = models.BooleanField(default=False)
 
-    school = models.CharField(_('school'), max_length=50, blank=True, null=True)
+    has_paid = models.BooleanField(default=False)
+    has_paid_hotel = models.BooleanField(default=False)
+    time_paid = models.DateTimeField(default=None, null=True)
+    reg_type = models.CharField(_('registration type'), max_length=50, blank=True, null=True)
+
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
@@ -51,39 +55,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-# class User(AbstractBaseUser, PermissionsMixin):
-#     email = models.EmailField(_('email address'), unique=True)
-#     first_name = models.CharField(_('first name'), max_length=30, blank=False)
-#     last_name = models.CharField(_('last name'), max_length=30, blank=False)
-#     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-#     is_active = models.BooleanField(_('active'), default=True)
-#     portrait_location = models.CharField(_('portrait location'), max_length=50, blank=True)
-#     is_staff = models.BooleanField(_('staff'), default=False)
-#
-#     objects = UserManager()
-#
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = []
-#
-#     class Meta:
-#         verbose_name = _('user')
-#         verbose_name_plural = _('users')
-#
-#     def get_full_name(self):
-#         '''
-#         Returns the first_name plus the last_name, with a space in between.
-#         '''
-#         full_name = '%s %s' % (self.first_name, self.last_name)
-#         return full_name.strip()
-#
-#     def get_short_name(self):
-#         '''
-#         Returns the short name for the user.
-#         '''
-#         return self.first_name
-#
-#     # def email_user(self, subject, message, from_email=None, **kwargs):
-#     #     '''
-#     #     Sends an email to this User.
-#     #     '''
-#     #     send_mail(subject, message, from_email, [self.email], **kwargs)
+# For variables that need to persist
+class ConferenceVars(models.Model):
+    early_attendee_count = models.IntegerField(default=0, null=True)
+    regular_attendee_count = models.IntegerField(default=0, null=True)
+    alumni_attendee_count = models.IntegerField(default=0, null=True)
+    staff_attendee_count = models.IntegerField(default=0, null=True)
+
