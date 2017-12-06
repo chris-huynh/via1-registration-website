@@ -32,13 +32,13 @@
             <img width="50" src="http://via1.org/registration/images/logos/uvsamw_logo_transparent.png">
         </div>
 
-        <li><a href="{% url 'home' %}" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Home"><i class="material-icons black-text">home</i></a></li>
-        <li><a href="{% url 'profile' %}" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Profile"><i class="material-icons black-text">person</i></a></li>
-        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Hotel"><i class="material-icons black-text">hotel</i></a></li>
-        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Workshops"><i class="material-icons black-text">speaker_notes</i></a></li>
-        <li><a href="#!" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families"><i class="material-icons black-text">group</i></a></li>
+        <li><a href="{% url 'home' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Home"><i class="material-icons black-text">home</i></a></li>
+        <li><a href="{% url 'profile' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Profile"><i class="material-icons black-text">person</i></a></li>
+        <li><a href="#!" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Hotel"><i class="material-icons black-text">hotel</i></a></li>
+        <li><a href="#!" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Workshops"><i class="material-icons black-text">speaker_notes</i></a></li>
+        <li><a href="#!" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families"><i class="material-icons black-text">group</i></a></li>
         <li><div class="divider"></div></li>
-        <li><a href="/registration/logout" class="waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Log Out"><i class="material-icons black-text">subdirectory_arrow_left</i></a></li>
+        <li><a href="/registration/logout" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Log Out"><i class="material-icons black-text">subdirectory_arrow_left</i></a></li>
     </ul>
     <a href="#" data-activates="slide-out" class="button-collapse z-depth-2 btn-floating btn-medium waves-effect waves-orange white left" style="margin: 15px; position: absolute; z-index: 998;"><i class="small material-icons black-text">menu</i></a>
 
@@ -78,8 +78,12 @@
         // Initialize collapsible (uncomment the line below if you use the dropdown variation)
         //$('.collapsible').collapsible();
 
+        // If the screen they're using is < large size (monitors), then remove tooltips. Anything smaller is a mobile device
         $(document).ready(function(){
-            $('.tooltipped').tooltip({delay: 50});
+            var windowWidth = $(window).width();
+            if (windowWidth < 992) {
+                $('.tooltipped').tooltip('remove');
+            }
         });
 
         // For Materalize modal windows
@@ -114,7 +118,7 @@
             var current = location.pathname;
             $('#slide-out li').each(function(){
                 var $li = $(this);
-                var $a = $(this).children(".tooltipped");   /* Very hacky. working off our knowledge that .tooltipped is there */
+                var $a = $(this).children(".menu_item");   /* Very hacky. working off our knowledge that .tooltipped is there */
                 // if the current path is like this link, make it active
                 if($a.attr('href').indexOf(current) !== -1){
                     $li.addClass('active');
