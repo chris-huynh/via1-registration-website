@@ -1,5 +1,4 @@
 {% extends 'registration/home_base.html' %}
-{% load fullurl %}
 
 {% block title %}VIA-1 - Home{% endblock %}
 
@@ -306,7 +305,7 @@
 
                 payment: function(data, actions) {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("GET", '{% fullurl 'is_conference_full' %}', false);
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
                     xhttp.send();
                     var json_data = JSON.parse(xhttp.responseText);
 
@@ -379,7 +378,7 @@
                 onAuthorize: function(data, actions) {
                     // Payment is complete but still needs to be submitted. First check if capacity was hit during the transaction, if so, cancel payment. Otherwise, continue
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("GET", '{% fullurl 'is_conference_full' %}', false);
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
                     xhttp.send();
                     var json_data = JSON.parse(xhttp.responseText);
 
@@ -388,7 +387,7 @@
                             // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
                             // The total attendee count will also be incremented
                             $.ajax({
-                                url: '{% fullurl 'update_paid_attendee' %}',
+                                url: '{% url 'update_paid_attendee' %}',
                                 data: {
                                     'paymentID': data.paymentID,
                                     'reg_type': reg_type
@@ -398,7 +397,7 @@
                             window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
                             // The payment is complete!
                             // Redirect user to home page
-                            window.location.replace('{% fullurl 'home' %}')
+                            window.location.replace('{% url 'home' %}')
                         });
                     } else {
                         // We don't have to do anything to "cancel" the order. So at this point, we can just show a dialog that says reg is full
@@ -449,7 +448,7 @@
 
                 payment: function(data, actions) {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("GET", '{% fullurl 'is_conference_full' %}', false);
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
                     xhttp.send();
                     var json_data = JSON.parse(xhttp.responseText);
 
@@ -522,7 +521,7 @@
                 onAuthorize: function(data, actions) {
                     // Payment is complete but still needs to be submitted. First check if capacity was hit during the transaction, if so, cancel payment. Otherwise, continue
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("GET", '{% fullurl 'is_conference_full' %}', false);
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
                     xhttp.send();
                     var json_data = JSON.parse(xhttp.responseText);
 
@@ -531,7 +530,7 @@
                             // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
                             // The total attendee count will also be incremented
                             $.ajax({
-                                url: '{% fullurl 'update_paid_attendee' %}',
+                                url: '{% url 'update_paid_attendee' %}',
                                 data: {
                                     'paymentID': data.paymentID,
                                     'reg_type': reg_type
@@ -541,7 +540,7 @@
                             window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
                             // The payment is complete!
                             // Redirect user to home page
-                            window.location.replace('{% fullurl 'home' %}')
+                            window.location.replace('{% url 'home' %}')
                         });
                     } else {
                         // We don't have to do anything to "cancel" the order. So at this point, we can just show a dialog that says reg is full
@@ -592,7 +591,7 @@
 
                 payment: function(data, actions) {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("GET", '{% fullurl 'is_conference_full' %}', false);
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
                     xhttp.send();
                     var json_data = JSON.parse(xhttp.responseText);
 
@@ -665,7 +664,7 @@
                 onAuthorize: function(data, actions) {
                     // Payment is complete but still needs to be submitted. First check if capacity was hit during the transaction, if so, cancel payment. Otherwise, continue
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("GET", '{% fullurl 'is_conference_full' %}', false);
+                    xhttp.open("GET", '{% url 'is_conference_full' %}', false);
                     xhttp.send();
                     var json_data = JSON.parse(xhttp.responseText);
 
@@ -674,7 +673,7 @@
                             // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
                             // The total attendee count will also be incremented
                             $.ajax({
-                                url: '{% fullurl 'update_paid_attendee' %}',
+                                url: '{% url 'update_paid_attendee' %}',
                                 data: {
                                     'paymentID': data.paymentID,
                                     'reg_type': reg_type
@@ -684,7 +683,7 @@
                             window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
                             // The payment is complete!
                             // Redirect user to home page
-                            window.location.replace('{% fullurl 'home' %}')
+                            window.location.replace('{% url 'home' %}')
                         });
                     } else {
                         // We don't have to do anything to "cancel" the order. So at this point, we can just show a dialog that says reg is full

@@ -24,6 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = "n9cxfco)5l_u73_4=0z5^-rr878t)2%c&t6%f83nvz73d(al))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# TODO Turn this to False once we officially deploy
 DEBUG = True
 
 # Application definition
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'fullurl',
 ]
 
 MIDDLEWARE = [
