@@ -164,26 +164,41 @@ class MemberSchoolPresident(object):
 
 
 # Need to update this list every year, unfortunately :(
+# Note that not every member school is in this list -- If they didn't supply UVSA-MW with contact info, then they aren't gonna be listed
 member_school_presidents = []
+# Illinois
 member_school_presidents.append(MemberSchoolPresident('Eric Tran', 'etran9@uic.edu', 'University of Illinois at Chicago'))
 member_school_presidents.append(MemberSchoolPresident('Tyler Tran', 'ttran82@illinois.edu', 'University of Illinois at Urbana-Champaign'))
+# Missing Northwestern University
+# Missing Loyola Unviersity Chicago
+# Indiana
+member_school_presidents.append(MemberSchoolPresident('Brandon Do', 'dob@purdue.edu', 'Purdue University'))
 member_school_presidents.append(MemberSchoolPresident('Thuy (Chloe) Nguyen', 'nguytb01@students.ipfw.edu', 'Indiana University Purdue University of Fort Wayne'))
 member_school_presidents.append(MemberSchoolPresident('Alyssa Ngo', 'ango@nd.edu', 'University of Notre Dame'))
 member_school_presidents.append(MemberSchoolPresident('Andrew Tran', 'andtran@umail.iu.edu', 'Indiana University'))
+# Iowa
 member_school_presidents.append(MemberSchoolPresident('Marilyn Lo', 'marilyn-lo@uiowa.edu', 'University of Iowa'))
 member_school_presidents.append(MemberSchoolPresident('John Nguyen', 'jsnguyen@iastate.edu', 'Iowa State University'))
+# Kansas
 member_school_presidents.append(MemberSchoolPresident('Minh Thi Nguyen', 'minhthinguyen@ku.edu', 'University of Kansas'))
+# Kentucky
 member_school_presidents.append(MemberSchoolPresident('Jimy Nguyen', 'j0nguy01@louisville.edu', 'University of Louisville'))
+# Michigan
 member_school_presidents.append(MemberSchoolPresident('Jessica Tran', 'tranjess@msu.edu', 'Michigan State University'))
 member_school_presidents.append(MemberSchoolPresident('Jessica Jiang', 'jyjiang@umich.edu', 'University of Michigan'))
+# Minnesota
 member_school_presidents.append(MemberSchoolPresident('Pele Le', 'lexxx500@umn.edu', 'University of Minnesota'))
 member_school_presidents.append(MemberSchoolPresident('Sunny Vuong', 'vuong1@stolaf.edu', 'St. Olaf College'))
+# Ohio
 member_school_presidents.append(MemberSchoolPresident('Huyen Truong', 'truong.92@osu.edu', 'The Ohio State University'))
 member_school_presidents.append(MemberSchoolPresident('Vy Mai', 'maivt@mail.uc.edu', 'University of Cincinnati'))
 member_school_presidents.append(MemberSchoolPresident('Tuan Pham', 'tuan.pham@rockets.utoledo.edu', 'University of Toledo'))
 member_school_presidents.append(MemberSchoolPresident('Kris Huynh', 'huynhtt@miamioh.edu', 'Miami University'))
 member_school_presidents.append(MemberSchoolPresident('Vy Lam', 'v.h.lam@vikes.csuohio.edu', 'Cleveland State University'))
 member_school_presidents.append(MemberSchoolPresident('Michael Nguyen', 'Mtn25@case.edu', 'Case Western Reserve University'))
+# Wisconsin
 member_school_presidents.append(MemberSchoolPresident('Karie Le', 'kle5@wisc.edu', 'University of Wisconsin - Madison'))
 member_school_presidents.append(MemberSchoolPresident('Henry Tran', 'tranht@uwm.edu', 'University of Wisconsin - Milwaukee'))
+# Missing UW - Lacrosse ?? are they even a member school anymore?
+# TEST
 member_school_presidents.append(MemberSchoolPresident('Testy Tester', 'tomng2012@gmail.com', 'University of Testing - ayy lmao'))

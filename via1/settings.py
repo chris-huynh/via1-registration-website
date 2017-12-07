@@ -82,17 +82,17 @@ WSGI_APPLICATION = 'via1.wsgi.application'
 
 DATABASES = {
     # Uncomment this one and comment out the other ones before pushing code to Heroku
-    'default': dj_database_url.config()
+    #'default': dj_database_url.config()
 
     # I recommend using this setting (Postgres) for dev because it matches the prod environment
-    #  'default': {
-    #      'ENGINE': 'django.db.backends.postgresql',
-    #      'NAME': 'via1',
-    #      'USER': 'postgres',
-    #      'PASSWORD': 'postgres',
-    #      'HOST': 'localhost',
-    #      'PORT': 5432
-    #  }
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'via1',
+         'USER': 'postgres',
+         'PASSWORD': 'postgres',
+         'HOST': 'localhost',
+         'PORT': 5432
+     }
 
     # This is the default setting. Leaving this here in-case you want to test with SQLite
     # 'default': {
@@ -162,8 +162,8 @@ AUTH_USER_MODEL = 'registration.User'
 # NEED TO CHANGE THIS TO THE OFFICIAL UVSA-EMAIL WHEN WE LAUNCH
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'via1tester@gmail.com'
-EMAIL_HOST_PASSWORD = 'WackyTabacky123'
+EMAIL_HOST_USER = 'noreply@uvsamidwest.org'
+EMAIL_HOST_PASSWORD = 'NoReplyxD'   # If this password doesn't work, ask an ED to reset it
 EMAIL_USE_TLS = True
 
 
