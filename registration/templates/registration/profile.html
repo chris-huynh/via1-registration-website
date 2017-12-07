@@ -1,25 +1,155 @@
 {% extends 'registration/home_base.html' %}
+{% load static %}
 
 {% block title %}VIA-1 - Profile{% endblock %}
+
+{% block additional_head %}
+    <style>
+        {# This is for the background #}
+        body, html {
+          background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col s12 l10 offset-l1 center-align">
-                <h2 style="font-weight: 300">Profile</h2>
-                <h5 style="font-weight: 100; margin-bottom: 30px">Fill it out, my guy</h5>
+            <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0px 0 0px; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; animation-delay: 0.2s;">
+                <div class="row center-align">
+                    <div class="col s10 offset-s1">
+                        <h4 style="font-weight: 300;">Your Profile</h4>
+                        <p style="font-weight: 300;">This information will let us know more about you.</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s3"><a href="#account">Account</a></li>
+                            <li class="tab col s3"><a href="#personal" class="active">Personal</a></li>
+                            <li class="tab col s3"><a href="#conference">Conference</a></li>
+                            <li class="tab col s3"><a href="#misc">Misc.</a></li>
+                        </ul>
+                    </div>
+                    <div id="account" class="col s12">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="row" style="margin-top: 15px; margin-bottom:0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">person_outline</i>
+                                    <label for="test">Test</label>
+                                    <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">lock_outline</i>
+                                    <label for="test2">Test</label>
+                                    <input type="text" id="test2" name="test2">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="center-align">
+                                    <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="personal" class="col s12">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="row" style="margin-top: 15px; margin-bottom:0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">person_outline</i>
+                                    <label for="test">Test</label>
+                                    <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">lock_outline</i>
+                                    <label for="test2">Test</label>
+                                    <input type="text" id="test2" name="test2">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="center-align">
+                                    <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="conference" class="col s12">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="row" style="margin-top: 15px; margin-bottom:0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">person_outline</i>
+                                    <label for="test">Test</label>
+                                    <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">lock_outline</i>
+                                    <label for="test2">Test</label>
+                                    <input type="text" id="test2" name="test2">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="center-align">
+                                    <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="misc" class="col s12">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="row" style="margin-top: 15px; margin-bottom:0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">person_outline</i>
+                                    <label for="test">Test</label>
+                                    <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="input-field col s10 offset-s1">
+                                    <i class="material-icons prefix">lock_outline</i>
+                                    <label for="test2">Test</label>
+                                    <input type="text" id="test2" name="test2">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="center-align">
+                                    <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="col s12 l10 offset-l1 center-align" style="display: flex; flex-wrap: wrap;">
-                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
-                    my
-                </div>
-                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
-                    GUY
-                </div>
-                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
-                    !
-                </div>
-            </div>
+
+{#            <div class="col s12 l10 offset-l1 center-align">#}
+{#                <h2 style="font-weight: 300">Profile</h2>#}
+{#                <h5 style="font-weight: 100; margin-bottom: 30px">Fill it out, my guy</h5>#}
+{#            </div>#}
+{#            <div class="col s12 l10 offset-l1 center-align" style="display: flex; flex-wrap: wrap;">#}
+{#                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">#}
+{#                    my#}
+{#                </div>#}
+{#                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">#}
+{#                    GUY#}
+{#                </div>#}
+{#                <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">#}
+{#                    !#}
+{#                </div>#}
+{#            </div>#}
         </div>
     </div>
 
