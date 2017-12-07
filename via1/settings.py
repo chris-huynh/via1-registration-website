@@ -70,6 +70,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
             ],
             'debug': DEBUG,
+            'builtins': [
+                'django.contrib.staticfiles.templatetags.staticfiles',      # Makes it so we don't have to {% load static %} on every template
+            ],
         },
     },
 ]
