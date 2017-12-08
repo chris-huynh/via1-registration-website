@@ -48,7 +48,7 @@ def index(request):
 def home(request):
     if request.user.is_authenticated:
         todays_date = datetime.datetime.now()
-        is_early_reg_open = True #if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
+        is_early_reg_open = True if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
         is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 

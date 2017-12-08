@@ -11,6 +11,7 @@ from .managers import UserManager
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, null=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=False, null=True)
+    middle_name = models.CharField(_('middle name'), max_length=30, blank=True, null=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=False, null=True)
     is_staff = models.BooleanField(
         _('staff status'),
