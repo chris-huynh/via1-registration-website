@@ -3,6 +3,8 @@
 {% block title %}VIA-1 - Profile{% endblock %}
 
 {% block additional_head %}
+    <script src="https://use.fontawesome.com/724dc2aee1.js"></script>
+
     <style>
         {# This is for the background #}
         body, html {
@@ -13,7 +15,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container" style="margin-bottom:50px;">
         <div class="row">
             <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0px 0 0px; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; animation-delay: 0.2s;">
                 <div class="row center-align">
@@ -24,8 +26,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="col s12">
-                        <ul class="tabs">
+                    <div class="col s12" style="margin-bottom: 35px;">
+                        <ul class="tabs tabs-fixed-width" style="overflow: hidden;">
                             <li class="tab col s3"><a href="#account">Account</a></li>
                             <li class="tab col s3"><a href="#personal" class="active">Personal</a></li>
                             <li class="tab col s3"><a href="#conference">Conference</a></li>
@@ -35,7 +37,7 @@
 
                     <form method="post">
                         {% csrf_token %}
-                        <div id="account" class="col s12" style="margin-top: 35px; margin-bottom:0;">
+                        <div id="account" class="col s12">
                             <div class="row">
                                 <div class="col s10 offset-s1">
                                     <div class="input-field col s12 l4">
@@ -60,7 +62,7 @@
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number</label>
+                                        <label for="phone_number">Phone Number (no dashes)</label>
                                         <input type="text" id="phone_number" name="phone_number" value="">
                                     </div>
                                     <div class="input-field col s12 l4">
@@ -70,92 +72,141 @@
                                     </div>
                                 </div>
                             </div>
-                                <div class="row">
-                                    <div class="center-align">
-                                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
-                                    </div>
-                                </div>
                         </div>
-                        <div id="personal" class="col s12" style="margin-top: 35px; margin-bottom:0;">
+                        <div id="personal" class="col s12">
                             <div class="row">
                                 <div class="col s10 offset-s1">
-                                    <div class="col s12 l4 center-align" style="cursor: pointer;">
-                                        <i class="material-icons large">portrait</i>
-                                        <p class="center-align">Add Photo</p>
-                                    </div>
-                                    <div class="input-field col s12 l8">
+                                    <div class="row">
+                                        <div class="col s12 l4 center-align hover_orange" style="cursor: pointer;">
+                                            <i class="fa fa-user-circle-o fa-5x"></i>
+                                            <p class="center-align">Add Photo</p>
+                                        </div>
                                         <div class="input-field col s12 l8">
-                                            <i class="material-icons prefix">school</i>
-                                            <label for="school" class="active">School</label>
-                                            <select id="school" name="school">
-                                                <option value="" disabled selected>Choose your option</option>
-                                                {% for school in member_school_names %}
-                                                    <option value="{{ school }}">{{ school }}</option>
-                                                {% endfor %}
-                                            </select>
+                                            <div class="row">
+                                                <div class="input-field col s12 l8">
+                                                    <i class="material-icons prefix">school</i>
+                                                    <label for="school" class="active">School</label>
+                                                    <select id="school" name="school">
+                                                        <option value="" disabled selected>Choose your option</option>
+                                                        {% for school in member_school_names %}
+                                                            <option value="{{ school }}">{{ school }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="input-field col s12 l4">
+                                                    <label for="grad_year" class="active">Graduation Year</label>
+                                                    <input list="grad_year" name="grad_year">
+                                                    <datalist id="grad_year">
+                                                        {% for year in graduation_years %}
+                                                            <option value="{{ year }}">
+                                                        {% endfor %}
+                                                    </datalist>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="input-field col s12 l6">
+                                                    <label for="major">Major</label>
+                                                    <input type="text" id="major" name="major" value="">
+                                                </div>
+                                                <div class="input-field col s12 l6">
+                                                    <label for="pronouns" class="active">Gender Pronouns</label>
+                                                    <select id="pronouns" name="pronouns">
+                                                        <option value="he_him_his">He, Him, His</option>
+                                                        <option value="she_her_hers">She, Her, Hers</option>
+                                                        <option value="they_them_theirs">They, Them, Theirs</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="input-field col s12 l4">
+                                            <i class="fa fa-facebook prefix" aria-hidden="true"></i>
+                                            <label for="facebook">Facebook</label>
+                                            <input type="text" id="facebook" name="facebook" value="">
                                         </div>
                                         <div class="input-field col s12 l4">
-                                            <label for="grad_year">Graduation Year</label>
-                                            <input type="text" id="grad_year" name="grad_year" value="">
+                                            <i class="fa fa-instagram prefix" aria-hidden="true"></i>
+                                            <label for="instagram">Instagram</label>
+                                            <input type="text" id="instagram" name="instagram" value="">
                                         </div>
-                                        <div class="input-field col s12 l6">
-                                            <label for="major">Major</label>
-                                            <input type="text" id="major" name="major" value="">
+                                        <div class="input-field col s12 l4">
+                                            <i class="fa fa-twitter prefix" aria-hidden="true"></i>
+                                            <label for="twitter">Twitter</label>
+                                            <input type="text" id="twitter" name="twitter" value="">
                                         </div>
-                                        <div class="input-field col s12 l6">
-                                                <label for="pronouns">Gender Pronouns</label>
-                                                <input type="text" id="pronouns" name="pronouns" value="">
+                                        <div class="input-field col s12 l4">
+                                            <i class="fa fa-snapchat-ghost prefix" aria-hidden="true"></i>
+                                            <label for="snapchat">Snapchat</label>
+                                            <input type="text" id="snapchat" name="snapchat" value="">
                                         </div>
-                                    </div>
-                                    <div class="input-field col s12 l4">
-                                        <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number</label>
-                                        <input type="text" id="phone_number" name="phone_number" value="">
-                                    </div>
-                                    <div class="input-field col s12 l4">
-                                        <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number</label>
-                                        <input type="text" id="phone_number" name="phone_number" value="">
-                                    </div>
-                                    <div class="input-field col s12 l4">
-                                        <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number</label>
-                                        <input type="text" id="phone_number" name="phone_number" value="">
-                                    </div>
-                                    <div class="input-field col s12 l4">
-                                        <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number</label>
-                                        <input type="text" id="phone_number" name="phone_number" value="">
-                                    </div>
-                                    <div class="input-field col s12 l4">
-                                        <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number</label>
-                                        <input type="text" id="phone_number" name="phone_number" value="">
+                                        <div class="input-field col s12 l4">
+                                            <i class="fa fa-linkedin prefix" aria-hidden="true"></i>
+                                            <label for="linkedin">LinkedIn</label>
+                                            <input type="text" id="linkedin" name="linkedin" value="">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div id="conference" class="col s12">
-                                <div class="row" style="margin-top: 15px; margin-bottom:0;">
-                                    <div class="input-field col s10 offset-s1">
-                                        <i class="material-icons prefix">person_outline</i>
-                                        <label for="test">Test</label>
-                                        <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">
+                            <div class="row">
+                                <div class="col s10 offset-s1">
+                                    <div class="row">
+                                        <div class="input-field col s12 l6">
+                                            <i class="fa fa-cutlery prefix" aria-hidden="true"></i>
+                                            <label for="banquet_meal">Banquet Meal</label>
+                                            <select id="banquet_meal" name="banquet_meal">
+                                                {% for meal in banquet_meals %}
+                                                    <option value="{{ meal }}"></option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="input-field col s12 l6">
+                                            <i class="fa fa-frown-o prefix" aria-hidden="true"></i>
+                                            <label for="food_allergies">Food Allergies</label>
+                                            <input type="text" id="food_allergies" name="food_allergies">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 l4">
+                                            <i class="fa fa-address-book prefix" aria-hidden="true"></i>
+                                            <label for="emergency_contact">Emergency Contact</label>
+                                            <input type="text" id="emergency_contact" name="emergency_contact">
+                                        </div>
+                                        <div class="input-field col s12 l4">
+                                            <i class="material-icons prefix">phone</i>
+                                            <label for="emergency_contact_phone">Phone Number (no dashes)</label>
+                                            <input type="tel" id="emergency_contact_phone" name="emergency_contact_phone" pattern="^\d{10}$">
+                                        </div>
+                                        <div class="input-field col s12 l4">
+                                            <i class="fa fa-user prefix" aria-hidden="true"></i>
+                                            <label for="emergency_contact_relationship">Relationship</label>
+                                            <input type="text" id="emergency_contact_relationship" name="emergency_contact_relationship">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 l6">
+                                            <label for="shirt_size" class="active">T-Shirt Size</label>
+                                            <select id="shirt_size" name="shirt_size">
+                                                <option value="small">Small</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="large">Large</option>
+                                                <option value="extra_large">Extra Large</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-field col s12 l6">
+                                            <label for="coed_rooming" class="active">Co-Ed Roommates?</label>
+                                            <select id="coed_rooming" name="coed_rooming">
+                                                <option value="1">No Preference</option>
+                                                <option value="0">No</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row" style="margin-bottom: 0;">
-                                    <div class="input-field col s10 offset-s1">
-                                        <i class="material-icons prefix">lock_outline</i>
-                                        <label for="test2">Test</label>
-                                        <input type="text" id="test2" name="test2">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="center-align">
-                                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
-                                    </div>
-                                </div>
+                            </div>
                         </div>
                         <div id="misc" class="col s12">
                                 <div class="row" style="margin-top: 15px; margin-bottom:0;">
@@ -172,13 +223,13 @@
                                         <input type="text" id="test2" name="test2">
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="center-align">
-                                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Test</button>
-                                    </div>
-                                </div>
                         </div>
+                </div>
+                <div class="divider" style="margin-bottom: 15px;"></div>
+                <div class="row">
+                    <div class="col s12 right-align" style="padding-right: 30px;">
+                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Save</button>
+                    </div>
                     </form>
                 </div>
             </div>

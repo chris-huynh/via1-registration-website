@@ -1,3 +1,8 @@
+html {
+    /* prevents the scrollbar from repositioning the page contents */
+    overflow-y: scroll;
+}
+
 /* Materialize overrides START */
 
     /* label focus color */

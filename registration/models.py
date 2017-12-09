@@ -63,3 +63,37 @@ class ConferenceVars(models.Model):
     alumni_attendee_count = models.IntegerField(default=0, null=True)
     staff_attendee_count = models.IntegerField(default=0, null=True)
 
+
+#class Families(models.Model):
+
+
+#class Workshops(models.Model):
+
+
+# Additional user fields
+# Don't forget 3 workshop columns(foreign), family_id (foreign?)
+class UserInfo(models.Model):
+    user_id = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    phone_number = models.CharField(_('phone number'), max_length=10, blank=True, null=True)
+    birth_date = models.DateField(_('birth date'), default=None, null=True)
+    school = models.CharField(_('school'), max_length=65, blank=True, null=True)
+    grad_year = models.IntegerField(_('graduation year'), default=None, null=True)
+    major = models.CharField(_('major'), max_length=65, blank=True, null=True)
+    pronouns = models.CharField(_('gender pronouns'), max_length=25, blank=True, null=True)
+    facebook = models.CharField(_('facebook handle'), max_length=25, blank=True, null=True)
+    instagram = models.CharField(_('instagram handle'), max_length=25, blank=True, null=True)
+    twitter = models.CharField(_('twitter handle'), max_length=25, blank=True, null=True)
+    snapchat = models.CharField(_('snapchat handle'), max_length=25, blank=True, null=True)
+    linkedin = models.CharField(_('linkedin handle'), max_length=25, blank=True, null=True)
+    banquet_meal = models.CharField(_('banquet meal'), max_length=50, blank=True, null=True)
+    food_allergies = models.CharField(_('food allergies'), max_length=65, blank=True, null=True)
+    emergency_contact = models.CharField(_('emergency contact'), max_length=50, blank=True, null=True)
+    emergency_contact_number = models.CharField(_('emergency contact phone number'), max_length=10, blank=True, null=True)
+    emergency_contact_relation = models.CharField(_('emergency contact relation'), max_length=20, blank=True, null=True)
+    shirt_size = models.CharField(_('shirt size'), max_length=15, blank=True, null=True)
+    coed_roommates = models.BooleanField(default=False)
+    #photo_name = models.CharField(_('photo name'), max_length=25, blank=True, null=True)

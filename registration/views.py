@@ -32,6 +32,7 @@ from registration import regutils
 
 # Import models
 from registration.models import ConferenceVars
+from registration.models import UserInfo
 
 
 # Need to use get_user_model() because we have a custom auth user model
@@ -120,6 +121,13 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.email_confirmed = True
         user.save()
+
+        # Once the user activates, we also want to create a user_info table for them
+        # NOTE: super users created with createsuperuser will NOT get a UserInfo table --
+        # so do not try to use the profile page with an superuser account
+        user_info = UserInfo(user_id=user)
+        user_info.save()
+
         login(request, user)
         return redirect('/')
     else:
