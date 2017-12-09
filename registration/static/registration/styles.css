@@ -5,6 +5,17 @@ html {
     overflow-y: scroll;
 }
 
+#background_wrap {
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;
+    background-attachment: fixed;
+}
+
 /* Materialize overrides START */
 
     /* label focus color */
