@@ -35,15 +35,14 @@
             left: 0;
             height: 100%;
             width: 100%;
-            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) no-repeat;
-            backgorund-size: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;
             background-attachment: fixed;
         }
     </style>
 </head>
 
 <body>
-<div id="background_wrap"></div>
+<div id="background_wrap" class="hide-on-med-and-down"></div>
 <div style="position: absolute; z-index: 999; margin:20px">
     {% block back_button %}
     {% endblock %}

@@ -22,15 +22,14 @@
             left: 0;
             height: 100%;
             width: 100%;
-            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) no-repeat;
-            background-size: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;
             background-attachment: fixed;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <div id="background_wrap"></div>
+    <div id="background_wrap" class="hide-on-med-and-down"></div>
     <div class="container" style="margin-bottom:50px;">
         <div class="row">
             <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0px 0 0px; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; animation-delay: 0.2s;">
