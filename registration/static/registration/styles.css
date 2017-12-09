@@ -1,6 +1,7 @@
 html {
-    /* prevents the scrollbar from repositioning the page contents */
-    overflow-y: scroll;
+    /* These settings prevent the scrollbar from moving the page contents */
+    overflow-x: hidden !important;
+    margin-right: calc(-1 * (100vw - 100%)) !important;
 }
 
 /* Materialize overrides START */
