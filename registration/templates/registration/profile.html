@@ -267,20 +267,21 @@
         var url = '{% url 'submit_profile' %}'; // the script where you handle the form input.
 
         $.ajax({
-               type: "POST",
-               url: url,
-               data: $("#profile_form").serialize(), // serializes the form's elements.
-               success: function(data)
-               {
-                   $("#success_text").show();
-                   $("#success_text").fadeOut(8000, "linear", function() {
-                       // Animation complete.
-                   });
-               }
-             })
-            .always(function() {
-                $('#loading_overlay').hide();
-            });
+            type: "POST",
+            url: url,
+            data: $("#profile_form").serialize(), // serializes the form's elements.
+            dataType: 'json',
+            success: function(data)
+            {
+                $("#success_text").show();
+                $("#success_text").fadeOut(8000, "linear", function() {
+                    // Animation complete.
+                });
+            }
+        })
+        .always(function() {
+            $('#loading_overlay').hide();
+        });
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });

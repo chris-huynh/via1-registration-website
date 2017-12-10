@@ -84,6 +84,7 @@ def profile(request):
 @login_required()
 def submit_profile(request):
     if request.is_ajax():
+
         form = request.POST
 
         user = request.user
