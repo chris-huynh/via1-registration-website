@@ -86,17 +86,17 @@ WSGI_APPLICATION = 'via1.wsgi.application'
 
 DATABASES = {
     # Uncomment this one and comment out the other ones before pushing code to Heroku
-    #'default': dj_database_url.config()
+    'default': dj_database_url.config()
 
     # I recommend using this setting (Postgres) for dev because it matches the prod environment
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'via1',
-         'USER': 'postgres',
-         'PASSWORD': 'postgres',
-         'HOST': 'localhost',
-         'PORT': 5432
-     }
+    #  'default': {
+    #      'ENGINE': 'django.db.backends.postgresql',
+    #      'NAME': 'via1',
+    #      'USER': 'postgres',
+    #      'PASSWORD': 'postgres',
+    #      'HOST': 'localhost',
+    #      'PORT': 5432
+    #  }
 
     # This is the default setting. Leaving this here in-case you want to test with SQLite
     # 'default': {
