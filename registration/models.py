@@ -79,9 +79,9 @@ class UserInfo(models.Model):
         primary_key=True,
     )
     phone_number = models.CharField(_('phone number'), max_length=10, blank=True, null=True)
-    birth_date = models.DateField(_('birth date'), default=None, null=True)
+    birth_date = models.DateField(_('birth date'), default=None, blank=True, null=True)
     school = models.CharField(_('school'), max_length=65, blank=True, null=True)
-    grad_year = models.IntegerField(_('graduation year'), default=None, null=True)
+    grad_year = models.IntegerField(_('graduation year'), default=None, blank=True, null=True)
     major = models.CharField(_('major'), max_length=65, blank=True, null=True)
     pronouns = models.CharField(_('gender pronouns'), max_length=25, blank=True, null=True)
     facebook = models.CharField(_('facebook handle'), max_length=25, blank=True, null=True)

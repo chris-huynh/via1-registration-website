@@ -7,14 +7,6 @@
 
     <style>
         {# This is for the background #}
-{#        body, html {#}
-{#            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;#}
-{#            -webkit-background-size: cover;#}
-{#            -moz-background-size: cover;#}
-{#            -o-background-size: cover;#}
-{#            background-size: cover;#}
-{#            background-attachment: scroll;#}
-{#        }#}
         #default_background {
             z-index: -1;
             position: fixed;
@@ -61,7 +53,8 @@
                         </ul>
                     </div>
 
-                    <form method="post">
+                    {# Submission is handled by Ajax below #}
+                    <form id="profile_form" method="post">
                         {% csrf_token %}
                         <div id="account" class="col s12">
                             <div class="row">
@@ -89,12 +82,12 @@
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix">phone</i>
                                         <label for="phone_number">Phone Number (no dashes)</label>
-                                        <input type="text" id="phone_number" name="phone_number" value="">
+                                        <input type="text" id="phone_number" name="phone_number" value="{{ user_info.phone_number|default_if_none:"" }}">
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix">date_range</i>
                                         <label for="birth_date" class="active">Birth Date</label>
-                                        <input type="date" id="birth_date" name="birth_date" value="">
+                                        <input type="date" id="birth_date" name="birth_date" value="{{ user_info.birth_date|date:"Y-m-d"|default_if_none:'' }}">
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +106,8 @@
                                                     <i class="material-icons prefix">school</i>
                                                     <label for="school" class="active">School</label>
                                                     <select id="school" name="school">
-                                                        <option value="" disabled selected>Choose your option</option>
+                                                        <option value="" disabled selected>Choose...</option>
+                                                        <option value="other">Other</option>
                                                         {% for school in member_school_names %}
                                                             <option value="{{ school }}">{{ school }}</option>
                                                         {% endfor %}
@@ -121,19 +115,25 @@
                                                 </div>
                                                 <div class="input-field col s12 l4">
                                                     <label for="grad_year" class="active">Graduation Year</label>
-                                                    <input list="grad_year" name="grad_year">
+                                                    <input list="grad_year" name="grad_year" value="{{ user_info.grad_year|default_if_none:'' }}">
                                                     <datalist id="grad_year">
                                                         {% for year in graduation_years %}
                                                             <option value="{{ year }}">
                                                         {% endfor %}
                                                     </datalist>
                                                 </div>
+                                                {# For School drop down -- will display if user select "Other" (see jquery below) #}
+                                                <div id="other_field" class="input-field col s12 l8" style="display:none;">
+                                                    <i class="material-icons prefix"></i>
+                                                    <label for="other_school">Other School (full name)</label>
+                                                    <input type="text" id="other_school" name="other_school" value="{% if other_selected == 'true' %}{{ user_info.school}}{% endif %}">
+                                                </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="input-field col s12 l6">
                                                     <label for="major">Major</label>
-                                                    <input type="text" id="major" name="major" value="">
+                                                    <input type="text" id="major" name="major" value="{{ user_info.major|default_if_none:'' }}">
                                                 </div>
                                                 <div class="input-field col s12 l6">
                                                     <label for="pronouns" class="active">Gender Pronouns</label>
@@ -151,27 +151,27 @@
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-facebook prefix" aria-hidden="true"></i>
                                             <label for="facebook">Facebook</label>
-                                            <input type="text" id="facebook" name="facebook" value="">
+                                            <input type="text" id="facebook" name="facebook" value="{{ user_info.facebook|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-instagram prefix" aria-hidden="true"></i>
                                             <label for="instagram">Instagram</label>
-                                            <input type="text" id="instagram" name="instagram" value="">
+                                            <input type="text" id="instagram" name="instagram" value="{{ user_info.instagram|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-twitter prefix" aria-hidden="true"></i>
                                             <label for="twitter">Twitter</label>
-                                            <input type="text" id="twitter" name="twitter" value="">
+                                            <input type="text" id="twitter" name="twitter" value="{{ user_info.twitter|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-snapchat-ghost prefix" aria-hidden="true"></i>
                                             <label for="snapchat">Snapchat</label>
-                                            <input type="text" id="snapchat" name="snapchat" value="">
+                                            <input type="text" id="snapchat" name="snapchat" value="{{ user_info.snapchat|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-linkedin prefix" aria-hidden="true"></i>
                                             <label for="linkedin">LinkedIn</label>
-                                            <input type="text" id="linkedin" name="linkedin" value="">
+                                            <input type="text" id="linkedin" name="linkedin" value="{{ user_info.linkedin|default_if_none:'' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
                                     <div class="row">
                                         <div class="input-field col s12 l6">
                                             <i class="fa fa-cutlery prefix" aria-hidden="true"></i>
-                                            <label for="banquet_meal">Banquet Meal</label>
+                                            <label for="banquet_meal">Banquet Meal (TBD)</label>
                                             <select id="banquet_meal" name="banquet_meal">
                                                 {% for meal in banquet_meals %}
                                                     <option value="{{ meal }}"></option>
@@ -193,24 +193,24 @@
                                         <div class="input-field col s12 l6">
                                             <i class="fa fa-frown-o prefix" aria-hidden="true"></i>
                                             <label for="food_allergies">Food Allergies</label>
-                                            <input type="text" id="food_allergies" name="food_allergies">
+                                            <input type="text" id="food_allergies" name="food_allergies" value="{{ user_info.food_allergies|default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-address-book prefix" aria-hidden="true"></i>
                                             <label for="emergency_contact">Emergency Contact</label>
-                                            <input type="text" id="emergency_contact" name="emergency_contact">
+                                            <input type="text" id="emergency_contact" name="emergency_contact" value="{{ user_info.emergency_contact|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="material-icons prefix">phone</i>
-                                            <label for="emergency_contact_phone">Phone Number (no dashes)</label>
-                                            <input type="tel" id="emergency_contact_phone" name="emergency_contact_phone" pattern="^\d{10}$">
+                                            <label for="emergency_contact_number">Phone Number (no dashes)</label>
+                                            <input type="tel" id="emergency_contact_number" name="emergency_contact_number" pattern="^\d{10}$" value="{{ user_info.emergency_contact_number|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-user prefix" aria-hidden="true"></i>
-                                            <label for="emergency_contact_relationship">Relationship</label>
-                                            <input type="text" id="emergency_contact_relationship" name="emergency_contact_relationship">
+                                            <label for="emergency_contact_relation">Relationship</label>
+                                            <input type="text" id="emergency_contact_relation" name="emergency_contact_relation" value="{{ user_info.emergency_contact_relation|default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -223,43 +223,101 @@
                                                 <option value="extra_large">Extra Large</option>
                                             </select>
                                         </div>
-                                        <div class="input-field col s12 l6">
-                                            <label for="coed_rooming" class="active">Co-Ed Roommates?</label>
-                                            <select id="coed_rooming" name="coed_rooming">
-                                                <option value="1">No Preference</option>
-                                                <option value="0">No</option>
-                                            </select>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div id="misc" class="col s12">
-                                <div class="row" style="margin-top: 15px; margin-bottom:0;">
-                                    <div class="input-field col s10 offset-s1">
-                                        <i class="material-icons prefix">person_outline</i>
-                                        <label for="test">Test</label>
-                                        <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">
-                                    </div>
-                                </div>
-                                <div class="row" style="margin-bottom: 0;">
-                                    <div class="input-field col s10 offset-s1">
-                                        <i class="material-icons prefix">lock_outline</i>
-                                        <label for="test2">Test</label>
-                                        <input type="text" id="test2" name="test2">
-                                    </div>
-                                </div>
-                        </div>
+{#                        <div id="misc" class="col s12">#}
+{#                                <div class="row" style="margin-top: 15px; margin-bottom:0;">#}
+{#                                    <div class="input-field col s10 offset-s1">#}
+{#                                        <i class="material-icons prefix">person_outline</i>#}
+{#                                        <label for="test">Test</label>#}
+{#                                        <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div class="row" style="margin-bottom: 0;">#}
+{#                                    <div class="input-field col s10 offset-s1">#}
+{#                                        <i class="material-icons prefix">lock_outline</i>#}
+{#                                        <label for="test2">Test</label>#}
+{#                                        <input type="text" id="test2" name="test2">#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                        </div>#}
                 </div>
                 <div class="divider" style="margin-bottom: 15px;"></div>
                 <div class="row">
                     <div class="col s12 right-align" style="padding-right: 30px;">
-                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Save</button>
+                        <div class="row" style="margin:0;">
+                            <p id="success_text" class="green-text" style="display: none;">Success!</p>
+                            <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right" onclick="$(this).showLoader()"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Save</button>
+                        </div>
                     </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+{% endblock %}
+
+{% block additional_scripts %}
+    <script>
+    $("#profile_form").submit(function(e) {
+
+        var url = '{% url 'submit_profile' %}'; // the script where you handle the form input.
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $("#profile_form").serialize(), // serializes the form's elements.
+               success: function(data)
+               {
+                   $("#success_text").show();
+                   $("#success_text").fadeOut(8000, "linear", function() {
+                       // Animation complete.
+                   });
+               }
+             })
+            .always(function() {
+                $('#loading_overlay').hide();
+            });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    </script>
+
+    <script>
+    $('#school').on('change',function(){
+        if( $(this).val()==="other"){
+            $("#other_field").show()
+        }
+        else{
+            $("#other_field").hide()
+        }
+    });
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        var schoolValue  = '{{ user_info.school }}';
+
+        if (!{{ other_selected }}) {
+            $("#school").val(schoolValue)
+                .find("option[value='" + schoolValue +"']").attr('selected', true);
+        } else if ({{ other_selected }} && schoolValue !== '' && schoolValue != 'None') {
+            $("#school").val(schoolValue)
+                .find("option[value=other]").attr('selected', true);
+            $("#other_field").show();
+        }
+
+        var pronounValue = '{{ user_info.pronouns }}';
+        $("#pronouns").val(pronounValue)
+            .find("option[value='" + pronounValue +"']").attr('selected', true);
+
+        var shirtValue = '{{ user_info.shirt_size }}';
+        $("#shirt_size").val(shirtValue)
+            .find("option[value='" + shirtValue +"']").attr('selected', true);
+    });
+    </script>
 
 {% endblock %}

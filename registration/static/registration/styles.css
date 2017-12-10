@@ -1,9 +1,7 @@
-html {
-    /*!* These settings prevent the scrollbar from moving the page contents *!*/
-    /*overflow-x: hidden !important;*/
-    /*margin-right: calc(-1 * (100vw - 100%)) !important;*/
-    overflow-y: scroll;
-}
+    html {
+        /* prevents the scroll bar from moving the page contents */
+        overflow-y: scroll;
+    }
 
 /* Materialize overrides START */
 
@@ -230,4 +228,10 @@ html {
                 transform: perspective(140px) rotateY(180deg);
         opacity: 0;
       }
+    }
+
+    #success_text {
+        font-weight: 500;
+        display: inline-block;
+        margin-right: 10px;
     }

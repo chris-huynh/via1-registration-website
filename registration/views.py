@@ -63,11 +63,97 @@ def home(request):
         return redirect('/registration/login')
 
 
+@login_required()
 def profile(request):
     if request.user.is_authenticated:
-        return render(request, 'registration/profile.html')
+        user_info = UserInfo.objects.get(pk=request.user.id)
+
+        member_school_names = regutils.member_school_names
+        graduation_years = regutils.graduation_years
+
+        # If the current value in user_info.school is not null/blank and not in the list of member schools, the Other choice was chosen
+        other_selected = 'false' if (user_info.school in member_school_names) else 'true'
+
+        context = {'user_info': user_info, 'member_school_names': member_school_names, 'other_selected': other_selected,
+                   'graduation_years': graduation_years}
+        return render(request, 'registration/profile.html', context)
     else:
         return redirect('/registration/login')
+
+
+@login_required()
+def submit_profile(request):
+    if request.method == 'POST':
+        form = request.POST
+
+        user = request.user
+        user_info = UserInfo.objects.get(pk=request.user.id)
+
+        if user.middle_name != form['middle_name']:
+            user.middle_name = form['middle_name']
+            user.save()
+
+        if user_info.phone_number != form['phone_number']:
+            user_info.phone_number = form['phone_number']
+
+        if user_info.birth_date != form['birth_date']:
+            if form['birth_date'] == '':
+                user_info.birth_date = None
+            else:
+                user_info.birth_date = form['birth_date']
+
+        if form.get('school', False) and form['school'] == 'other':
+            if user_info.school != form['other_school']:
+                user_info.school = form['other_school']
+        else:
+            if form.get('school', False) and user_info.school != form['school']:
+                user_info.school = form['school']
+
+        if user_info.grad_year != form['grad_year']:
+            if form['grad_year'] == '':
+                user_info.grad_year = None
+            else:
+                user_info.grad_year = form['grad_year']
+
+        if user_info.major != form['major']:
+            user_info.major = form['major']
+
+        if user_info.pronouns != form['pronouns']:
+            user_info.pronouns = form['pronouns']
+
+        if user_info.facebook != form['facebook']:
+            user_info.facebook = form['facebook']
+
+        if user_info.instagram != form['instagram']:
+            user_info.instagram = form['instagram']
+
+        if user_info.twitter != form['twitter']:
+            user_info.twitter = form['twitter']
+
+        if user_info.snapchat != form['snapchat']:
+            user_info.snapchat = form['snapchat']
+
+        if user_info.linkedin != form['linkedin']:
+            user_info.linkedin = form['linkedin']
+
+        if user_info.food_allergies != form['food_allergies']:
+            user_info.food_allergies = form['food_allergies']
+
+        if user_info.emergency_contact != form['emergency_contact']:
+            user_info.emergency_contact = form['emergency_contact']
+
+        if user_info.emergency_contact_number != form['emergency_contact_number']:
+            user_info.emergency_contact_number = form['emergency_contact_number']
+
+        if user_info.emergency_contact_relation != form['emergency_contact_relation']:
+            user_info.emergency_contact_relation = form['emergency_contact_relation']
+
+        if user_info.shirt_size != form['shirt_size']:
+            user_info.shirt_size = form['shirt_size']
+
+        user_info.save()
+
+        return JsonResponse({})
 
 
 def register(request):
