@@ -32,15 +32,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     has_paid = models.BooleanField(default=False)
     has_paid_hotel = models.BooleanField(default=False)
-    time_paid = models.DateTimeField(default=None, null=True)
+    time_paid = models.DateTimeField(default=None, blank=True, null=True)
     reg_type = models.CharField(_('registration type'), max_length=50, blank=True, null=True)
-
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return self.get_full_name() + ' (' + self.email + ')'
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
@@ -50,9 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def email_user(self, subject, message, from_email=None, **kwargs):
-        '''
-        Sends an email to this User.
-        '''
+        # sends an email to this user
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
@@ -64,10 +61,31 @@ class ConferenceVars(models.Model):
     staff_attendee_count = models.IntegerField(default=0, null=True)
 
 
-#class Families(models.Model):
+class Families(models.Model):
+    name = models.CharField(_('family name'), max_length=30, blank=True, null=True)
+    leader = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name + '(FL: ' + self.leader + ')'
 
 
-#class Workshops(models.Model):
+class Workshops(models.Model):
+    name = models.CharField(_('workshop name'), max_length=65, blank=True, null=True)
+    description = models.TextField(_('workshop description'), blank=True, null=True)
+    capacity = models.IntegerField(_('workshop capacity'), blank=True, null=True)
+    attendee_count = models.IntegerField(_('attendee count'), default=0, blank=True, null=True)
+    SESSION_ONE = 1
+    SESSION_TWO = 2
+    SESSION_THREE = 3
+    SESSION_CHOICES = (
+        (SESSION_ONE, '1'),
+        (SESSION_TWO, '2'),
+        (SESSION_THREE, '3'),
+    )
+    session = models.IntegerField(max_length=1, choices=SESSION_CHOICES, default=SESSION_ONE)
+
+    def __str__(self):
+        return self.name
 
 
 # Additional user fields
@@ -96,4 +114,7 @@ class UserInfo(models.Model):
     emergency_contact_relation = models.CharField(_('emergency contact relation'), max_length=20, blank=True, null=True)
     shirt_size = models.CharField(_('shirt size'), max_length=15, blank=True, null=True)
     coed_roommates = models.BooleanField(default=False)
-    #photo_name = models.CharField(_('photo name'), max_length=25, blank=True, null=True)
+    workshop_one = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=None, null=True, default=None, related_name='workshop_one')
+    workshop_two = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=None, null=True, default=None, related_name='workshop_two')
+    workshop_three = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=None, null=True, default=None, related_name='workshop_three')
+    photo_name = models.CharField(_('photo name'), max_length=20, blank=True, null=True)
