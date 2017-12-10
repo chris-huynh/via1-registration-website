@@ -46,7 +46,9 @@
                 <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">EARLY <a class="orange-text hover_black modal-trigger" href="#early_reg_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Dec. 14 - Jan. 3</b>
-                    <p style="font-style: italic">Exclusive to UVSA-Midwest member schools</p>
+                    <p style="font-style: italic">Exclusive to UVSA-Midwest member schools.<br>
+                        Status: {% if user.is_member_school %} <b class="green-text">ELIGIBLE</b> {% else %} <b class="red-text">INELIGIBLE</b> {% endif %}
+                    </p>
                     <p style="font-weight: 500; font-size: 24px; margin-bottom:0;">${{ register_prices.EARLY_REG_PRICE }}</p>
 
                     <div class="row">
@@ -104,7 +106,9 @@
                 <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Jan. 4 - Jan 18</b>
-                    <p style="font-style: italic">Verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option</p>
+                    <p style="font-style: italic">Verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option<br>
+                    Status: {% if user.is_alumni %} <b class="green-text">ELIGIBLE</b> {% else %} <b class="red-text">INELIGIBLE</b> {% endif %}
+                    </p>
                     <p style="font-weight: 500; font-size: 24px; margin-bottom: 0;">${{ register_prices.ALUMNI_REG_PRICE }}</p>
 
                     <div class="row">

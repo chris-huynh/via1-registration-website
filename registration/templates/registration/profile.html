@@ -81,8 +81,8 @@
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix">phone</i>
-                                        <label for="phone_number">Phone Number (no dashes)</label>
-                                        <input type="text" id="phone_number" name="phone_number" pattern="^\d{10}$" value="{{ user_info.phone_number|default_if_none:"" }}">
+                                        <label for="phone_number">Phone Number</label>
+                                        <input type="text" id="phone_number" name="phone_number" pattern="^\d{10}$" oninvalid="setCustomValidity('Please enter a 10-digit phone number without dashes')" oninput="setCustomValidity('')" value="{{ user_info.phone_number|default_if_none:"" }}">
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix">date_range</i>
@@ -115,7 +115,7 @@
                                                 </div>
                                                 <div class="input-field col s12 l4">
                                                     <label for="grad_year" class="active">Graduation Year</label>
-                                                    <input list="grad_year" name="grad_year" value="{{ user_info.grad_year|default_if_none:'' }}">
+                                                    <input list="grad_year" name="grad_year" pattern="^\d{4}$" oninvalid="setCustomValidity('Please enter a 4-digit year (e.g. 2017)')" oninput="setCustomValidity('')" value="{{ user_info.grad_year|default_if_none:'' }}">
                                                     <datalist id="grad_year">
                                                         {% for year in graduation_years %}
                                                             <option value="{{ year }}">
@@ -138,6 +138,7 @@
                                                 <div class="input-field col s12 l6">
                                                     <label for="pronouns" class="active">Gender Pronouns</label>
                                                     <select id="pronouns" name="pronouns">
+                                                        <option value="" disabled selected>Choose...</option>
                                                         <option value="he_him_his">He, Him, His</option>
                                                         <option value="she_her_hers">She, Her, Hers</option>
                                                         <option value="they_them_theirs">They, Them, Theirs</option>
@@ -204,8 +205,8 @@
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="material-icons prefix">phone</i>
-                                            <label for="emergency_contact_number">Phone Number (no dashes)</label>
-                                            <input type="tel" id="emergency_contact_number" name="emergency_contact_number" pattern="^\d{10}$" value="{{ user_info.emergency_contact_number|default_if_none:'' }}">
+                                            <label for="emergency_contact_number">Phone Number</label>
+                                            <input type="tel" id="emergency_contact_number" name="emergency_contact_number" pattern="^\d{10}$" oninvalid="setCustomValidity('Please enter a 10-digit phone number without dashes')" oninput="setCustomValidity('')" value="{{ user_info.emergency_contact_number|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-user prefix" aria-hidden="true"></i>
@@ -217,6 +218,7 @@
                                         <div class="input-field col s12 l6">
                                             <label for="shirt_size" class="active">T-Shirt Size</label>
                                             <select id="shirt_size" name="shirt_size">
+
                                                 <option value="small">Small</option>
                                                 <option value="medium">Medium</option>
                                                 <option value="large">Large</option>
@@ -312,12 +314,16 @@
         }
 
         var pronounValue = '{{ user_info.pronouns }}';
-        $("#pronouns").val(pronounValue)
-            .find("option[value='" + pronounValue +"']").attr('selected', true);
+        if (pronounValue !== 'None') {
+            $("#pronouns").val(pronounValue)
+                .find("option[value='" + pronounValue +"']").attr('selected', true);
+        }
 
         var shirtValue = '{{ user_info.shirt_size }}';
-        $("#shirt_size").val(shirtValue)
-            .find("option[value='" + shirtValue +"']").attr('selected', true);
+        if (shirtValue !== 'None') {
+            $("#shirt_size").val(shirtValue)
+                .find("option[value='" + shirtValue +"']").attr('selected', true);
+        }
     });
     </script>
 

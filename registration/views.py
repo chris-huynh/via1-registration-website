@@ -83,29 +83,40 @@ def profile(request):
 
 @login_required()
 def submit_profile(request):
-    if request.is_ajax():
-
+    if request.method == 'POST':
         form = request.POST
 
         user = request.user
         user_info = UserInfo.objects.get(pk=request.user.id)
 
-        if user.middle_name != form['middle_name']:
-            user.middle_name = form['middle_name']
+        # If user.middle_name is null and the user leaves the field blank, we don't want to replace Null with an empty string
+        # Also, if user previously had something saved in the field but then decides to blank it out, we want the db to
+        # use null, not an empty string
+        if user.middle_name != form['middle_name'] and not (user.middle_name is None and form['middle_name'] == ''):
+            if form['middle_name'] == '':
+                user.middle_name = None
+            else:
+                user.middle_name = form['middle_name']
             user.save()
 
-        if user_info.phone_number != form['phone_number']:
-            user_info.phone_number = form['phone_number']
+        if user_info.phone_number != form['phone_number'] and not (user_info.phone_number is None and form['phone_number'] == ''):
+            if form['phone_number'] == '':
+                user_info.phone_number = None
+            else:
+                user_info.phone_number = form['phone_number']
 
-        if user_info.birth_date != form['birth_date']:
+        if user_info.birth_date != form['birth_date'] and not (user_info.birth_date is None and form['birth_date'] == ''):
             if form['birth_date'] == '':
                 user_info.birth_date = None
             else:
                 user_info.birth_date = form['birth_date']
 
         if form.get('school', False) and form['school'] == 'other':
-            if user_info.school != form['other_school']:
-                user_info.school = form['other_school']
+            if user_info.school != form['other_school'] and not (user_info.school is None and form['other_school'] == ''):
+                if form['other_school'] == '':
+                    user_info.school = None
+                else:
+                    user_info.school = form['other_school']
         else:
             if form.get('school', False) and user_info.school != form['school']:
                 user_info.school = form['school']
@@ -116,41 +127,83 @@ def submit_profile(request):
             else:
                 user_info.grad_year = form['grad_year']
 
-        if user_info.major != form['major']:
-            user_info.major = form['major']
+        if user_info.major != form['major'] and not (user_info.major is None and form['major'] == ''):
+            if form['major'] == '':
+                user_info.major = None
+            else:
+                user_info.major = form['major']
 
-        if user_info.pronouns != form['pronouns']:
-            user_info.pronouns = form['pronouns']
+        if form.get('pronouns', False) and user_info.pronouns != form['pronouns']:
+            if form['pronouns'] == '':
+                user_info.pronouns = None
+            else:
+                user_info.pronouns = form['pronouns']
 
-        if user_info.facebook != form['facebook']:
-            user_info.facebook = form['facebook']
+        if user_info.facebook != form['facebook'] and not (user_info.facebook is None and form['facebook'] == ''):
+            if form['facebook'] == '':
+                user_info.facebook = None
+            else:
+                user_info.facebook = form['facebook']
 
-        if user_info.instagram != form['instagram']:
-            user_info.instagram = form['instagram']
+        if user_info.instagram != form['instagram'] and not (user_info.instagram is None and form['instagram'] == ''):
+            if form['instagram'] == '':
+                user_info.instagram = None
+            else:
+                user_info.instagram = form['instagram']
 
-        if user_info.twitter != form['twitter']:
-            user_info.twitter = form['twitter']
+        if user_info.twitter != form['twitter'] and not (user_info.twitter is None and form['twitter'] == ''):
+            if form['twitter'] == '':
+                user_info.twitter = None
+            else:
+                user_info.twitter = form['twitter']
 
-        if user_info.snapchat != form['snapchat']:
-            user_info.snapchat = form['snapchat']
+        if user_info.snapchat != form['snapchat'] and not (user_info.snapchat is None and form['snapchat'] == ''):
+            if form['snapchat'] == '':
+                user_info.snapchat = None
+            else:
+                user_info.snapchat = form['snapchat']
 
-        if user_info.linkedin != form['linkedin']:
-            user_info.linkedin = form['linkedin']
+        if user_info.linkedin != form['linkedin'] and not (user_info.linkedin is None and form['linkedin'] == ''):
+            if form['linkedin'] == '':
+                user_info.linkedin = None
+            else:
+                user_info.linkedin = form['linkedin']
 
-        if user_info.food_allergies != form['food_allergies']:
-            user_info.food_allergies = form['food_allergies']
+        if form.get('banquet_meal', False) and user_info.banquet_meal != form['banquet_meal']:
+            if form['banquet_meal'] == '':
+                user_info.banquet_meal = None
+            else:
+                user_info.banquet_meal = form['banquet_meal']
 
-        if user_info.emergency_contact != form['emergency_contact']:
-            user_info.emergency_contact = form['emergency_contact']
+        if user_info.food_allergies != form['food_allergies'] and not (user_info.food_allergies is None and form['food_allergies'] == ''):
+            if form['food_allergies'] == '':
+                user_info.food_allergies = None
+            else:
+                user_info.food_allergies = form['food_allergies']
 
-        if user_info.emergency_contact_number != form['emergency_contact_number']:
-            user_info.emergency_contact_number = form['emergency_contact_number']
+        if user_info.emergency_contact != form['emergency_contact'] and not (user_info.emergency_contact is None and form['emergency_contact'] == ''):
+            if form['emergency_contact'] == '':
+                user_info.emergency_contact = None
+            else:
+                user_info.emergency_contact = form['emergency_contact']
 
-        if user_info.emergency_contact_relation != form['emergency_contact_relation']:
-            user_info.emergency_contact_relation = form['emergency_contact_relation']
+        if user_info.emergency_contact_number != form['emergency_contact_number'] and not (user_info.emergency_contact_number is None and form['emergency_contact_number'] == ''):
+            if form['emergency_contact_number'] == '':
+                user_info.emergency_contact_number = None
+            else:
+                user_info.emergency_contact_number = form['emergency_contact_number']
 
-        if user_info.shirt_size != form['shirt_size']:
-            user_info.shirt_size = form['shirt_size']
+        if user_info.emergency_contact_relation != form['emergency_contact_relation'] and not (user_info.emergency_contact_relation is None and form['emergency_contact_relation'] == ''):
+            if form['emergency_contact_relation'] == '':
+                user_info.emergency_contact_relation = None
+            else:
+                user_info.emergency_contact_relation = form['emergency_contact_relation']
+
+        if form.get('shirt_size', False) and user_info.shirt_size != form['shirt_size']:
+            if form['shirt_size'] == '':
+                user_info.shirt_size = None
+            else:
+                user_info.shirt_size = form['shirt_size']
 
         user_info.save()
 
@@ -221,31 +274,36 @@ def activate(request, uidb64, token):
         return redirect('/registration/account_activation_invalid')
 
 
-# TODO Need to make adjustments for schools with no contact -- waiting on Nathan to give more info
 def member_school_verification_request(request):
     if request.method == 'POST':
         form = request.POST
         user = request.user
 
-        # This lambda expression will always return 1 object because our member_school_presidents list only has unique entries
-        president = list(filter(lambda x: x.school == form['school_association'], regutils.member_school_presidents))[0]
+        # This lambda expression will search for contact information of the chosen school. If found, a list is returned
+        president = list(filter(lambda x: x.school == form['school_association'], regutils.member_school_presidents))
+        if president:
+            # If a president was found, take index 0 because the lambda function only ever returns 1 president
+            president = president[0]
 
-        current_site = get_current_site(request)
-        subject = 'A VIA-1 Attendee Requests Member School Approval'
-        message = render_to_string('registration/mem_school_verif_email.html', {
-            'name': user.get_full_name(),
-            'email': form['email'],
-            'phone_number': form['phone_number'],
-            'school': form['school_association'],
-            'president_name': president.name,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': member_school_verification_token.make_token(user),
-        })
-        send_mail(subject, "", None, [president.email], False, None, None, None, message)
+            current_site = get_current_site(request)
+            subject = 'A VIA-1 Attendee Requests Member School Approval'
+            message = render_to_string('registration/mem_school_verif_email.html', {
+                'name': user.get_full_name(),
+                'email': form['email'],
+                'phone_number': form['phone_number'],
+                'school': form['school_association'],
+                'president_name': president.name,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': member_school_verification_token.make_token(user),
+            })
+            send_mail(subject, "", None, [president.email], False, None, None, None, message)
 
-        messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
-        return redirect('index')
+            messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
+            return redirect('index')
+        else:
+            messages.info(request, 'The school you have selected does not have a point of contact. Please email conference.executive@uvsamidwest.org')
+            return redirect('index')
     else:
         return redirect('index')
 
