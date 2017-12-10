@@ -218,7 +218,7 @@
                                         <div class="input-field col s12 l6">
                                             <label for="shirt_size" class="active">T-Shirt Size</label>
                                             <select id="shirt_size" name="shirt_size">
-
+                                                <option value="" disabled selected>Choose...</option>
                                                 <option value="small">Small</option>
                                                 <option value="medium">Medium</option>
                                                 <option value="large">Large</option>
@@ -250,8 +250,14 @@
                 <div class="row">
                     <div class="col s12 right-align" style="padding-right: 30px;">
                         <div class="row" style="margin:0;">
-                            <p id="success_text" class="green-text" style="display: none;">Success!</p>
-                            <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right" onclick="$(this).showLoader()"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Save</button>
+                            <div id="profile_submit_loader" class="sk-folding-cube right" style="margin: 3px 40px; display:none">
+                                <div class="sk-cube1 sk-cube"></div>
+                                <div class="sk-cube2 sk-cube"></div>
+                                <div class="sk-cube4 sk-cube"></div>
+                                <div class="sk-cube3 sk-cube"></div>
+                            </div>
+                            <p id="success_text" class="green-text" style="margin:0; margin-right: 10px; display: none;">Success!</p>
+                            <button type="submit" id="profile_submit_btn" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Save</button>
                         </div>
                     </div>
                     </form>
@@ -265,7 +271,8 @@
 {% block additional_scripts %}
     <script>
     $("#profile_form").submit(function(e) {
-
+        $("#profile_submit_btn").hide();
+        $("#profile_submit_loader").show();
         var url = '{% url 'submit_profile' %}'; // the script where you handle the form input.
 
         $.ajax({
@@ -275,14 +282,15 @@
             dataType: 'json',
             success: function(data)
             {
-                $("#success_text").show();
-                $("#success_text").fadeOut(8000, "linear", function() {
+                $("#success_text").delay(1500).show(0);
+                $("#success_text").fadeOut(4000, "linear", function() {
                     // Animation complete.
                 });
             }
         })
         .always(function() {
-            $('#loading_overlay').hide();
+            $("#profile_submit_loader").delay(1500).hide(0);
+            $("#profile_submit_btn").delay(4000).show(0);
         });
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
