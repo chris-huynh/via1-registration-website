@@ -26,7 +26,7 @@ class RegisterTypes:
 
 
 class RegisterPrices:
-    EARLY_REG_PRICE = 75
+    EARLY_REG_PRICE = 1
     REGULAR_REG_PRICE = 85
     ALUMNI_REG_PRICE = 75
     STAFF_REG_PRICE = 75
