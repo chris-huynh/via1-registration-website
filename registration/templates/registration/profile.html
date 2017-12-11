@@ -67,7 +67,7 @@
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix"></i>
                                         <label for="middle_name">Middle</label>
-                                        <input type="text" id="middle_name" name="middle_name" value="{{ user.middle_name|default_if_none:"" }}">
+                                        <input type="text" id="middle_name" name="middle_name" maxlength="30" value="{{ user.middle_name|default_if_none:"" }}">
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <i class="material-icons prefix"></i>
@@ -126,14 +126,14 @@
                                                 <div id="other_field" class="input-field col s12 l8" style="display:none;">
                                                     <i class="material-icons prefix"></i>
                                                     <label for="other_school">Other School (full name)</label>
-                                                    <input type="text" id="other_school" name="other_school" value="{% if other_selected == 'true' %}{{ user_info.school}}{% endif %}">
+                                                    <input type="text" id="other_school" name="other_school" maxlength="65" value="{% if other_selected == 'true' %}{{ user_info.school}}{% endif %}">
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="input-field col s12 l6">
                                                     <label for="major">Major</label>
-                                                    <input type="text" id="major" name="major" value="{{ user_info.major|default_if_none:'' }}">
+                                                    <input type="text" id="major" name="major" maxlength="65" value="{{ user_info.major|default_if_none:'' }}">
                                                 </div>
                                                 <div class="input-field col s12 l6">
                                                     <label for="pronouns" class="active">Gender Pronouns</label>
@@ -147,7 +147,7 @@
                                                 </div>
                                                 <div id="other_pronouns_field" class="input-field col s12 l6 offset-l6" style="display:none;">
                                                     <label for="other_pronouns">Enter your pronouns</label>
-                                                    <input type="text" id="other_pronouns" name="other_pronouns" value="{% if other_pronouns_selected == 'true' %}{{ user_info.pronouns}}{% endif %}">
+                                                    <input type="text" id="other_pronouns" name="other_pronouns" maxlength="25" value="{% if other_pronouns_selected == 'true' %}{{ user_info.pronouns}}{% endif %}">
                                                 </div>
                                             </div>
                                         </div>
@@ -157,27 +157,27 @@
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-facebook prefix" aria-hidden="true"></i>
                                             <label for="facebook">Facebook</label>
-                                            <input type="text" id="facebook" name="facebook" value="{{ user_info.facebook|default_if_none:'' }}">
+                                            <input type="text" id="facebook" name="facebook" maxlength="25" value="{{ user_info.facebook|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-instagram prefix" aria-hidden="true"></i>
                                             <label for="instagram">Instagram</label>
-                                            <input type="text" id="instagram" name="instagram" value="{{ user_info.instagram|default_if_none:'' }}">
+                                            <input type="text" id="instagram" name="instagram" maxlength="25" value="{{ user_info.instagram|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-twitter prefix" aria-hidden="true"></i>
                                             <label for="twitter">Twitter</label>
-                                            <input type="text" id="twitter" name="twitter" value="{{ user_info.twitter|default_if_none:'' }}">
+                                            <input type="text" id="twitter" name="twitter" maxlength="25" value="{{ user_info.twitter|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-snapchat-ghost prefix" aria-hidden="true"></i>
                                             <label for="snapchat">Snapchat</label>
-                                            <input type="text" id="snapchat" name="snapchat" value="{{ user_info.snapchat|default_if_none:'' }}">
+                                            <input type="text" id="snapchat" name="snapchat" maxlength="25" value="{{ user_info.snapchat|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-linkedin prefix" aria-hidden="true"></i>
                                             <label for="linkedin">LinkedIn</label>
-                                            <input type="text" id="linkedin" name="linkedin" value="{{ user_info.linkedin|default_if_none:'' }}">
+                                            <input type="text" id="linkedin" name="linkedin" maxlength="25" value="{{ user_info.linkedin|default_if_none:'' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -199,14 +199,14 @@
                                         <div class="input-field col s12 l6">
                                             <i class="fa fa-frown-o prefix" aria-hidden="true"></i>
                                             <label for="food_allergies">Food Allergies</label>
-                                            <input type="text" id="food_allergies" name="food_allergies" value="{{ user_info.food_allergies|default_if_none:'' }}">
+                                            <input type="text" id="food_allergies" name="food_allergies" maxlength="65" value="{{ user_info.food_allergies|default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-address-book prefix" aria-hidden="true"></i>
                                             <label for="emergency_contact">Emergency Contact</label>
-                                            <input type="text" id="emergency_contact" name="emergency_contact" value="{{ user_info.emergency_contact|default_if_none:'' }}">
+                                            <input type="text" id="emergency_contact" name="emergency_contact" maxlength="50" value="{{ user_info.emergency_contact|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="material-icons prefix">phone</i>
@@ -216,7 +216,7 @@
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-user prefix" aria-hidden="true"></i>
                                             <label for="emergency_contact_relation">Relationship</label>
-                                            <input type="text" id="emergency_contact_relation" name="emergency_contact_relation" value="{{ user_info.emergency_contact_relation|default_if_none:'' }}">
+                                            <input type="text" id="emergency_contact_relation" name="emergency_contact_relation" maxlength="20" value="{{ user_info.emergency_contact_relation|default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <div class="row">
