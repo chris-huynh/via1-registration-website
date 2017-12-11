@@ -139,10 +139,15 @@
                                                     <label for="pronouns" class="active">Gender Pronouns</label>
                                                     <select id="pronouns" name="pronouns">
                                                         <option value="" disabled selected>Choose...</option>
+                                                        <option value="other">Other</option>
                                                         <option value="he_him_his">He, Him, His</option>
                                                         <option value="she_her_hers">She, Her, Hers</option>
                                                         <option value="they_them_theirs">They, Them, Theirs</option>
                                                     </select>
+                                                </div>
+                                                <div id="other_pronouns_field" class="input-field col s12 l6 offset-l6" style="display:none;">
+                                                    <label for="other_pronouns">Enter your pronouns</label>
+                                                    <input type="text" id="other_pronouns" name="other_pronouns" value="{% if other_pronouns_selected == 'true' %}{{ user_info.pronouns}}{% endif %}">
                                                 </div>
                                             </div>
                                         </div>
@@ -306,6 +311,15 @@
             $("#other_field").hide()
         }
     });
+
+    $('#pronouns').on('change',function(){
+        if( $(this).val()==="other"){
+            $("#other_pronouns_field").show()
+        }
+        else{
+            $("#other_pronouns_field").hide()
+        }
+    });
     </script>
 
     <script>
@@ -322,10 +336,18 @@
         }
 
         var pronounValue = '{{ user_info.pronouns }}';
-        if (pronounValue !== 'None') {
+        if (!{{ other_pronouns_selected }}) {
             $("#pronouns").val(pronounValue)
                 .find("option[value='" + pronounValue +"']").attr('selected', true);
+        } else if ({{ other_pronouns_selected }} && pronounValue !== '' && pronounValue != 'None') {
+            $("#pronouns").val(pronounValue)
+                .find("option[value=other]").attr('selected', true);
+            $("#other_pronouns_field").show();
         }
+{#        if (pronounValue !== 'None') {#}
+{#            $("#pronouns").val(pronounValue)#}
+{#                .find("option[value='" + pronounValue +"']").attr('selected', true);#}
+{#        }#}
 
         var shirtValue = '{{ user_info.shirt_size }}';
         if (shirtValue !== 'None') {

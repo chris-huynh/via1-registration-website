@@ -49,7 +49,7 @@ def index(request):
 def home(request):
     if request.user.is_authenticated:
         todays_date = datetime.datetime.now()
-        is_early_reg_open = True #if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
+        is_early_reg_open = True if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
         is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
@@ -70,12 +70,14 @@ def profile(request):
 
         member_school_names = regutils.member_school_names
         graduation_years = regutils.graduation_years
+        default_pronouns = regutils.default_pronouns
 
         # If the current value in user_info.school is not null/blank and not in the list of member schools, the Other choice was chosen
         other_selected = 'false' if (user_info.school in member_school_names) else 'true'
+        other_pronouns_selected = 'false' if (user_info.pronouns in default_pronouns) else 'true'
 
         context = {'user_info': user_info, 'member_school_names': member_school_names, 'other_selected': other_selected,
-                   'graduation_years': graduation_years}
+                   'other_pronouns_selected': other_pronouns_selected, 'graduation_years': graduation_years}
         return render(request, 'registration/profile.html', context)
     else:
         return redirect('/registration/login')
@@ -133,10 +135,20 @@ def submit_profile(request):
             else:
                 user_info.major = form['major']
 
-        if form.get('pronouns', False) and user_info.pronouns != form['pronouns']:
-            if form['pronouns'] == '':
-                user_info.pronouns = None
-            else:
+        # if form.get('pronouns', False) and user_info.pronouns != form['pronouns']:
+        #     if form['pronouns'] == '':
+        #         user_info.pronouns = None
+        #     else:
+        #         user_info.pronouns = form['pronouns']
+
+        if form.get('pronouns', False) and form['pronouns'] == 'other':
+            if user_info.pronouns != form['other_pronouns'] and not (user_info.pronouns is None and form['other_pronouns'] == ''):
+                if form['other_pronouns'] == '':
+                    user_info.pronouns = None
+                else:
+                    user_info.pronouns = form['other_pronouns']
+        else:
+            if form.get('pronouns', False) and user_info.pronouns != form['pronouns']:
                 user_info.pronouns = form['pronouns']
 
         if user_info.facebook != form['facebook'] and not (user_info.facebook is None and form['facebook'] == ''):
@@ -429,8 +441,8 @@ def refund_request(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': refund_request_token.make_token(user),
             })
-            # TODO change to_email to Finance uvsa email
-            send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
+
+            send_mail(subject, "", None, ['finance@uvsamidwest.org'], False, None, None, None, message)
 
             messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
             return redirect('index')

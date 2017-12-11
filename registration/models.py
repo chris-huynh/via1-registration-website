@@ -118,3 +118,7 @@ class UserInfo(models.Model):
     workshop_two = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_two')
     workshop_three = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_three')
     photo_name = models.CharField(_('photo name'), max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.user_id)
+

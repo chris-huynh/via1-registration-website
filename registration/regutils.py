@@ -26,7 +26,7 @@ class RegisterTypes:
 
 
 class RegisterPrices:
-    EARLY_REG_PRICE = 1
+    EARLY_REG_PRICE = 75
     REGULAR_REG_PRICE = 85
     ALUMNI_REG_PRICE = 75
     STAFF_REG_PRICE = 75
@@ -60,19 +60,16 @@ alumni_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
 
 
-# For PayPal Buttons (see views.py)
-# TODO delete this later once we confirm that we don't need it
-paypal_email = 'finance@uvsamidwest.org'
-
-
-# For PayPal SANDBOX (use these for testing)
-# TODO delete this later once we confirm that we don't need it
-pp_sandbox_merchant_email = 'via1-merchant@uvsamidwest.org'
-
-
 graduation_years = [
     2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,
     2024, 2025]
+
+
+default_pronouns = [
+    'he_him_his',
+    'she_her_hers',
+    'they_them_theirs'
+]
 
 
 # List of email handles of all UVSA-MW member schools
@@ -206,4 +203,4 @@ member_school_presidents.append(MemberSchoolPresident('Karie Le', 'kle5@wisc.edu
 member_school_presidents.append(MemberSchoolPresident('Henry Tran', 'tranht@uwm.edu', 'University of Wisconsin - Milwaukee'))
 # Missing UW - Lacrosse ?? are they even a member school anymore?
 # TEST
-member_school_presidents.append(MemberSchoolPresident('Testy Tester', 'tomng2012@gmail.com', 'University of Testing - ayy lmao'))
+#member_school_presidents.append(MemberSchoolPresident('Testy Tester', 'tomng2012@gmail.com', 'University of Testing - ayy lmao'))
