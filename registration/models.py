@@ -82,7 +82,7 @@ class Workshops(models.Model):
         (SESSION_TWO, '2'),
         (SESSION_THREE, '3'),
     )
-    session = models.IntegerField(max_length=1, choices=SESSION_CHOICES, default=SESSION_ONE)
+    session = models.IntegerField(choices=SESSION_CHOICES, default=SESSION_ONE)
 
     def __str__(self):
         return self.name

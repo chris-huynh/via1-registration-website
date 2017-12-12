@@ -83,7 +83,10 @@ member_school_emails = [
     'purdue.edu',
     'students.ipfw.edu',
     'nd.edu',
+    # IU has 3 different email handles
     'umail.iu.edu',
+    'iu.edu',
+    'indiana.edu',
     # IOWA
     'uiowa.edu',
     'iastate.edu',
