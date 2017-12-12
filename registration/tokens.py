@@ -26,8 +26,18 @@ class RefundRequestTokenGenerator(PasswordResetTokenGenerator):
         )
 
 
+class AlumniVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return (
+            six.text_type(user.pk) + six.text_type(timestamp) +
+            six.text_type(user.is_alumni)
+        )
+
+
 account_activation_token = AccountActivationTokenGenerator()
 
 member_school_verification_token = MemSchoolVerificationTokenGenerator()
 
 refund_request_token = RefundRequestTokenGenerator()
+
+alumni_verification_token = AlumniVerificationTokenGenerator()

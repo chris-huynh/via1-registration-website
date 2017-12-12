@@ -1,0 +1,43 @@
+{% autoescape off %}
+    Hi Alumni Programming,
+    <br><br>
+    <p>A VIA-1 registree by the name of <b>{{ name }}</b> has identified themself as a UVSA-Midwest Alumni.</p>
+
+    <p>Please check their information against our staff history document. If this individual is found, please approve
+        their request using the button below. If their information is NOT found in our staff history then decline their request.</p>
+
+    <br>
+
+    <p>Here is the information they submitted:
+    <br>
+    <b>Account Email:</b> {{ email }}
+    <br>
+    <b>Positions previously held with UVSA-Midwest:</b> {{ positions }}
+    <br>
+    <b>UVSA-Midwest Staff Email:</b> {{ staff_email }}
+    <br>
+    <b>Affiliated School/Organization:</b> {{ school }}
+    <br><br>
+    <u>Additional Information:</u>
+    <br>
+    <b>Interested in sponsoring conference?:</b> {{ sponsor }}
+    <br>
+    <b>Interested in the ACE program?:</b> {{ ace_program }}
+    </p>
+
+    <br><br>
+
+    <a href="http://{{ domain }}{% url 'alumni_verification_approve' uidb64=uid token=token %}" style="margin-right: 10px;">
+        <button style="background-color: #4CAF50; border: none; color: white; padding: 10px 15px; text-align: center;
+        display: inline-block; font-size: 16px; text-decoration: none">Approve</button>
+    </a>
+    <a href="http://{{ domain }}{% url 'alumni_verification_deny' uidb64=uid token=token %}">
+        <button style="background-color: #BB2200; border: none; color: white; padding: 10px 15px; text-align: center;
+        display: inline-block; font-size: 16px; text-decoration: none">Deny</button>
+    </a>
+
+    <br><br><br>
+    Sincerely,
+    <br>
+    <b>The VIA-1 IT Team</b>
+{% endautoescape %}

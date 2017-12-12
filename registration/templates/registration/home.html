@@ -54,13 +54,15 @@
                     <div class="row">
                         <div class="input-field col s10 offset-s1">
 
+                        {% if is_early_reg_full %}
+                            <p class="flow-text red-text" style="font-weight: bold">SOLD OUT</p>
                         {# display a disabled BUY NOW button when reg isn't open, otherwise render a PayPal button #}
-                        {% if not is_early_reg_open or not user.is_member_school %}
+                        {% elif not is_early_reg_open or not user.is_member_school %}
                             <select id="id_early_reg_select" disabled>
                                 <option value="reg_only">Early Registration ($75.00)</option>
                                 <option value="reg_and_hotel">Early Registration + Hotel ($135)</option>
                             </select>
-                        <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
+                            <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
                         {% else %}
                             <select id="id_early_reg_select">
                                 <option value="reg_only">Early Registration ($75.00)</option>
@@ -83,8 +85,10 @@
                     <div class="row">
                         <div class="input-field col s10 offset-s1">
 
+                        {% if is_regular_reg_full %}
+                            <p class="flow-text red-text" style="font-weight: bold">SOLD OUT</p>
                         {# display a disabled BUY NOW button when reg isn't open, otherwise render a PayPal button #}
-                        {% if not is_regular_reg_open %}
+                        {% elif not is_regular_reg_open %}
                             <select id="id_regular_reg_select" disabled>
                                 <option value="reg_only">Regular Registration ($85.00)</option>
                                 <option value="reg_and_hotel">Regular Registration + Hotel ($145)</option>
@@ -106,8 +110,8 @@
                 <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
                     <b class="orange-text" style="font-size: 16px">Jan. 4 - Jan 18</b>
-{#                    <p style="font-style: italic">Verify your alumni status <a href="#!" class="orange-text hover_black" style="font-weight: bold;">here</a> to access this option<br>#}
-                    <p style="font-style: italic">Alumni verification process coming soon!<br>
+                    <p style="font-style: italic">Verify your alumni status <a href="#alumni_verify_modal" class="modal-trigger modal-close orange-text hover_black" style="font-weight: bold;">here</a> to access this option<br>
+{#                    <p style="font-style: italic">Alumni verification process coming soon!<br>#}
                     Status: {% if user.is_alumni %} <b class="green-text">ELIGIBLE</b> {% else %} <b class="red-text">INELIGIBLE</b> {% endif %}
                     </p>
                     <p style="font-weight: 500; font-size: 24px; margin-bottom: 0;">${{ register_prices.ALUMNI_REG_PRICE }}</p>
@@ -115,8 +119,10 @@
                     <div class="row">
                         <div class="input-field col s10 offset-s1">
 
+                        {% if is_alumni_reg_full %}
+                            <p class="flow-text red-text" style="font-weight: bold">SOLD OUT</p>
                         {# display a disabled BUY NOW button when reg isn't open, otherwise render a PayPal button #}
-                        {% if not is_alumni_reg_open or not user.is_alumni %}
+                        {% elif not is_alumni_reg_open or not user.is_alumni %}
                             <select id="id_alumni_reg_select" disabled>
                                 <option value="reg_only">Alumni Registration ($75.00)</option>
                                 <option value="reg_and_hotel">Alumni Registration + Hotel ($135)</option>
@@ -226,12 +232,84 @@
                     <div class="row">
                         <div class="input-field col s10 l8 offset-s1 offset-l2">
                             <select id="school_association" name="school_association" required>
-                                <option value="" disabled selected>Choose your option</option>
+                                <option value="" disabled selected>Choose...</option>
                                 {% for school in member_school_names %}
                                     <option value="{{ school }}">{{ school }}</option>
                                 {% endfor %}
                             </select>
                             <label for="school_association">School Association</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="center-align">
+                            <button type="submit" class="z-depth-3 waves-effect waves-light orange btn">Request Verification</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {# Alumni Verification Pop-Up Modal #}
+    <div id="alumni_verify_modal" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                <div class="center-align">
+                    <h5>Alumni Verification Form</h5>
+                </div>
+                <form method="POST" action="{% url 'alumni_verification_request' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s5 l4 offset-s1 offset-l2">
+                            <label for="first_name">First Name</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name|default_if_none:"" }}" readonly required>
+                        </div>
+                        <div class="input-field col s5 l4">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" value="{{ user.last_name|default_if_none:"" }}" readonly required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10 l8 offset-s1 offset-l2">
+                            <label for="positions">Positions previously held with UVSA-Midwest (including year)</label>
+                            <textarea id="positions" name="positions" class="materialize-textarea" required></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10 l8 offset-s1 offset-l2">
+                            <label for="alumni_school" class="active">Affiliated School/Organization</label>
+                            <select id="alumni_school" name="alumni_school" required>
+                                <option value="" disabled selected>Choose...</option>
+                                <option value="other">Other</option>
+                                {% for school in member_school_names %}
+                                    <option value="{{ school }}">{{ school }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="other_alumni_verif_field" class="input-field col s10 l8 offset-s1 offset-l2" style="display:none;">
+                            <label for="other_alumni_school">Enter your school</label>
+                            <input type="text" id="other_alumni_school" name="other_alumni_school" maxlength="65">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10 l8 offset-s1 offset-l2">
+                            <label for="staff_email">UVSA-MW Staff Email</label>
+                            <input type="email" id="staff_email" name="staff_email" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s10 l8 offset-s1 offset-l2">
+                            <p>
+                                <input type="checkbox" id="sponsor" name="sponsor" value="interested" />
+                                <label for="sponsor">Would you be interested in being a sponsor for the conference or sponsoring an attendee scholarship?</label>
+                            </p>
+                        </div>
+                        <div class="col s10 l8 offset-s1 offset-l2">
+                            <p>
+                                <input type="checkbox" id="ace_program" name="ace_program" value="interested" />
+                                <label for="ace_program">Would you be interested in taking part in our Anh/Chi/Em Program?</label>
+                            </p>
                         </div>
                     </div>
 
@@ -725,6 +803,17 @@
 
           Materialize.scrollFire(options);
         });
+    </script>
+
+    <script>
+    $('#alumni_school').on('change',function(){
+        if( $(this).val()==="other"){
+            $("#other_alumni_verif_field").show()
+        }
+        else{
+            $("#other_alumni_verif_field").hide()
+        }
+    });
     </script>
 
     {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}

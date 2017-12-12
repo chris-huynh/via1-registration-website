@@ -104,6 +104,8 @@ member_school_emails = [
     # MISSOURI
     'slu.edu',
     # OHIO
+    # OSU has 2 different email handles
+    'buckeyemail.osu.edu',
     'osu.edu',
     'mail.uc.edu',
     'zips.uakron.edu',
@@ -157,7 +159,7 @@ member_school_names = [
     'University of Wisconsin - Lacrosse',
     'University of Wisconsin - Madison',
     'University of Wisconsin - Milwaukee',
-    'University of Testing - ayy lmao',
+    #'University of Testing - ayy lmao',
 ]
 
 

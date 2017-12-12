@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.http import urlsafe_base64_decode
 from django.template.loader import render_to_string
-from registration.tokens import account_activation_token, member_school_verification_token, refund_request_token
+from registration.tokens import account_activation_token, member_school_verification_token, refund_request_token, alumni_verification_token
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 
@@ -53,11 +53,16 @@ def home(request):
         is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
+        conference_caps = ConferenceVars.objects.get(pk=1)
+        is_early_reg_full = True if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
+        is_regular_reg_full = True if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
+        is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
+
         context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
+                   'is_early_reg_full': is_early_reg_full, 'is_regular_reg_full': is_regular_reg_full, 'is_alumni_reg_full': is_alumni_reg_full,
                    'refund_deadline': regutils.refund_deadline, 'todays_date': todays_date, 'open_date': regutils.early_reg_open_date,
                    'member_school_names': regutils.member_school_names, 'attendee_types': regutils.AttendeeTypes,
-                   'register_types': regutils.RegisterTypes, 'register_prices': regutils.RegisterPrices,
-                   'register_caps': regutils.RegisterCaps}
+                   'register_types': regutils.RegisterTypes, 'register_prices': regutils.RegisterPrices}
         return render(request, 'registration/home.html', context)
     else:
         return redirect('/registration/login')
@@ -134,12 +139,6 @@ def submit_profile(request):
                 user_info.major = None
             else:
                 user_info.major = form['major']
-
-        # if form.get('pronouns', False) and user_info.pronouns != form['pronouns']:
-        #     if form['pronouns'] == '':
-        #         user_info.pronouns = None
-        #     else:
-        #         user_info.pronouns = form['pronouns']
 
         if form.get('pronouns', False) and form['pronouns'] == 'other':
             if user_info.pronouns != form['other_pronouns'] and not (user_info.pronouns is None and form['other_pronouns'] == ''):
@@ -329,13 +328,11 @@ def member_school_verification_approve(request, uidb64, token, school):
 
     if user is not None and member_school_verification_token.check_token(user, token):
         user.is_member_school = True
-        user.school = school
         user.save()
 
         subject = 'Your VIA-1 Member School Verification Has Been Approved'
         message = render_to_string('registration/mem_school_verif_approved_email.html', {
             'name': user.first_name,
-            'email': user.email,
             'school': school,
         })
         send_mail(subject, "", None, [user.email], False, None, None, None, message)
@@ -357,7 +354,6 @@ def member_school_verification_deny(request, uidb64, token, school):
         subject = 'Your VIA-1 Member School Verification Has Been Denied'
         message = render_to_string('registration/mem_school_verif_denied_email.html', {
             'name': user.first_name,
-            'email': user.email,
             'school': school,
         })
         send_mail(subject, "", None, [user.email], False, None, None, None, message)
@@ -365,6 +361,90 @@ def member_school_verification_deny(request, uidb64, token, school):
         return redirect('/registration/member_school_verification_denied')
     else:
         return redirect('/registration/member_school_verification_invalid')
+
+
+def alumni_verification_request(request):
+    if request.method == 'POST':
+        form = request.POST
+        user = request.user
+
+        if form['alumni_school'] == 'other':
+            school = form['other_alumni_school']
+        else:
+            school = form['alumni_school']
+
+        if form.get('sponsor', False):
+            sponsor = form['sponsor']
+        else:
+            sponsor = 'not interested'
+
+        if form.get('ace_program', False):
+            ace_program = form['ace_program']
+        else:
+            ace_program = 'not interested'
+
+        current_site = get_current_site(request)
+        subject = '[ALUMNI VERIFICATION] A VIA-1 Attendee Requests Alumni Verification'
+        message = render_to_string('registration/alumni_verif_email.html', {
+            'name': user.get_full_name(),
+            'email': user.email,
+            'positions': form['positions'],
+            'school': school,
+            'staff_email': form['staff_email'],
+            'sponsor': sponsor,
+            'ace_program': ace_program,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': alumni_verification_token.make_token(user),
+        })
+        send_mail(subject, "", None, ['alumni.programming@uvsamidwest.org'], False, None, None, None, message)
+
+        messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
+        return redirect('index')
+    else:
+        return redirect('index')
+
+
+def alumni_verification_approve(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and alumni_verification_token.check_token(user, token):
+        user.is_alumni = True
+        user.save()
+
+        subject = 'Your VIA-1 Alumni Verification Has Been Approved'
+        message = render_to_string('registration/alumni_verification_approved_email.html', {
+            'name': user.first_name,
+        })
+        send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
+        return redirect('/registration/alumni_verification_approved')
+    else:
+        return redirect('/registration/alumni_verification_invalid')
+
+
+def alumni_verification_deny(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and alumni_verification_token.check_token(user, token):
+        # We don't need to do anything here with the data here. Just send an email to the user letting them know they were denied
+        subject = 'Your VIA-1 Alumni Verification Has Been Denied'
+        message = render_to_string('registration/alumni_verification_denied_email.html', {
+            'name': user.first_name,
+        })
+        send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
+        return redirect('/registration/alumni_verification_denied')
+    else:
+        return redirect('/registration/alumni_verification_invalid')
 
 
 # Passes back a json object containing a boolean for every attendee type

@@ -344,10 +344,6 @@
                 .find("option[value=other]").attr('selected', true);
             $("#other_pronouns_field").show();
         }
-{#        if (pronounValue !== 'None') {#}
-{#            $("#pronouns").val(pronounValue)#}
-{#                .find("option[value='" + pronounValue +"']").attr('selected', true);#}
-{#        }#}
 
         var shirtValue = '{{ user_info.shirt_size }}';
         if (shirtValue !== 'None') {
