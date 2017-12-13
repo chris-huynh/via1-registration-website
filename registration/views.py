@@ -397,8 +397,7 @@ def alumni_verification_request(request):
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': alumni_verification_token.make_token(user),
         })
-        # alumni.programming@uvsamidwest.org
-        send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
+        send_mail(subject, "", None, ['alumni.programming@uvsamidwest.org'], False, None, None, None, message)
 
         messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
         return redirect('index')
