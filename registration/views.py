@@ -378,10 +378,10 @@ def alumni_verification_request(request):
         else:
             sponsor = 'not interested'
 
-        if form.get('ace_program', False):
-            ace_program = form['ace_program']
+        if form.get('mentorship_program', False):
+            mentorship_program = form['mentorship_program']
         else:
-            ace_program = 'not interested'
+            mentorship_program = 'not interested'
 
         current_site = get_current_site(request)
         subject = '[ALUMNI VERIFICATION] A VIA-1 Attendee Requests Alumni Verification'
@@ -392,12 +392,13 @@ def alumni_verification_request(request):
             'school': school,
             'staff_email': form['staff_email'],
             'sponsor': sponsor,
-            'ace_program': ace_program,
+            'mentorship_program': mentorship_program,
             'domain': current_site.domain,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': alumni_verification_token.make_token(user),
         })
-        send_mail(subject, "", None, ['alumni.programming@uvsamidwest.org'], False, None, None, None, message)
+        # alumni.programming@uvsamidwest.org
+        send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
 
         messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
         return redirect('index')
