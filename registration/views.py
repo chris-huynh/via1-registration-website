@@ -520,10 +520,12 @@ def update_paid_attendee(request):
             # Need to check if that paymentID exists so that people can't send fake calls to this endpoint
             if paypalrestsdk.Payment.find(request.GET.get('paymentID')):
                 reg_type = request.GET.get('reg_type')
+                invoice = request.GET.get('payment_invoice')
 
                 user.has_paid = True
                 user.time_paid = timezone.now()  # This is a timezone aware method. It'll use the server's timezone (set to CST in settings.py)
                 user.reg_type = reg_type
+                user.payment_invoice = invoice
 
                 if (reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL or
                             reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL or

@@ -367,6 +367,7 @@
         <script>
             // Global variable so it can be used in both the payment and onAuthorize contexts
             var reg_type;
+            var invoice;
 
             paypal.Button.render({
 
@@ -416,6 +417,8 @@
                             reg_type = '{{ register_types.EARLY_REG_HOTEL }}';
                         }
 
+                        invoice = invoice_prefix + {{ user.id }} + '-' + invoice_number;
+
                         return actions.payment.create({
                             payment: {
                                 transactions: [
@@ -435,7 +438,7 @@
                                                 }
                                             ]
                                         },
-                                        invoice_number: invoice_prefix + {{ user.id }} + '-' + invoice_number,
+                                        invoice_number: invoice,
                                         custom: reg_type
                                     }
                                 ],
@@ -474,7 +477,8 @@
                                 url: '{% url 'update_paid_attendee' %}',
                                 data: {
                                     'paymentID': data.paymentID,
-                                    'reg_type': reg_type
+                                    'reg_type': reg_type,
+                                    'payment_invoice': invoice
                                 }
                             });
                             // TODO Need to change this. If the user doesn't hit okay immediately, the ajax call above can't complete.
