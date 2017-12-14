@@ -252,7 +252,8 @@ def register(request):
                 'token': account_activation_token.make_token(user),
             })
             user.email_user(subject, message)
-            return redirect('/registration/account_activation_sent')
+            context = {'user_email': user.email}
+            return render(request, 'registration/account_activation_sent.html', context)
         else:
             # Render the login page again and pass back the fields that the user inputted
             # (so we can auto-populate the form)
@@ -522,7 +523,7 @@ def refund_request(request):
                 'token': refund_request_token.make_token(user),
             })
 
-            send_mail(subject, "", None, ['finance@uvsamidwest.org'], False, None, None, None, message)
+            send_mail(subject, "", None, ['via1.finance@uvsamidwest.org'], False, None, None, None, message)
 
             messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
             return redirect('index')

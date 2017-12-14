@@ -97,18 +97,18 @@ member_school_emails = [
     # MICHIGAN
     'umich.edu',
     'msu.edu',
-    'wayne.edu',
+    # 'wayne.edu',  # Inactive
     # MINNESOTA
     'umn.edu',
     'stolaf.edu',
     # MISSOURI
-    'slu.edu',
+    # 'slu.edu',    # Inactive
     # OHIO
     # OSU has 2 different email handles
     'buckeyemail.osu.edu',
     'osu.edu',
     'mail.uc.edu',
-    'zips.uakron.edu',
+    # 'zips.uakron.edu',  # Inactive
     'rockets.utoledo.edu',
     'miamioh.edu',
     'vikes.csuohio.edu',
@@ -116,7 +116,7 @@ member_school_emails = [
     # WISCONSIN
     'wisc.edu',
     'uwm.edu',
-    'uwlax.edu'
+    # 'uwlax.edu'   # Inactive
 ]
 
 # Member school names
@@ -128,6 +128,7 @@ member_school_names = [
     'University of Illinois at Urbana-Champaign',
     # INDIANA
     'Indiana University',
+    'Indiana University – Purdue University Indianapolis',
     'Indiana University Purdue University of Fort Wayne',
     'Purdue University',
     'University of Notre Dame',
@@ -141,22 +142,22 @@ member_school_names = [
     # MICHIGAN
     'Michigan State University',
     'University of Michigan',
-    'Wayne State University',
+    #'Wayne State University',  # Inactive
     # MINNESOTA
     'University of Minnesota',
     'St. Olaf College',
     # MISSOURI
-    'St. Louis University',
+    # 'St. Louis University',   # Inactive
     # OHIO
     'Case Western Reserve University',
     'Cleveland State University',
     'Miami University',
     'The Ohio State University',
-    'University of Akron',
+    # 'University of Akron',    # Inactive
     'University of Cincinnati',
     'University of Toledo',
     # WISCONSIN
-    'University of Wisconsin - Lacrosse',
+    # 'University of Wisconsin - Lacrosse', # Inactive
     'University of Wisconsin - Madison',
     'University of Wisconsin - Milwaukee',
     #'University of Testing - ayy lmao',
@@ -183,6 +184,7 @@ member_school_presidents.append(MemberSchoolPresident('Brandon Do', 'dob@purdue.
 member_school_presidents.append(MemberSchoolPresident('Thuy (Chloe) Nguyen', 'nguytb01@students.ipfw.edu', 'Indiana University Purdue University of Fort Wayne'))
 member_school_presidents.append(MemberSchoolPresident('Alyssa Ngo', 'ango@nd.edu', 'University of Notre Dame'))
 member_school_presidents.append(MemberSchoolPresident('Andrew Tran', 'andtran@umail.iu.edu', 'Indiana University'))
+member_school_presidents.append(MemberSchoolPresident('Nick Luc', 'nluc@umail.iu.edu', 'Indiana University – Purdue University Indianapolis'))
 # Iowa
 member_school_presidents.append(MemberSchoolPresident('Marilyn Lo', 'marilyn-lo@uiowa.edu', 'University of Iowa'))
 member_school_presidents.append(MemberSchoolPresident('John Nguyen', 'jsnguyen@iastate.edu', 'Iowa State University'))
@@ -206,6 +208,5 @@ member_school_presidents.append(MemberSchoolPresident('Michael Nguyen', 'Mtn25@c
 # Wisconsin
 member_school_presidents.append(MemberSchoolPresident('Karie Le', 'kle5@wisc.edu', 'University of Wisconsin - Madison'))
 member_school_presidents.append(MemberSchoolPresident('Henry Tran', 'tranht@uwm.edu', 'University of Wisconsin - Milwaukee'))
-# Missing UW - Lacrosse ?? are they even a member school anymore?
 # TEST
 #member_school_presidents.append(MemberSchoolPresident('Testy Tester', 'tomng2012@gmail.com', 'University of Testing - ayy lmao'))
