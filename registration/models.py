@@ -29,11 +29,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     email_confirmed = models.BooleanField(default=False)
     is_member_school = models.BooleanField(default=False)
     is_alumni = models.BooleanField(default=False)
-
     has_paid = models.BooleanField(default=False)
     has_paid_hotel = models.BooleanField(default=False)
     time_paid = models.DateTimeField(default=None, blank=True, null=True)
     reg_type = models.CharField(_('registration type'), max_length=50, blank=True, null=True)
+    alumni_verif_in_prog = models.BooleanField(default=False)
+    mem_school_verif_in_prog = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     objects = UserManager()

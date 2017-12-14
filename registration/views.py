@@ -344,6 +344,9 @@ def member_school_verification_request(request):
             })
             send_mail(subject, "", None, [president.email], False, None, None, None, message)
 
+            user.mem_school_verif_in_prog = True
+            user.save()
+
             messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
             return redirect('index')
         else:
@@ -362,6 +365,7 @@ def member_school_verification_approve(request, uidb64, token, school):
 
     if user is not None and member_school_verification_token.check_token(user, token):
         user.is_member_school = True
+        user.mem_school_verif_in_prog = False
         user.save()
 
         subject = 'Your VIA-1 Member School Verification Has Been Approved'
@@ -384,7 +388,10 @@ def member_school_verification_deny(request, uidb64, token, school):
         user = None
 
     if user is not None and member_school_verification_token.check_token(user, token):
-        # We don't need to do anything here with the data here. Just send an email to the user letting them know they were denied
+        # Just need to change in_prog field to false
+        user.mem_school_verif_in_prog = False
+        user.save()
+
         subject = 'Your VIA-1 Member School Verification Has Been Denied'
         message = render_to_string('registration/mem_school_verif_denied_email.html', {
             'name': user.first_name,
@@ -433,6 +440,9 @@ def alumni_verification_request(request):
         })
         send_mail(subject, "", None, ['alumni.programming@uvsamidwest.org'], False, None, None, None, message)
 
+        user.alumni_verif_in_prog = True
+        user.save()
+
         messages.info(request, 'Your verification request has been submitted. You will receive an email upon approval.')
         return redirect('index')
     else:
@@ -448,6 +458,7 @@ def alumni_verification_approve(request, uidb64, token):
 
     if user is not None and alumni_verification_token.check_token(user, token):
         user.is_alumni = True
+        user.alumni_verif_in_prog = False
         user.save()
 
         subject = 'Your VIA-1 Alumni Verification Has Been Approved'
@@ -469,7 +480,10 @@ def alumni_verification_deny(request, uidb64, token):
         user = None
 
     if user is not None and alumni_verification_token.check_token(user, token):
-        # We don't need to do anything here with the data here. Just send an email to the user letting them know they were denied
+        # Just need to change the in_prog field to False
+        user.alumni_verif_in_prog = False
+        user.save()
+
         subject = 'Your VIA-1 Alumni Verification Has Been Denied'
         message = render_to_string('registration/alumni_verification_denied_email.html', {
             'name': user.first_name,
