@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     reg_type = models.CharField(_('registration type'), max_length=50, blank=True, null=True)
     alumni_verif_in_prog = models.BooleanField(default=False)
     mem_school_verif_in_prog = models.BooleanField(default=False)
-    payment_invoice = models.CharField(_('payment invoide id'), max_length=30, blank=True, null=True)
+    payment_invoice = models.CharField(_('payment invoice id'), max_length=40, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
