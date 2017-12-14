@@ -71,29 +71,8 @@
         });
     </script>
 
-    {# If LOGIN errors exist, they'll appear here #}
-    {% if form.non_field_errors %}
-        {% for error in form.non_field_errors %}
-            <script>
-                $(document).ready(function(){
-                    Materialize.toast('Login Failed: {{ error|safe }}', 8000);
-                });
-            </script>
-        {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    {# If errors exist, they will appear here. Use the messages package in views.py to create messages #}
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                $(document).ready(function(){
-                    Materialize.toast('Account Creation Failed: {{ message|safe }}', 8000);
-                });
-            </script>
-        {% endfor %}
-    {% endif %}
+{% block additional_scripts %}
+{% endblock %}
 
 </body>
 </html>

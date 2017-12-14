@@ -262,6 +262,39 @@ def register(request):
         return redirect('/registration/login')
 
 
+def resend_activation_email(request):
+    if request.method == 'GET':
+        form = request.GET
+        email = form['email']
+
+        try:
+            user = User.objects.get(email=email)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and user.email_confirmed is False:
+            current_site = get_current_site(request)
+            subject = 'Activate Your VIA-1 Account'
+            message = render_to_string('registration/account_activation_email.html', {
+                'user': user.first_name,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            user.email_user(subject, message)
+            context = {'user_email': email}
+            return render(request, 'registration/account_activation_sent.html', context)
+        else:
+            context = {'email': email}
+            if user is None:
+                messages.error(request, 'This email was not found. Please make sure you typed the correct email.')
+            else:
+                messages.error(request, 'An account using this email has already been activated.')
+            return render(request, 'registration/account_activation_resend.html', context)
+    else:
+        return redirect('index')
+
+
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
