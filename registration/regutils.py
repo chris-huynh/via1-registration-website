@@ -26,12 +26,12 @@ class RegisterTypes:
 
 
 class RegisterPrices:
-    EARLY_REG_PRICE = 1
+    EARLY_REG_PRICE = 75
     REGULAR_REG_PRICE = 85
     ALUMNI_REG_PRICE = 75
     STAFF_REG_PRICE = 75
     BANQUET_PRICE = 50     # Probably don't need -- banquet-only will probably be handled manually
-    HOTEL_BUNDLE_PRICE = 1
+    HOTEL_BUNDLE_PRICE = 60
     HOTEL_PRICE = 65   # Hotel purchased separately is an additional $5
 
 
@@ -44,7 +44,7 @@ class RegisterCaps:
 
 # Open 12-14-2017 @ 1800/6:00p CENTRAL (timezone is set in settings.py)
 # Close 1-3-2018 @ 11:59:59
-early_reg_open_date = datetime.datetime(2017, 12, 14, 0, 0, 3)
+early_reg_open_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
 early_reg_close_date = datetime.datetime(2018, 1, 3, 23, 59, 59)
 
 # Open 1-4-2018 @ 6:00p CENTRAL
@@ -208,5 +208,6 @@ member_school_presidents.append(MemberSchoolPresident('Michael Nguyen', 'Mtn25@c
 # Wisconsin
 member_school_presidents.append(MemberSchoolPresident('Karie Le', 'kle5@wisc.edu', 'University of Wisconsin - Madison'))
 member_school_presidents.append(MemberSchoolPresident('Henry Tran', 'tranht@uwm.edu', 'University of Wisconsin - Milwaukee'))
+# Missing UW - Lacrosse ?? are they even a member school anymore?
 # TEST
 #member_school_presidents.append(MemberSchoolPresident('Testy Tester', 'tomng2012@gmail.com', 'University of Testing - ayy lmao'))
