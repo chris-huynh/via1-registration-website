@@ -17,7 +17,7 @@
             <div class="row center-align white-text animated fadeIn" style="animation-duration: 2.5s; animation-delay: 1s">
                 <p class="flow-text" style="font-weight: 100; font-size: 48px; margin-bottom: 0">Hi, {{ user.first_name }}.
                 <br>
-                Welcome to VIA-1</p>
+                Welcome to VIA‑1</p>
                 <p class="flow-text">Registration is currently {% if is_early_reg_open or is_regular_reg_open or is_alumni_reg_open %} <strong class="orange-text">OPEN</strong> {% else %} <strong class="orange-text">CLOSED</strong> {% endif %}</p>
                 <p class="flow-text">Your Registration Status: {% if user.has_paid %} <strong class="orange-text">PAID</strong> {% else %} <strong class="orange-text">UNPAID</strong> {% endif %}</p>
 

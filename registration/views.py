@@ -54,7 +54,8 @@ def home(request):
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
         conference_caps = ConferenceVars.objects.get(pk=1)
-        is_early_reg_full = True if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
+        # Gonna leave this as Full indefinitely for now. Since we want it to say Sold Out permanently even if someone refunds
+        is_early_reg_full = True #if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
         is_regular_reg_full = True if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
 
