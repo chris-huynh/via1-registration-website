@@ -363,7 +363,7 @@
 
 {% block additional_scripts %}
     {# Paypal Express Check Out for Early Reg Button #}
-    {% if not user.has_paid and is_early_reg_open and user.is_member_school %}
+    {% if not user.has_paid and is_early_reg_open and user.is_member_school and not is_early_reg_full %}
         <script>
             // Global variable so it can be used in both the payment and onAuthorize contexts
             var reg_type;
@@ -510,7 +510,7 @@
 
 
     {# Paypal Express Check Out for Regular Reg Button #}
-    {% if not user.has_paid and is_regular_reg_open %}
+    {% if not user.has_paid and is_regular_reg_open and not is_regular_reg_full %}
         <script>
             // Global variable so it can be used in both the payment and onAuthorize contexts
             var reg_type;
@@ -653,7 +653,7 @@
 
 
     {# Paypal Express Check Out for Early Reg Button #}
-    {% if not user.has_paid and is_alumni_reg_open and user.is_alumni %}
+    {% if not user.has_paid and is_alumni_reg_open and user.is_alumni and not is_alumni_reg_full %}
         <script>
             // Global variable so it can be used in both the payment and onAuthorize contexts
             var reg_type;
