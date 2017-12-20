@@ -534,8 +534,6 @@ def update_paid_attendee(request):
                             reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL):
                     user.has_paid_hotel = True
 
-                # TODO Will most likely have to add more fields to this later if we add additional user fields
-
                 user.save()
 
                 # increment attendee count for appropriate attendee_type
@@ -549,6 +547,39 @@ def update_paid_attendee(request):
                 elif reg_type == regutils.RegisterTypes.STAFF_REG or regutils.RegisterTypes.STAFF_REG_HOTEL:
                     conf_vars.staff_attendee_count += 1
                 conf_vars.save()
+
+                if reg_type == regutils.RegisterTypes.EARLY_REG:
+                    amount = regutils.RegisterPrices.EARLY_REG_PRICE
+                    package = 'Early Registration'
+                elif reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
+                    amount = regutils.RegisterPrices.EARLY_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+                    package = 'Early Registration + Hotel Bundle'
+                elif reg_type == regutils.RegisterTypes.REGULAR_REG:
+                    amount = regutils.RegisterPrices.REGULAR_REG_PRICE
+                    package = 'Regular Registration'
+                elif reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
+                    amount = regutils.RegisterPrices.REGULAR_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+                    package = 'Regular Registration + Hotel Bundle'
+                elif reg_type == regutils.RegisterTypes.ALUMNI_REG:
+                    amount = regutils.RegisterPrices.ALUMNI_REG_PRICE
+                    package = 'Alumni Registration'
+                elif reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
+                    amount = regutils.RegisterPrices.ALUMNI_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+                    package = 'Alumni Registration + Hotel Bundle'
+                elif reg_type == regutils.RegisterTypes.STAFF_REG:
+                    amount = regutils.RegisterPrices.STAFF_REG_PRICE
+                    package = 'Staff Registration'
+                elif reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
+                    amount = regutils.RegisterPrices.STAFF_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+                    package = 'Staff Registration + Hotel Bundle'
+
+                subject = 'Thank you for registering for the Vietnamese Interacting As One Conference!'
+                message = render_to_string('registration/thanks_for_registering_email.html', {
+                    'name': user.first_name,
+                    'package': package,
+                    'amount': amount
+                })
+                send_mail(subject, "", None, [user.email], False, None, None, None, message)
 
                 # Just need to send an empty JSON response
                 return JsonResponse({})
@@ -568,6 +599,7 @@ def refund_request(request):
                 'email': user.email,
                 'pp_name': form['pp_name'],
                 'pp_email': form['pp_email'],
+                'pp_invoice': user.payment_invoice,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': refund_request_token.make_token(user),
@@ -626,6 +658,7 @@ def refund_request_complete(request, uidb64, token, pp_email):
                     user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL or regutils.RegisterTypes.STAFF_REG_HOTEL):
             user.has_paid_hotel = False
         user.reg_type = None
+        user.payment_invoice = None
 
         user.save()
 
