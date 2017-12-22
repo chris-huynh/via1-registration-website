@@ -16,7 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Designates whether the user can log into this site.'),
+        help_text=_('Has no usage right now.'),
     )
     is_active = models.BooleanField(
         _('active'),
@@ -29,12 +29,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     email_confirmed = models.BooleanField(default=False)
     is_member_school = models.BooleanField(default=False)
     is_alumni = models.BooleanField(default=False)
+    alumni_verif_in_prog = models.BooleanField(default=False)
+    mem_school_verif_in_prog = models.BooleanField(default=False)
     has_paid = models.BooleanField(default=False)
     has_paid_hotel = models.BooleanField(default=False)
     time_paid = models.DateTimeField(default=None, blank=True, null=True)
     reg_type = models.CharField(_('registration type'), max_length=50, blank=True, null=True)
-    alumni_verif_in_prog = models.BooleanField(default=False)
-    mem_school_verif_in_prog = models.BooleanField(default=False)
     payment_invoice = models.CharField(_('payment invoice id'), max_length=40, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
@@ -73,6 +73,7 @@ class Families(models.Model):
 
 class Workshops(models.Model):
     name = models.CharField(_('workshop name'), max_length=65, blank=True, null=True)
+    presenter = models.CharField(_('presenter name'), max_length=60, blank=True, null=True)
     description = models.TextField(_('workshop description'), blank=True, null=True)
     capacity = models.IntegerField(_('workshop capacity'), blank=True, null=True)
     attendee_count = models.IntegerField(_('attendee count'), default=0, blank=True, null=True)
@@ -119,8 +120,14 @@ class UserInfo(models.Model):
     workshop_one = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_one')
     workshop_two = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_two')
     workshop_three = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_three')
+    family = models.ForeignKey(Families, on_delete=models.SET_NULL, blank=True, null=True, default=None)
     photo_name = models.CharField(_('photo name'), max_length=20, blank=True, null=True)
 
     def __str__(self):
         return str(self.user_id)
 
+
+class SpecialRegCodes(models.Model):
+    code = models.CharField(_('special code'), max_length=10, blank=True, null=True)
+    usages_left = models.IntegerField(_('number of usages left'), default=0, null=True)
+    includes_hotel = models.BooleanField(default=False)
