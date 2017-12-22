@@ -68,7 +68,7 @@ class Families(models.Model):
     leader = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.name + '(FL: ' + self.leader + ')'
+        return self.name + ' (FL: ' + self.leader.get_full_name() + ')'
 
 
 class Workshops(models.Model):
@@ -76,7 +76,15 @@ class Workshops(models.Model):
     presenter = models.CharField(_('presenter name'), max_length=60, blank=True, null=True)
     description = models.TextField(_('workshop description'), blank=True, null=True)
     capacity = models.IntegerField(_('workshop capacity'), blank=True, null=True)
-    attendee_count = models.IntegerField(_('attendee count'), default=0, blank=True, null=True)
+    attendee_count = models.IntegerField(
+        _('attendee count'),
+        default=0,
+        blank=True,
+        null=True,
+        help_text=_(
+            'This value should be 0 for new workshops. DO NOT adjust this number after a workshop is created.'
+        ),
+    )
     SESSION_ONE = 1
     SESSION_TWO = 2
     SESSION_THREE = 3
