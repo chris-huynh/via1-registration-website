@@ -139,3 +139,6 @@ class SpecialRegCodes(models.Model):
     code = models.CharField(_('special code'), max_length=10, blank=True, null=True)
     usages_left = models.IntegerField(_('number of usages left'), default=0, null=True)
     includes_hotel = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.code

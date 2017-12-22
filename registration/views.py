@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.utils import timezone
+from django.db import transaction
 
 # Need these for email activation
 from django.utils.http import urlsafe_base64_encode
@@ -33,6 +34,7 @@ from registration import regutils
 # Import models
 from registration.models import ConferenceVars
 from registration.models import UserInfo
+from registration.models import SpecialRegCodes
 
 
 # Need to use get_user_model() because we have a custom auth user model
@@ -674,3 +676,36 @@ def refund_request_complete(request, uidb64, token, pp_email):
         return redirect('/registration/refund_request_complete')
 
 
+@login_required()
+def registration_code(request):
+    if request.method == 'GET':
+        error = None
+        # Check if reg code is valid
+        if SpecialRegCodes.objects.filter(code=request.GET.get('reg_code')).exists():
+            reg_code = SpecialRegCodes.objects.get(code=request.GET.get('reg_code'))
+            user = request.user
+
+            if reg_code.usages_left > 0:
+                with transaction.atomic():
+                    user.has_paid = True
+                    user.time_paid = timezone.now()
+                    user.reg_type = 'CODE-' + reg_code.code
+                    user.payment_invoice = 'N/A - used registration code'
+
+                    if reg_code.includes_hotel:
+                        user.has_paid_hotel = True
+
+                    user.save()
+
+                    reg_code.usages_left -= 1
+                    reg_code.save()
+            else:
+                error = 'The registration code you provided (' + reg_code.code + ') can no longer be used.'
+
+        else:
+            error = 'The code you provided (' + request.GET.get('reg_code') + ') is not valid. Please try again.'
+
+        return render(request, 'registration/reg_code_complete.html', {'error': error, 'code': request.GET.get('reg_code')})
+
+    else:
+        return redirect('index')

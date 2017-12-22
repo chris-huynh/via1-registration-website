@@ -16,13 +16,14 @@
 
                 <div class="row">
                     <div class="col s10 offset-s1 center-align">
-                        <p>
-                            The activation link you used is no longer valid.
-                        </p>
-                        <p>
-                            If you continue to experience issues, please contact <b>conference.executive@uvsamidwest.org</b>
-                        </p>
-                        <a href="/registration/login" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Login Page</a>
+                        {% if error %}
+                            <p>{{ error }}</p>
+                        {% else %}
+                            <p>You have successfully registered for conference using the registration code: <b>{{ code }}</b></p>
+                        {% endif %}
+
+                        <p>If you have questions or need further assistance, please contact <b>conference.executive@uvsamidwest.org</b></p>
+                        <a href="/" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Home</a>
                     </div>
                 </div>
 

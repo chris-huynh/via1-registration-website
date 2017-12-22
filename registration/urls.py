@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^alumni_verification/$', views.alumni_verification_request, name='alumni_verification_request'),
     url(r'^alumni_verification_approve/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.alumni_verification_approve, name='alumni_verification_approve'),
-    url(r'^home/alumni_verification_deny/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+    url(r'^alumni_verification_deny/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.alumni_verification_deny, name='alumni_verification_deny'),
     url(r'^alumni_verification_approved/$', TemplateView.as_view(template_name='registration/alumni_verification_approved.html')),
     url(r'^alumni_verification_denied/$', TemplateView.as_view(template_name='registration/alumni_verification_denied.html')),
@@ -45,4 +45,6 @@ urlpatterns = [
     url(r'^refund_request_complete/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/(?P<pp_email>.*)/$',
         views.refund_request_complete, name='refund_request_complete'),
     url(r'^refund_request_complete/$', TemplateView.as_view(template_name='registration/refund_request_complete.html')),
+    url(r'^home/registration_code/$', views.registration_code, name='registration_code'),
+    url(r'^home/reg_code_complete/$', login_required(TemplateView.as_view(template_name='registration/reg_code_complete.html'))),
 ]

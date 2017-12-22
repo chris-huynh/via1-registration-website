@@ -33,6 +33,17 @@
         color: #e97d15;
     }
 
+    .checkbox-orange[type="checkbox"] + label:before{
+        border: 2px solid #e97d15;
+        background: transparent;
+    }
+    .checkbox-orange[type="checkbox"]:checked + label:before{
+        border: 2px solid transparent;
+        border-bottom: 2px solid #e97d15;
+        border-right: 2px solid #e97d15;
+        background: transparent;
+    }
+
     /* Text color for materialize form select dropdown */
     ul.dropdown-content.select-dropdown li span {
         color: #000; /* no need for !important */

@@ -143,6 +143,25 @@
                 </div>
             </div>
         </div>
+
+        <div class="row" style="margin-top: 50px;">
+            <div class="col s12 l10 offset-l1 center-align">
+                <h5 style="font-weight: 300">Have a registration code? Enter it below</h5>
+            </div>
+            <div class="col s12 l10 offset-l1 center-align">
+            <form method="get" action="{% url 'registration_code' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s10 l4 offset-s1 offset-l4">
+                        <label for="reg_code">Code</label>
+                        <input type="text" id="reg_code" name="reg_code" maxlength="10" required>
+                        <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Submit</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+
         <br><br><br><br>
     </div>
     {% endif %}
@@ -302,13 +321,13 @@
                     <div class="row">
                         <div class="col s10 l8 offset-s1 offset-l2">
                             <p>
-                                <input type="checkbox" id="sponsor" name="sponsor" value="interested" />
+                                <input type="checkbox" id="sponsor" class="checkbox-orange" name="sponsor" value="interested" />
                                 <label for="sponsor">Would you be interested in being a sponsor for the conference or sponsoring an attendee scholarship?</label>
                             </p>
                         </div>
                         <div class="col s10 l8 offset-s1 offset-l2">
                             <p>
-                                <input type="checkbox" id="mentorship_program" name="mentorship_program" value="interested" />
+                                <input type="checkbox" id="mentorship_program" class="checkbox-orange" name="mentorship_program" value="interested" />
                                 <label for="mentorship_program">Would you be interested in taking part in our mentorship program?</label>
                             </p>
                         </div>
