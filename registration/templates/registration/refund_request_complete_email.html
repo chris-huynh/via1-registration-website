@@ -4,7 +4,9 @@
     <p>Your refund request has been fulfilled by the VIA-1 Finance Committee.</p>
 
     <p><b>Refunded to PayPal Account:</b> {{ pp_email }}<br>
-        <b>Amount Refunded:</b> ${{ amount }}
+        <b>Registration Amount Refunded:</b> ${{ amount }}<br>
+        <b>Hotel Amount Refunded:</b> {% if not hotel_amount == 'None' %}${% endif %}{{ hotel_amount }}<br>
+        <i>Note: Hotel Amount Refunded will be "None" if you did not pay for hotel OR purchased a registration+hotel bundle.</i>
     </p>
 
     <p>You should have also received a refund receipt from PayPal. If you have not received this yet then your refund may still be processing.</p>

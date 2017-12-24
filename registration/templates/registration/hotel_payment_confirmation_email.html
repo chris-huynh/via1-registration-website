@@ -1,0 +1,16 @@
+{% autoescape off %}
+    Hi {{ name }},
+    <br><br>
+    <p>This email is confirmation that we have received your hotel payment for UVSA-Midwest's Vietnamese Interacting As One Conference.</p>
+
+    <p><b>Hotel Package:</b> {{ package }}<br>
+    <b>Price:</b> ${{ amount }}<br>
+    </p>
+
+    <p>If you have any further questions or concerns, please contact <b>registration@uvsamidwest.org</b></p>
+
+    <br>
+    Sincerely,
+    <br>
+    <b>The VIA-1 IT Team</b>
+{% endautoescape %}

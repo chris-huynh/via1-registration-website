@@ -22,7 +22,7 @@ from django.utils.encoding import force_text
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
 paypalrestsdk.configure({
-    "mode": "live",  # sandbox or live
+    "mode": "sandbox",  # sandbox or live
     "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
     "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
 
@@ -63,15 +63,14 @@ def home(request):
 
         context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
                    'is_early_reg_full': is_early_reg_full, 'is_regular_reg_full': is_regular_reg_full, 'is_alumni_reg_full': is_alumni_reg_full,
-                   'refund_deadline': regutils.refund_deadline, 'todays_date': todays_date, 'open_date': regutils.early_reg_open_date,
-                   'member_school_names': regutils.member_school_names, 'attendee_types': regutils.AttendeeTypes,
+                   'payment_refund_deadline': regutils.payment_refund_deadline, 'todays_date': todays_date,
+                   'open_date': regutils.early_reg_open_date, 'member_school_names': regutils.member_school_names,
                    'register_types': regutils.RegisterTypes, 'register_prices': regutils.RegisterPrices}
         return render(request, 'registration/home.html', context)
     else:
         return redirect('/registration/login')
 
 
-@login_required()
 def profile(request):
     if request.user.is_authenticated:
         user_info = UserInfo.objects.get(pk=request.user.id)
@@ -89,6 +88,27 @@ def profile(request):
         return render(request, 'registration/profile.html', context)
     else:
         return redirect('/registration/login')
+
+
+def hotel(request):
+    if request.user.is_authenticated:
+        user = request.user
+
+        if user.has_paid:
+            todays_date = datetime.datetime.now()
+            is_hotel_payment_refund_open = True if (todays_date < regutils.payment_refund_deadline) else False
+
+            context = {'hotel_price': regutils.RegisterPrices.HOTEL_PRICE,
+                       'hotel_price_whole': regutils.RegisterPrices.HOTEL_PRICE * 4,
+                       'is_hotel_payment_refund_open': is_hotel_payment_refund_open,
+                       'hotel_payment_types': regutils.HotelPaymentTypes}
+
+            return render(request, 'registration/hotel.html', context)
+        else:
+            messages.info(request, 'You must be registered for conference to access the hotel page')
+            return redirect('home')
+    else:
+        return redirect('login')
 
 
 @login_required()
@@ -535,6 +555,7 @@ def update_paid_attendee(request):
                             reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL or
                             reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL):
                     user.has_paid_hotel = True
+                    user.hotel_type = regutils.HotelPaymentTypes.SINGLE_SPOT
 
                 user.save()
 
@@ -587,6 +608,41 @@ def update_paid_attendee(request):
                 return JsonResponse({})
 
 
+@login_required()
+def update_hotel_paid(request):
+    if request.is_ajax():
+        user = request.user
+
+        if not user.has_paid_hotel:
+            if paypalrestsdk.Payment.find(request.GET.get('paymentID')):
+                hotel_type = request.GET.get('hotel_type')
+                invoice = request.GET.get('payment_invoice')
+
+                user.has_paid_hotel = True
+                user.hotel_type = hotel_type
+                user.hotel_payment_invoice = invoice
+
+                user.save()
+
+                if hotel_type == regutils.HotelPaymentTypes.SINGLE_SPOT:
+                    amount = regutils.RegisterPrices.HOTEL_PRICE
+                    package = 'Hotel - Single Spot'
+                elif hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+                    amount = regutils.RegisterPrices.HOTEL_PRICE * 4
+                    package = 'Hotel - Whole Room'
+
+                subject = 'Your VIA-1 Hotel Payment Confirmation'
+                message = render_to_string('registration/hotel_payment_confirmation_email.html', {
+                    'name': user.first_name,
+                    'package': package,
+                    'amount': amount
+                })
+                send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
+                # Just need to send an empty JSON response
+                return JsonResponse({})
+
+
 def refund_request(request):
     if request.method == 'POST':
         form = request.POST
@@ -602,6 +658,7 @@ def refund_request(request):
                 'pp_name': form['pp_name'],
                 'pp_email': form['pp_email'],
                 'pp_invoice': user.payment_invoice,
+                'pp_hotel_invoice': user.hotel_payment_invoice,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': refund_request_token.make_token(user),
@@ -615,6 +672,9 @@ def refund_request(request):
         return redirect('index')
 
 
+# This gets called from the email sent to the Finance committee when they hit the "Complete Refund" button.
+# Note that this method only handles cases where the user pays through the website (and thus PayPal).
+# e.g. If a user pays manually (say Venmo) and gets a custom payment invoice ID, this method will NOT know what to do.
 def refund_request_complete(request, uidb64, token, pp_email):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -623,23 +683,6 @@ def refund_request_complete(request, uidb64, token, pp_email):
         user = None
 
     if user is not None and refund_request_token.check_token(user, token):
-        if user.reg_type == regutils.RegisterTypes.EARLY_REG:
-            amount = regutils.RegisterPrices.EARLY_REG_PRICE
-        elif user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
-            amount = regutils.RegisterPrices.EARLY_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG:
-            amount = regutils.RegisterPrices.REGULAR_REG_PRICE
-        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
-            amount = regutils.RegisterPrices.REGULAR_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG:
-            amount = regutils.RegisterPrices.ALUMNI_REG_PRICE
-        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
-            amount = regutils.RegisterPrices.ALUMNI_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-        elif user.reg_type == regutils.RegisterTypes.STAFF_REG:
-            amount = regutils.RegisterPrices.STAFF_REG_PRICE
-        elif user.reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
-            amount = regutils.RegisterPrices.STAFF_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
-
         # Decrement attendee count for appropriate attendee_type
         conf_vars = ConferenceVars.objects.get(pk=1)
         if user.reg_type == regutils.RegisterTypes.EARLY_REG or regutils.RegisterTypes.EARLY_REG_HOTEL:
@@ -652,15 +695,51 @@ def refund_request_complete(request, uidb64, token, pp_email):
             conf_vars.staff_attendee_count -= 1
         conf_vars.save()
 
+        hotel_amount = 'None'
+        amount = 'None'
+        if user.reg_type == regutils.RegisterTypes.EARLY_REG:
+            amount = regutils.RegisterPrices.EARLY_REG_PRICE
+            if user.hotel_type == regutils.HotelPaymentTypes.SINGLE_SPOT:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE
+            elif user.hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE * 4
+        elif user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
+            amount = regutils.RegisterPrices.EARLY_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG:
+            amount = regutils.RegisterPrices.REGULAR_REG_PRICE
+            if user.hotel_type == regutils.HotelPaymentTypes.SINGLE_SPOT:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE
+            elif user.hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE * 4
+        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
+            amount = regutils.RegisterPrices.REGULAR_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG:
+            amount = regutils.RegisterPrices.ALUMNI_REG_PRICE
+            if user.hotel_type == regutils.HotelPaymentTypes.SINGLE_SPOT:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE
+            elif user.hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE * 4
+        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
+            amount = regutils.RegisterPrices.ALUMNI_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+        elif user.reg_type == regutils.RegisterTypes.STAFF_REG:
+            amount = regutils.RegisterPrices.STAFF_REG_PRICE
+            if user.hotel_type == regutils.HotelPaymentTypes.SINGLE_SPOT:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE
+            elif user.hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+                hotel_amount = regutils.RegisterPrices.HOTEL_PRICE * 4
+        elif user.reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
+            amount = regutils.RegisterPrices.STAFF_REG_PRICE + regutils.RegisterPrices.HOTEL_BUNDLE_PRICE
+
         # Need to change user's payment status
         user.has_paid = False
         user.time_paid = None
-        # This has to be done before reg_type gets set to None
-        if (user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL or user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL or
-                    user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL or regutils.RegisterTypes.STAFF_REG_HOTEL):
-            user.has_paid_hotel = False
         user.reg_type = None
         user.payment_invoice = None
+
+        if user.has_paid_hotel:
+            user.has_paid_hotel = False
+            user.hotel_type = None
+            user.hotel_payment_invoice = None
 
         user.save()
 
@@ -669,7 +748,8 @@ def refund_request_complete(request, uidb64, token, pp_email):
         message = render_to_string('registration/refund_request_complete_email.html', {
             'name': user.first_name,
             'pp_email': pp_email,
-            'amount': str(amount)
+            'amount': str(amount),
+            'hotel_amount': str(hotel_amount)
         })
         send_mail(subject, "", None, [user.email], False, None, None, None, message)
 
@@ -694,6 +774,7 @@ def registration_code(request):
 
                     if reg_code.includes_hotel:
                         user.has_paid_hotel = True
+                        user.hotel_type = regutils.HotelPaymentTypes.SINGLE_SPOT
 
                     user.save()
 

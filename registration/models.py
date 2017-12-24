@@ -32,10 +32,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     alumni_verif_in_prog = models.BooleanField(default=False)
     mem_school_verif_in_prog = models.BooleanField(default=False)
     has_paid = models.BooleanField(default=False)
-    has_paid_hotel = models.BooleanField(default=False)
     time_paid = models.DateTimeField(default=None, blank=True, null=True)
     reg_type = models.CharField(_('registration type'), max_length=50, blank=True, null=True)
     payment_invoice = models.CharField(_('payment invoice id'), max_length=40, blank=True, null=True)
+    has_paid_hotel = models.BooleanField(default=False)
+    hotel_type = models.CharField(_('hotel type'), max_length=15, blank=True, null=True)
+    hotel_payment_invoice = models.CharField(_('hotel payment invoice id'), max_length=40, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
@@ -124,12 +126,28 @@ class UserInfo(models.Model):
     emergency_contact_number = models.CharField(_('emergency contact phone number'), max_length=10, blank=True, null=True)
     emergency_contact_relation = models.CharField(_('emergency contact relation'), max_length=20, blank=True, null=True)
     shirt_size = models.CharField(_('shirt size'), max_length=15, blank=True, null=True)
-    coed_roommates = models.BooleanField(default=False)
     workshop_one = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_one')
     workshop_two = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_two')
     workshop_three = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_three')
     family = models.ForeignKey(Families, on_delete=models.SET_NULL, blank=True, null=True, default=None)
     photo_name = models.CharField(_('photo name'), max_length=20, blank=True, null=True)
+    coed_roommates = models.BooleanField(
+        default=False,
+        help_text=_(
+            'Whether or not the attendee is okay with having co-ed roommates.'
+        ),
+    )
+    is_room_leader = models.BooleanField(default=False)
+    room_code = models.CharField(_('room code'), max_length=15, blank=True, null=True)
+    roommate_list = models.CharField(
+        _('roommate list'),
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_(
+            'This will only be used by people who purchased a whole room.'
+        ),
+    )
 
     def __str__(self):
         return str(self.user_id)

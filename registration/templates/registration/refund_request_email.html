@@ -1,13 +1,15 @@
 {% autoescape off %}
     Hi Finance Committee,
     <br><br>
-    <p>A VIA-1 attendee by the name of <b>{{ name }}</b> has requested a registration refund.</p>
+    <p>A VIA-1 attendee by the name of <b>{{ name }}</b> has requested a registration refund.</p><br>
 
     <p>The user paid for registration using the following PayPal information:<br>
     <b>Name:</b> {{ pp_name }}<br>
     <b>Email:</b> {{ pp_email }}<br>
-    <b>Invoice ID:</b> {{ pp_invoice }}<br>
-    </p>
+    <b>Registration Invoice ID:</b> {{ pp_invoice }}<br>
+    <b>Hotel Invoice ID:</b> {{ pp_hotel_invoice }}<br>
+    <i>Note: Hotel Invoice ID will only exist if the attendee paid for hotel SEPARATELY. If a hotel invoice ID is present, make sure to refund that invoice as well.</i>
+    </p><br>
 
     <p>The attendee's VIA-1 email address is <b>{{ email }}</b> if you need to follow up with them.</p>
 

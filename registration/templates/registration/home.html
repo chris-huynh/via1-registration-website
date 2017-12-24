@@ -18,11 +18,20 @@
                 <p class="flow-text" style="font-weight: 100; font-size: 48px; margin-bottom: 0">Hi, {{ user.first_name }}.
                 <br>
                 Welcome to VIA‑1</p>
-                <p class="flow-text">Registration is currently {% if is_early_reg_open or is_regular_reg_open or is_alumni_reg_open %} <strong class="orange-text">OPEN</strong> {% else %} <strong class="orange-text">CLOSED</strong> {% endif %}</p>
                 <p class="flow-text">Your Registration Status: {% if user.has_paid %} <strong class="orange-text">PAID</strong> {% else %} <strong class="orange-text">UNPAID</strong> {% endif %}</p>
+                {% if user.has_paid %}
+                <p class="flow-text">Next Step:
+                    {% if user.has_paid_hotel %}
+                        {# TODO Gonna want to change this to Choose Workshops once that page is released #}
+                        <a class="orange-text hover_move_right" style="font-weight: 500" href="{% url 'profile' %}">UPDATE PROFILE<i class="tiny material-icons hover_move_right icon_only_right" style="margin:0">chevron_right</i></a>
+                    {% elif not user.has_paid_hotel %}
+                        <a class="orange-text hover_move_right" style="font-weight: 500" href="{% url 'hotel' %}">HOTEL PAYMENT<i class="tiny material-icons hover_move_right icon_only_right" style="margin:0">chevron_right</i></a>
+                    {% endif %}
+                </p>
+                {% endif %}
 
                 {% if user.has_paid %}
-                    <p class="flow-text">The deadline to refund is {{ refund_deadline }} CST</p>
+                    <p class="flow-text">The deadline to refund is {{ payment_refund_deadline }} CST</p>
                     <a href="#refund_request_modal" class="btn waves-effect waves-light orange modal-trigger hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>REFUND</a>
                 {% else %}
                     <a href="#payment-section" class="white-text" style="cursor: pointer"><i class="material-icons medium hover_orange hover_move_down">keyboard_arrow_down</i></a>
@@ -349,7 +358,9 @@
             <div class="row">
                 <div class="center-align">
                     <h5>Registration Refund Request</h5>
-                    <p>Make sure each field is typed accurately to ensure a quick refund experience.</p>
+                    <p>An email will be sent to the Finance Committee upon completion of this form. If you did not pay for conference
+                    using PayPal, please contact <b>via1.finance@uvsamidwest.org</b></p>
+                    <p class="orange-text"><b>NOTE:</b> If you also paid for hotel, then that purchase will also be refunded.</p>
                 </div>
                 <form method="POST" action="{% url 'refund_request' %}">
                     {% csrf_token %}

@@ -1,0 +1,312 @@
+{% extends 'registration/home_base.html' %}
+
+{% block title %}VIA-1 - Hotel{% endblock %}
+
+{% block additional_head %}
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <style>
+        {# This is for the background #}
+        #default_background {
+            z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;
+            background-attachment: fixed;
+        }
+        #gradient_background {
+            z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)) center center / cover no-repeat;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="default_background" class="hide-on-med-and-down"></div>
+    <div id="gradient_background" class="hide-on-large-only"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0px 24px 0px; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; margin-bottom: 80px; animation-delay: 0.2s;">
+                {% if not user.has_paid_hotel %}
+                <div class="row center-align" style="margin-bottom: 0;">
+                    <div class="col s10 offset-s1">
+                        <h4 style="font-weight: 300;">Hotel</h4>
+                        <p style="font-weight: 300;">Your hotel purchase includes two nights at the
+                            <a class="orange-text hover_black" href="https://www.marriott.com/hotels/travel/cvgkg-kingsgate-marriott-conference-center-at-the-university-of-cincinnati/" target="_blank">
+                                Kingsgate Marriott Conference Center</a>
+                        </p>
+                        <p class="orange-text" style="font-weight:300; font-style: italic"><b>NOTE:</b> You will be able to
+                        choose your roommates once you have paid for hotel.</p>
+                    </div>
+                </div>
+
+                <div class="row center-align">
+                    <div class="col s10 l4 offset-s1 offset-l1" style="padding: 0px 35px 0 35px;">
+                        <h5 class="flow-text" style="font-weight: 600; margin-bottom: 0;">SINGLE SPOT</h5>
+                        <p style="font-weight: 500; font-size: 24px; margin-bottom: 24px;">${{ hotel_price }}</p>
+
+                        {% if not user.has_paid_hotel and is_hotel_payment_refund_open %}
+                            <div id="id_single_spot_hotel_button"></div>
+                        {% else %}
+                            <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
+                        {% endif %}
+                    </div>
+                    <div class="col s10 l2 offset-s1" style="margin-top: 30px; margin-bottom: 30px;">
+                        <h5>-OR-</h5>
+                    </div>
+                    <div class="col s10 l4 offset-s1" style="padding: 0px 35px 0 35px;">
+                        <h5 class="flow-text" style="font-weight: 600; margin-bottom: 0;">WHOLE ROOM</h5>
+                        <p style="font-weight: 500; font-size: 24px; margin-bottom: 24px;">${{ hotel_price_whole }}</p>
+
+                        {% if not user.has_paid_hotel and is_hotel_payment_refund_open %}
+                            <div id="id_whole_hotel_button"></div>
+                        {% else %}
+                            <button class="btn waves-effect waves-light orange" name="submit" disabled>BUY NOW</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                    {% if user.hotel_type == 'single_spot' %}   {# For the future: perhaps want to change this so its not a raw string #}
+                    <div class="row center-align" style="margin-bottom: 0;">
+                        <div class="col s10 offset-s1">
+                            <h4 style="font-weight: 300;">Hotel</h4>
+                            <p style="font-weight: 300;">You purchased a <strong>Single Spot</strong>.</p>
+                            <p>NOTE: This page is still under construction.</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="row center-align" style="margin-bottom: 0;">
+                        <div class="col s10 offset-s1">
+                            <h4 style="font-weight: 300;">Hotel</h4>
+                            <p style="font-weight: 300;">You purchased the <strong>Whole Room</strong> package.</p>
+                            <p>NOTE: This page is still under construction.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block additional_scripts %}
+    {% if not user.has_paid_hotel and is_hotel_payment_refund_open %}
+        {# Paypal Express Check Out for Single Spot Hotel Button #}
+        <script>
+            // Global variable so it can be used in both the payment and onAuthorize contexts
+            var hotel_type, invoice;
+
+            paypal.Button.render({
+
+                env: 'production', // 'sandbox' or 'production'
+
+                client: {
+                    sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',
+                    production: 'AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I'
+                },
+
+                commit: true, // Show a 'Pay Now' button
+
+                style: {
+                    color:  'black',
+                    size:   'responsive',
+                    shape:  'rect',
+                    label:  'pay',
+                    tagline: false
+                },
+
+                payment: function(data, actions) {
+                    var price, description;
+
+                    // Generate a random 9-digit number for the invoice
+                    var invoice_number = Math.floor(Math.random() * 899999999 + 100000000);
+
+                    price = {{ hotel_price }};
+                    description = '2018 VIA-1 Hotel';
+                    hotel_type = '{{ hotel_payment_types.SINGLE_SPOT }}';
+                    invoice = 'via1-2018-hotel-' + {{ user.id }} + '-' + invoice_number;
+
+                    return actions.payment.create({
+                        payment: {
+                            transactions: [
+                                {
+                                    amount: {
+                                        total: price,
+                                        currency: 'USD'
+                                    },
+                                    description: description,
+                                    item_list: {
+                                        items: [
+                                            {
+                                                name: description,  // We can just use the description for the item name, too
+                                                price: price,
+                                                currency: 'USD',
+                                                quantity: 1
+                                            }
+                                        ]
+                                    },
+                                    invoice_number: invoice,
+                                    custom: hotel_type
+                                }
+                            ],
+                            redirect_urls: {
+                                return_url: '{% url 'hotel' %}',
+                                cancel_url: '{% url 'hotel' %}'
+                            }
+                        },
+                        experience: {
+                            input_fields: {
+                                no_shipping: 1
+                            }
+                        }
+                    });
+                },
+
+                onAuthorize: function(data, actions) {
+                    return actions.payment.execute().then(function(payment) {
+                        // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
+                        // The total attendee count will also be incremented
+                        $.ajax({
+                            url: '{% url 'update_hotel_paid' %}',
+                            data: {
+                                'paymentID': data.paymentID,
+                                'hotel_type': hotel_type,
+                                'payment_invoice': invoice
+                            }
+                        });
+                        // TODO Need to change this. If the user doesn't hit okay immediately, the ajax call above can't complete.
+                        window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
+                        // The payment is complete!
+                        // Redirect user to home page
+                        window.location.replace('{% url 'hotel' %}')
+                    });
+                },
+
+                onCancel: function(data, actions) {
+                    // Don't have to do anything on cancel
+                },
+
+                onError: function(err) {
+                    window.alert('An error occurred while checking out. Please try again. If the problem persists, contact conference.executive@uvsamidwest.org')
+                    // onError seems to be called for scenarios like invoice ID being used twice etc
+                    // Maybe we want to display a toast that says an error occurred while paying. Try again
+                }
+
+            }, '#id_single_spot_hotel_button');
+        </script>
+
+        {# Paypal Express Check Out for Whole Hotel Button #}
+        <script>
+            // Global variable so it can be used in both the payment and onAuthorize contexts
+            var hotel_type, invoice;
+
+            paypal.Button.render({
+
+                env: 'production', // 'sandbox' or 'production'
+
+                client: {
+                    sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',
+                    production: 'AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I'
+                },
+
+                commit: true, // Show a 'Pay Now' button
+
+                style: {
+                    color:  'black',
+                    size:   'responsive',
+                    shape:  'rect',
+                    label:  'pay',
+                    tagline: false
+                },
+
+                payment: function(data, actions) {
+                    var price, description;
+
+                    // Generate a random 9-digit number for the invoice
+                    var invoice_number = Math.floor(Math.random() * 899999999 + 100000000);
+
+                    price = {{ hotel_price_whole }};
+                    description = '2018 VIA-1 Hotel';
+                    hotel_type = '{{ hotel_payment_types.WHOLE_ROOM }}';
+                    invoice = 'via1-2018-hotel-' + {{ user.id }} + '-' + invoice_number;
+
+                    return actions.payment.create({
+                        payment: {
+                            transactions: [
+                                {
+                                    amount: {
+                                        total: price,
+                                        currency: 'USD'
+                                    },
+                                    description: description,
+                                    item_list: {
+                                        items: [
+                                            {
+                                                name: description,  // We can just use the description for the item name, too
+                                                price: price,
+                                                currency: 'USD',
+                                                quantity: 1
+                                            }
+                                        ]
+                                    },
+                                    invoice_number: invoice,
+                                    custom: hotel_type
+                                }
+                            ],
+                            redirect_urls: {
+                                return_url: '{% url 'hotel' %}',
+                                cancel_url: '{% url 'hotel' %}'
+                            }
+                        },
+                        experience: {
+                            input_fields: {
+                                no_shipping: 1
+                            }
+                        }
+                    });
+                },
+
+                onAuthorize: function(data, actions) {
+                    return actions.payment.execute().then(function(payment) {
+                        // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
+                        // The total attendee count will also be incremented
+                        $.ajax({
+                            url: '{% url 'update_hotel_paid' %}',
+                            data: {
+                                'paymentID': data.paymentID,
+                                'hotel_type': hotel_type,
+                                'payment_invoice': invoice
+                            }
+                        });
+                        // TODO Need to change this. If the user doesn't hit okay immediately, the ajax call above can't complete.
+                        window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
+                        // The payment is complete!
+                        // Redirect user to home page
+                        window.location.replace('{% url 'hotel' %}')
+                    });
+                },
+
+                onCancel: function(data, actions) {
+                    // Don't have to do anything on cancel
+                },
+
+                onError: function(err) {
+                    window.alert('An error occurred while checking out. Please try again. If the problem persists, contact conference.executive@uvsamidwest.org')
+                    // onError seems to be called for scenarios like invoice ID being used twice etc
+                    // Maybe we want to display a toast that says an error occurred while paying. Try again
+                }
+
+            }, '#id_whole_hotel_button');
+        </script>
+    {% endif %}
+{% endblock %}

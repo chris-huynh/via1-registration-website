@@ -7,6 +7,7 @@
 import datetime
 
 
+# TODO Currently Unused. Remove?
 class AttendeeTypes:
     EARLY_REG_ATTENDEE = '1'
     REGULAR_REG_ATTENDEE = '2'
@@ -42,6 +43,11 @@ class RegisterCaps:
     STAFF_REG_CAP = 80
 
 
+class HotelPaymentTypes:
+    SINGLE_SPOT = 'single_spot'
+    WHOLE_ROOM = 'whole_room'
+
+
 # Open 12-14-2017 @ 1800/6:00p CENTRAL (timezone is set in settings.py)
 # Close 1-3-2018 @ 11:59:59
 early_reg_open_date = datetime.datetime(2017, 12, 14, 18, 0, 0)
@@ -57,7 +63,9 @@ regular_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 alumni_reg_open_date = datetime.datetime(2018, 1, 4, 18, 0, 0)
 alumni_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 
-refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
+
+payment_refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
+hotel_payment_deadline = datetime.datetime(2018, 2, 7, 23, 59, 59)
 
 
 graduation_years = [
