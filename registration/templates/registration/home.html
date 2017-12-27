@@ -331,13 +331,13 @@
                         <div class="col s10 l8 offset-s1 offset-l2">
                             <p>
                                 <input type="checkbox" id="sponsor" class="checkbox-orange" name="sponsor" value="interested" />
-                                <label for="sponsor">Would you be interested in being a sponsor for the conference or sponsoring an attendee scholarship?</label>
+                                <label for="sponsor" class="black-text">Would you be interested in being a sponsor for the conference or sponsoring an attendee scholarship?</label>
                             </p>
                         </div>
                         <div class="col s10 l8 offset-s1 offset-l2">
                             <p>
                                 <input type="checkbox" id="mentorship_program" class="checkbox-orange" name="mentorship_program" value="interested" />
-                                <label for="mentorship_program">Would you be interested in taking part in our mentorship program?</label>
+                                <label for="mentorship_program" class="black-text">Would you be interested in taking part in our mentorship program?</label>
                             </p>
                         </div>
                     </div>
@@ -356,6 +356,7 @@
     <div id="refund_request_modal" class="modal">
         <div class="modal-content">
             <div class="row">
+                {% if is_paid_with_pp %}
                 <div class="center-align">
                     <h5>Registration Refund Request</h5>
                     <p>An email will be sent to the Finance Committee upon completion of this form. If you did not pay for conference
@@ -369,6 +370,7 @@
                             <label for="pp_name">Full Name On PayPal Account</label>
                             <input type="text" id="pp_name" name="pp_name" required>
                         </div>
+                    </div>
                     <div class="row">
                         <div class="input-field col s10 l8 offset-s1 offset-l2">
                             <label for="pp_email">PayPal Email</label>
@@ -384,6 +386,13 @@
                         </div>
                     </div>
                 </form>
+                {% else %}
+                <div class="center-align">
+                    <h5>Registration Refund Request</h5>
+                    <p>Our records indicate that you did not purchase registration using our PayPal system. Please contact
+                    <b>via1.finance@uvsamidwest.org</b> for further assistance.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

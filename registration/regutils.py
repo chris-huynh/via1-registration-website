@@ -65,7 +65,9 @@ alumni_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 
 
 payment_refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
-hotel_payment_deadline = datetime.datetime(2018, 2, 7, 23, 59, 59)
+staff_payment_deadline = datetime.datetime(2018, 2, 7, 23, 59, 59)
+
+roommate_deadline = datetime.datetime(2018, 3, 2, 23, 59, 59)
 
 
 graduation_years = [

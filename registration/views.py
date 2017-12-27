@@ -14,10 +14,19 @@ from django.db import transaction
 from django.utils.http import urlsafe_base64_encode
 from django.utils.http import urlsafe_base64_decode
 from django.template.loader import render_to_string
-from registration.tokens import account_activation_token, member_school_verification_token, refund_request_token, alumni_verification_token
+from registration.tokens import account_activation_token, member_school_verification_token, refund_request_token, alumni_verification_token, refund_hotel_request_token
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 
+import datetime
+from random import randint
+
+from registration import regutils
+
+# Import models
+from registration.models import ConferenceVars
+from registration.models import UserInfo
+from registration.models import SpecialRegCodes
 
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
@@ -25,16 +34,6 @@ paypalrestsdk.configure({
     "mode": "sandbox",  # sandbox or live
     "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
     "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
-
-
-import datetime
-from registration import regutils
-
-
-# Import models
-from registration.models import ConferenceVars
-from registration.models import UserInfo
-from registration.models import SpecialRegCodes
 
 
 # Need to use get_user_model() because we have a custom auth user model
@@ -56,16 +55,26 @@ def home(request):
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
         conference_caps = ConferenceVars.objects.get(pk=1)
-        # Gonna leave this as Full indefinitely for now. Since we want it to say Sold Out permanently even if someone refunds
+        # TODO Gonna leave this as Full indefinitely for now. Since we want it to say Sold Out permanently even if someone refunds
         is_early_reg_full = True #if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
         is_regular_reg_full = True if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
+
+        # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances of it
+        # This string is used in the creation of the invoice in Home.html and Hotel.html
+        if request.user.payment_invoice:
+            if 'via1-2018-' in request.user.payment_invoice:
+                is_paid_with_pp = True
+            else:
+                is_paid_with_pp = False
+        else:
+            is_paid_with_pp = False
 
         context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
                    'is_early_reg_full': is_early_reg_full, 'is_regular_reg_full': is_regular_reg_full, 'is_alumni_reg_full': is_alumni_reg_full,
                    'payment_refund_deadline': regutils.payment_refund_deadline, 'todays_date': todays_date,
                    'open_date': regutils.early_reg_open_date, 'member_school_names': regutils.member_school_names,
-                   'register_types': regutils.RegisterTypes, 'register_prices': regutils.RegisterPrices}
+                   'register_types': regutils.RegisterTypes, 'register_prices': regutils.RegisterPrices, 'is_paid_with_pp': is_paid_with_pp}
         return render(request, 'registration/home.html', context)
     else:
         return redirect('/registration/login')
@@ -97,11 +106,40 @@ def hotel(request):
         if user.has_paid:
             todays_date = datetime.datetime.now()
             is_hotel_payment_refund_open = True if (todays_date < regutils.payment_refund_deadline) else False
+            is_roommate_choosing_open = True if (todays_date < regutils.roommate_deadline) else False
+
+            # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances of it
+            # This string is used in the creation of the invoice in Home.html and Hotel.html
+            if user.hotel_payment_invoice:
+                if 'via1-2018-' in user.hotel_payment_invoice:
+                    is_paid_with_pp = True
+                else:
+                    is_paid_with_pp = False
+            else:
+                is_paid_with_pp = False
+
+            user_info = UserInfo.objects.get(pk=user.id)
+
+            if user_info.room_code:
+                roommates = User.objects.filter(userinfo__room_code=user_info.room_code)
+                room_capacity = user_info.room_code[-1:]     # Get the last character of the room code (last character is the room size)
+            else:
+                roommates = []
+                room_capacity = 0
 
             context = {'hotel_price': regutils.RegisterPrices.HOTEL_PRICE,
                        'hotel_price_whole': regutils.RegisterPrices.HOTEL_PRICE * 4,
+                       'hotel_payment_types': regutils.HotelPaymentTypes,
+                       'roommate_deadline': regutils.roommate_deadline,
                        'is_hotel_payment_refund_open': is_hotel_payment_refund_open,
-                       'hotel_payment_types': regutils.HotelPaymentTypes}
+                       'is_paid_with_pp': is_paid_with_pp,
+                       'is_roommate_choosing_open': is_roommate_choosing_open,
+                       'is_coed_checked': user_info.coed_roommates,
+                       'is_room_leader': user_info.is_room_leader,
+                       'room_code': user_info.room_code,
+                       'roommates': roommates,
+                       'room_capacity': room_capacity,
+                       'current_room_size': roommates.count}
 
             return render(request, 'registration/hotel.html', context)
         else:
@@ -664,7 +702,7 @@ def refund_request(request):
                 'token': refund_request_token.make_token(user),
             })
 
-            send_mail(subject, "", None, ['via1.finance@uvsamidwest.org'], False, None, None, None, message)
+            send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
 
             messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
             return redirect('index')
@@ -756,6 +794,67 @@ def refund_request_complete(request, uidb64, token, pp_email):
         return redirect('/registration/refund_request_complete')
 
 
+def refund_hotel_request(request):
+    if request.method == 'POST':
+        form = request.POST
+        user = request.user
+
+        # Only proceed if the user has paid for hotel
+        if user.has_paid_hotel:
+            current_site = get_current_site(request)
+            subject = '[REFUND REQUEST] A VIA-1 Attendee Requests A Hotel Refund'
+            message = render_to_string('registration/hotel_refund_request_email.html', {
+                'name': user.get_full_name(),
+                'email': user.email,
+                'pp_name': form['pp_name'],
+                'pp_email': form['pp_email'],
+                'pp_hotel_invoice': user.hotel_payment_invoice,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': refund_hotel_request_token.make_token(user),
+            })
+
+            send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
+
+            messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
+            return redirect('hotel')
+    else:
+        return redirect('index')
+
+
+def refund_hotel_request_complete(request, uidb64, token, pp_email):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and refund_hotel_request_token.check_token(user, token):
+        hotel_amount = 'None'
+        if user.hotel_type == regutils.HotelPaymentTypes.SINGLE_SPOT:
+            hotel_amount = regutils.RegisterPrices.HOTEL_PRICE
+        elif user.hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+            hotel_amount = regutils.RegisterPrices.HOTEL_PRICE * 4
+
+        # Need to change user's hotel payment status
+        user.has_paid_hotel = False
+        user.hotel_type = None
+        user.hotel_payment_invoice = None
+
+        user.save()
+
+        # Send an email to the user letting them know that their refund has been fulfilled
+        subject = 'Your VIA-1 Hotel Refund Has Been Fulfilled'
+        message = render_to_string('registration/refund_hotel_request_complete_email.html', {
+            'name': user.first_name,
+            'pp_email': pp_email,
+            'hotel_amount': str(hotel_amount)
+        })
+        send_mail(subject, "", None, [user.email], False, None, None, None, message)
+
+        return redirect('/registration/refund_request_complete')
+
+
 @login_required()
 def registration_code(request):
     if request.method == 'GET':
@@ -770,7 +869,7 @@ def registration_code(request):
                     user.has_paid = True
                     user.time_paid = timezone.now()
                     user.reg_type = 'CODE-' + reg_code.code
-                    user.payment_invoice = 'N/A - used registration code'
+                    user.payment_invoice = 'N/A - used registration code'   # Perhaps wanna put payment method in here. TBD once we implement code-generator page
 
                     if reg_code.includes_hotel:
                         user.has_paid_hotel = True
@@ -790,3 +889,84 @@ def registration_code(request):
 
     else:
         return redirect('index')
+
+
+@login_required()
+def change_coed_preference(request):
+    if request.is_ajax():
+        user_info = UserInfo.objects.get(pk=request.user.id)
+        coed_roommates = request.GET.get('coed_roommates')
+        print(coed_roommates)
+        if coed_roommates == 'checked':
+            user_info.coed_roommates = True
+        else:
+            user_info.coed_roommates = False
+
+        user_info.save()
+
+        return JsonResponse({})
+
+
+@login_required()
+def create_hotel_room(request):
+    if request.method == 'GET':
+        user_info = UserInfo.objects.get(pk=request.user.id)
+        if not user_info.is_room_leader and user_info.room_code is None:
+            group_size = request.GET.get('group_size')
+            room_code = str(user_info.user_id.id) + '-' + str(randint(100, 999)) + '-' + group_size
+
+            user_info.is_room_leader = True
+            user_info.room_code = room_code
+            user_info.save()
+            return redirect('hotel')
+        else:
+            return redirect('hotel')
+    else:
+        return redirect('index')
+
+
+@login_required()
+def disband_room(request):
+    user_info = request.user.userinfo
+
+    if user_info.is_room_leader and user_info.room_code:
+        room_code = user_info.room_code
+
+        user_info.room_code = None
+        user_info.is_room_leader = False
+        user_info.save()
+
+        user_infos = UserInfo.objects.filter(room_code=room_code)
+        for ui in user_infos:
+            ui.room_code = None
+            ui.save()
+    elif user_info.room_code:
+        user_info.room_code = None
+        user_info.save()
+
+    return redirect('hotel')
+
+
+@login_required()
+def join_room(request):
+    if request.method == 'GET':
+        room_code = request.GET.get('room_code')
+        if UserInfo.objects.filter(room_code=room_code).exists():
+            user_infos = UserInfo.objects.filter(room_code=room_code)
+
+            capacity = room_code[-1:]
+            if user_infos.count() < int(capacity):
+                user_info = request.user.userinfo
+                user_info.room_code = room_code
+                user_info.save()
+                return redirect('hotel')
+            else:
+                messages.error(request, 'Sorry, that group is full.')
+                return render(request, 'registration/hotel.html')
+
+        else:
+            messages.error(request, 'Sorry, that group code is invalid.')
+            return render(request, 'registration/hotel.html')
+
+    else:
+        return redirect('hotel')

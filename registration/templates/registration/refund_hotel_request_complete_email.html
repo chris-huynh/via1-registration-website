@@ -1,0 +1,18 @@
+{% autoescape off %}
+    Hi {{ name }},
+    <br><br>
+    <p>Your hotel refund request has been fulfilled by the VIA-1 Finance Committee.</p>
+
+    <p><b>Refunded to PayPal Account:</b> {{ pp_email }}<br>
+        <b>Hotel Amount Refunded:</b> {% if not hotel_amount == 'None' %}${% endif %}{{ hotel_amount }}<br>
+    </p>
+
+    <p>You should have also received a refund receipt from PayPal. If you have not received this yet then your refund may still be processing.</p>
+
+    <p>If you have any additional questions or concerns, please contact finance@uvsamidwest.org</p>
+
+    <br>
+    Sincerely,
+    <br>
+    <b>The VIA-1 IT Team</b>
+{% endautoescape %}
