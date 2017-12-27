@@ -702,7 +702,7 @@ def refund_request(request):
                 'token': refund_request_token.make_token(user),
             })
 
-            send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
+            send_mail(subject, "", None, ['via1.finance@uvsamidwest.org'], False, None, None, None, message)
 
             messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
             return redirect('index')
@@ -814,7 +814,7 @@ def refund_hotel_request(request):
                 'token': refund_hotel_request_token.make_token(user),
             })
 
-            send_mail(subject, "", None, ['tomng2012@gmail.com'], False, None, None, None, message)
+            send_mail(subject, "", None, ['via1.finance@uvsamidwest.org'], False, None, None, None, message)
 
             messages.info(request, 'Your refund request has been submitted. You will receive an email once the Finance committee has issued your refund.')
             return redirect('hotel')
