@@ -40,6 +40,9 @@
                     <div class="col s10 offset-s1">
                         <h4 style="font-weight: 300;">Your Profile</h4>
                         <p style="font-weight: 300;">This information will let us know more about you.</p>
+                        <p class="orange-text" style="font-weight: 300; font-style: italic;"><b>NOTE:</b> Fields with an asterisk(*)
+                            are required to be able to choose workshops.
+                        </p>
                     </div>
                 </div>
 
@@ -49,7 +52,6 @@
                             <li class="tab col s4"><a href="#account">Account</a></li>
                             <li class="tab col s4"><a href="#personal" class="active">Personal</a></li>
                             <li class="tab col s4"><a href="#conference">Conference</a></li>
-{#                            <li class="tab col s3"><a href="#misc">Misc.</a></li>#}
                         </ul>
                     </div>
 
@@ -104,7 +106,7 @@
                                             <div class="row">
                                                 <div class="input-field col s12 l8">
                                                     <i class="material-icons prefix">school</i>
-                                                    <label for="school" class="active">School</label>
+                                                    <label for="school" class="active">School *</label>
                                                     <select id="school" name="school">
                                                         <option value="" disabled selected>Choose...</option>
                                                         <option value="other">Other</option>
@@ -136,7 +138,7 @@
                                                     <input type="text" id="major" name="major" maxlength="65" value="{{ user_info.major|default_if_none:'' }}">
                                                 </div>
                                                 <div class="input-field col s12 l6">
-                                                    <label for="pronouns" class="active">Gender Pronouns</label>
+                                                    <label for="pronouns" class="active">Gender Pronouns *</label>
                                                     <select id="pronouns" name="pronouns">
                                                         <option value="" disabled selected>Choose...</option>
                                                         <option value="other">Other</option>
@@ -189,7 +191,7 @@
                                     <div class="row">
                                         <div class="input-field col s12 l6">
                                             <i class="fa fa-cutlery prefix" aria-hidden="true"></i>
-                                            <label for="banquet_meal">Banquet Meal (TBD)</label>
+                                            <label for="banquet_meal">Banquet Meal *(TBD)</label>
                                             <select id="banquet_meal" name="banquet_meal">
                                                 {% for meal in banquet_meals %}
                                                     <option value="{{ meal }}"></option>
@@ -205,23 +207,23 @@
                                     <div class="row">
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-address-book prefix" aria-hidden="true"></i>
-                                            <label for="emergency_contact">Emergency Contact</label>
+                                            <label for="emergency_contact">Emergency Contact *</label>
                                             <input type="text" id="emergency_contact" name="emergency_contact" maxlength="50" value="{{ user_info.emergency_contact|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="material-icons prefix">phone</i>
-                                            <label for="emergency_contact_number">Phone Number</label>
+                                            <label for="emergency_contact_number">Phone Number *</label>
                                             <input type="tel" id="emergency_contact_number" name="emergency_contact_number" pattern="^\d{10}$" oninvalid="setCustomValidity('Please enter a 10-digit phone number without dashes')" oninput="setCustomValidity('')" value="{{ user_info.emergency_contact_number|default_if_none:'' }}">
                                         </div>
                                         <div class="input-field col s12 l4">
                                             <i class="fa fa-user prefix" aria-hidden="true"></i>
-                                            <label for="emergency_contact_relation">Relationship</label>
+                                            <label for="emergency_contact_relation">Relationship *</label>
                                             <input type="text" id="emergency_contact_relation" name="emergency_contact_relation" maxlength="20" value="{{ user_info.emergency_contact_relation|default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12 l6">
-                                            <label for="shirt_size" class="active">T-Shirt Size</label>
+                                            <label for="shirt_size" class="active">T-Shirt Size *</label>
                                             <select id="shirt_size" name="shirt_size">
                                                 <option value="" disabled selected>Choose...</option>
                                                 <option value="small">Small</option>
@@ -230,26 +232,14 @@
                                                 <option value="extra_large">Extra Large</option>
                                             </select>
                                         </div>
+                                        <div class="input-field col s12 l6">
+                                            <label for="vias_attended">Number of VIA-1s Attended *</label>
+                                            <input type="number" id="vias_attended" name="vias_attended" max="16" value="{{ user_info.vias_attended|default_if_none:'' }}">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-{#                        <div id="misc" class="col s12">#}
-{#                                <div class="row" style="margin-top: 15px; margin-bottom:0;">#}
-{#                                    <div class="input-field col s10 offset-s1">#}
-{#                                        <i class="material-icons prefix">person_outline</i>#}
-{#                                        <label for="test">Test</label>#}
-{#                                        <input type="text" id="test" name="test" value="{{ form.username.value|default_if_none:"" }}">#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <div class="row" style="margin-bottom: 0;">#}
-{#                                    <div class="input-field col s10 offset-s1">#}
-{#                                        <i class="material-icons prefix">lock_outline</i>#}
-{#                                        <label for="test2">Test</label>#}
-{#                                        <input type="text" id="test2" name="test2">#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                        </div>#}
                 </div>
                 <div class="divider" style="margin-bottom: 15px;"></div>
                 <div class="row">

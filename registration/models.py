@@ -126,6 +126,7 @@ class UserInfo(models.Model):
     emergency_contact_number = models.CharField(_('emergency contact phone number'), max_length=10, blank=True, null=True)
     emergency_contact_relation = models.CharField(_('emergency contact relation'), max_length=20, blank=True, null=True)
     shirt_size = models.CharField(_('shirt size'), max_length=15, blank=True, null=True)
+    vias_attended = models.IntegerField(_('VIA-1s attended'), default=None, blank=True, null=True)
     workshop_one = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_one')
     workshop_two = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_two')
     workshop_three = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_three')

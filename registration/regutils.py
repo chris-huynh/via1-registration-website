@@ -38,9 +38,9 @@ class RegisterPrices:
 
 class RegisterCaps:
     EARLY_REG_CAP = 80
-    REGULAR_REG_CAP = 200
+    REGULAR_REG_CAP = 176
     ALUMNI_REG_CAP = 30
-    STAFF_REG_CAP = 80
+    STAFF_REG_CAP = 83
 
 
 class HotelPaymentTypes:
@@ -67,7 +67,7 @@ alumni_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 payment_refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
 staff_payment_deadline = datetime.datetime(2018, 2, 7, 23, 59, 59)
 
-roommate_deadline = datetime.datetime(2018, 3, 2, 23, 59, 59)
+roommate_deadline = datetime.datetime(2018, 3, 1, 23, 59, 59)
 
 
 graduation_years = [

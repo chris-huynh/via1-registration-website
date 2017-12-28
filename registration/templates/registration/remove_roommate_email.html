@@ -1,0 +1,16 @@
+{% autoescape off %}
+    Hi {{ name }},
+    <br><br>
+    {% if disbanded %}
+    <p>This is a notification that your VIA-1 hotel group was disbanded by the group leader, <b>{{ leader_name }}</b>.</p>
+    {% else %}
+    <p>This is a notification that you have been removed from your VIA-1 hotel group by the group leader, <b>{{ leader_name }}</b>.</p>
+    {% endif %}
+
+    <p>If you have any questions or concerns regarding this action, feel free to contact the group leader at <b>{{ leader_email }}</b></p>
+
+    <br>
+    Sincerely,
+    <br>
+    <b>The VIA-1 IT Team</b>
+{% endautoescape %}

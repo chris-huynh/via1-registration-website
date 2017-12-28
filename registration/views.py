@@ -110,6 +110,8 @@ def hotel(request):
 
             # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances of it
             # This string is used in the creation of the invoice in Home.html and Hotel.html
+            # For now, we know that the paypal invoice is going to start with "via1-2018-", so we'll use that to determine if
+            # an attendee paid with PayPal
             if user.hotel_payment_invoice:
                 if 'via1-2018-' in user.hotel_payment_invoice:
                     is_paid_with_pp = True
@@ -127,6 +129,21 @@ def hotel(request):
                 roommates = []
                 room_capacity = 0
 
+            # For pre-populating roommate name fields for people who bought whole_room
+            roommate_one = ''
+            roommate_two = ''
+            roommate_three = ''
+            if user.hotel_type == regutils.HotelPaymentTypes.WHOLE_ROOM:
+                if user_info.roommate_list and not user_info.roommate_list == '':
+                    whole_room_roommates = user_info.roommate_list.split(',')
+                    for i in range(len(whole_room_roommates)):
+                        if i == 0:
+                            roommate_one = whole_room_roommates[i].strip()
+                        if i == 1:
+                            roommate_two = whole_room_roommates[i].strip()
+                        if i == 2:
+                            roommate_three = whole_room_roommates[i].strip()
+
             context = {'hotel_price': regutils.RegisterPrices.HOTEL_PRICE,
                        'hotel_price_whole': regutils.RegisterPrices.HOTEL_PRICE * 4,
                        'hotel_payment_types': regutils.HotelPaymentTypes,
@@ -139,7 +156,10 @@ def hotel(request):
                        'room_code': user_info.room_code,
                        'roommates': roommates,
                        'room_capacity': room_capacity,
-                       'current_room_size': roommates.count}
+                       'current_room_size': roommates.count,
+                       'roommate_one': roommate_one,
+                       'roommate_two': roommate_two,
+                       'roommate_three': roommate_three}
 
             return render(request, 'registration/hotel.html', context)
         else:
@@ -276,6 +296,13 @@ def submit_profile(request):
                 user_info.shirt_size = None
             else:
                 user_info.shirt_size = form['shirt_size']
+
+        print(form['vias_attended'])
+        if user_info.vias_attended != form['vias_attended']:
+            if form['vias_attended'] == '':
+                user_info.vias_attended = None
+            else:
+                user_info.vias_attended = int(form['vias_attended'])
 
         user_info.save()
 
@@ -936,10 +963,24 @@ def disband_room(request):
         user_info.is_room_leader = False
         user_info.save()
 
+        emails = []
         user_infos = UserInfo.objects.filter(room_code=room_code)
         for ui in user_infos:
+            # Only want to send email out to roommates who aren't the group leader
+            if not ui.is_room_leader:
+                emails.append(ui.user_id.email)
             ui.room_code = None
             ui.save()
+
+        subject = 'Your VIA-1 hotel group has been disbanded'
+        message = render_to_string('registration/remove_roommate_email.html', {
+            'name': 'VIA-1 Attendee',
+            'leader_name': request.user.get_full_name(),
+            'leader_email': request.user.email,
+            'disbanded': True
+        })
+        send_mail(subject, "", None, emails, False, None, None, None, message)
+
     elif user_info.room_code:
         user_info.room_code = None
         user_info.save()
@@ -968,5 +1009,55 @@ def join_room(request):
             messages.error(request, 'Sorry, that group code is invalid.')
             return render(request, 'registration/hotel.html')
 
+    else:
+        return redirect('hotel')
+
+@login_required()
+def remove_roommate(request):
+    if request.method == 'GET':
+        if request.user.userinfo.is_room_leader:
+            user_info = UserInfo.objects.get(user_id__email=request.GET.get('email'))
+            user_info.room_code = None
+            user_info.save()
+
+            subject = 'You have been removed from your VIA-1 hotel group'
+            message = render_to_string('registration/remove_roommate_email.html', {
+                'name': user_info.user_id.first_name,
+                'leader_name': request.user.get_full_name(),
+                'leader_email': request.user.email
+            })
+            send_mail(subject, "", None, [user_info.user_id.email], False, None, None, None, message)
+
+            return redirect('hotel')
+        else:
+            return redirect('hotel')
+
+    else:
+        return redirect('hotel')
+
+
+@login_required()
+def whole_room_save_roommates(request):
+    if request.method == 'GET':
+        user_info = request.user.userinfo
+
+        list_of_roommates = ''
+        if request.GET.get('roommate_one'):
+            list_of_roommates += request.GET.get('roommate_one').strip() + ', '
+
+        if request.GET.get('roommate_two'):
+            list_of_roommates += request.GET.get('roommate_two').strip() + ', '
+
+        if request.GET.get('roommate_three'):
+            list_of_roommates += request.GET.get('roommate_three').strip()
+
+        if list_of_roommates == '':
+            user_info.roommate_list = None
+        else:
+            user_info.roommate_list = list_of_roommates
+
+        user_info.save()
+
+        return JsonResponse({})
     else:
         return redirect('hotel')

@@ -76,95 +76,156 @@
                     </div>
                 {% else %}
                     {% if user.hotel_type == 'single_spot' %}   {# For the future: perhaps want to change this so its not a raw string #}
-                    <div class="row center-align" style="margin-bottom: 0;">
-                        <div class="col s10 offset-s1">
-                            <h4 style="font-weight: 300;">Hotel</h4>
-                            <p style="font-weight: 300;">You purchased a <strong>Single Spot</strong>.</p>
-                            <p>The deadline to choose roommates is <b>{{ roommate_deadline }} CST</b>.
-                                Any attendees that are not in a full group (4/4) by this date will be automatically
-                                paired with other attendees. Note that each hotel room will have 4 occupants
-                                (e.g. two groups of size two will be paired to make a larger group of 4).
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row center-align" style="margin-top: 15px; margin-bottom: 30px;">
-                        <div class="col s10 offset-s1">
-                            <input type="checkbox" id="coed_roommates" class="checkbox-orange" name="coed_roommates" {% if is_coed_checked %}checked{% endif %} />
-                            <label for="coed_roommates" class="orange-text" style="font-style: italic">Check this box if you are okay with having co-ed roommates.</label>
-                        </div>
-                    </div>
-                    {# If the user is not in a room, show the buttons to either create a room or join one #}
-                    {% if not room_code %}
-                        <div class="row center-align">
+                        <div class="row center-align" style="margin-bottom: 0;">
                             <div class="col s10 offset-s1">
-                                <p><b>Create a group or enter a group code to join a pre-existing group.</b></p>
-                            </div>
-                            <div class="input-field col s10 l3 offset-s1 offset-l2">
-                                <form method="get" action="{% url 'create_hotel_room' %}">
-                                    <label for="group_size" class="active">Group Size</label>
-                                    <select id="group_size" name="group_size">
-                                        <option value="2">Two</option>
-                                        <option value="4">Four</option>
-                                    </select>
-                                    <button type="submit" id="create_group_btn" class="z-depth-3 waves-effect waves-light orange btn">Create Group</button>
-                                </form>
-                            </div>
-                            <div class="col s12 l2" style="margin: 30px 0 30px 0;">
-                                <h5><b>-OR-</b></h5>
-                            </div>
-                            <div class="input-field col s10 l3 offset-s1">
-                                <form method="get" action="{% url 'join_room' %}">
-                                    <label for="room_code">Group Code</label>
-                                    <input type="text" id="room_code" name="room_code" max-length="10" required>
-                                    <button type="submit" id="create_group_btn" class="z-depth-3 waves-effect waves-light orange btn">Join Group</button>
-                                </form>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="row center-align">
-                            <div class="col s10 l8 offset-s1 offset-l2">
-                                <h5>Group Code: <strong>{{ room_code }}</strong></h5>
-                                {% if is_room_leader %}
-                                    <a href="#disband_group_modal" class="orange-text hover_black modal-trigger">Disband Group</a>
+                                <h4 style="font-weight: 300;">Hotel</h4>
+                                <p style="font-weight: 300;">You purchased a <strong>Single Spot</strong>.</p>
+                                {% if is_roommate_choosing_open %}
+                                    <p>The deadline to choose roommates is <b>{{ roommate_deadline }} CST</b>.
+                                        Any attendees that are not in a full group (4/4) by this date will be automatically
+                                        paired with other attendees. Note that each hotel room will have 4 occupants
+                                        (e.g. two groups of size two will be paired to make a larger group of 4).
+                                    </p>
                                 {% else %}
-                                    <a href="#disband_group_modal" class="orange-text hover_black modal-trigger">Leave Group</a>
+                                    <p>The deadline to choose roommates was <b>{{ roommate_deadline }} CST</b>. You can no longer
+                                    create, modify, or join groups.</p>
                                 {% endif %}
-                                <p>{% if is_room_leader %}You are the room leader.<br>{% endif %}
-                                    Distribute this group code to your friends so that they can join your room.
-                                </p>
-                                <table class="centered highlight responsive-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for roommate in roommates %}
-                                            <tr>
-                                                <td>{{ roommate.first_name }} {{ roommate.last_name }}</td>
-                                                <td>{{ roommate.email }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <p><b>Capacity: {{ current_room_size }}/{{ room_capacity }}</b></p>
                             </div>
                         </div>
-                    {% endif %}
-                    <div class="divider" style="margin: 30px 0 30px 0;"></div>
-                    <div class="row center-align" style="margin: 0;">
-                        <p>Need a refund? Click <a href="#refund_request_modal" class="orange-text modal-trigger hover_black"><b>Here</b></a></p>
-                    </div>
+
+                        {% if is_roommate_choosing_open %}
+                        <div class="row center-align" style="margin-top: 15px; margin-bottom: 30px;">
+                            <div class="col s10 offset-s1">
+                                <input type="checkbox" id="coed_roommates" class="checkbox-orange" name="coed_roommates" {% if is_coed_checked %}checked{% endif %} />
+                                <label for="coed_roommates" class="orange-text" style="font-style: italic">Check this box if you are okay with having co-ed roommates.</label>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {# If the user is not in a room, show the buttons to either create a room or join one #}
+                        {% if not room_code %}
+                            {% if is_roommate_choosing_open %}
+                            <div class="row center-align">
+                                <div class="col s10 offset-s1">
+                                    <p><b>Create a group or enter a group code to join a pre-existing group.</b></p>
+                                </div>
+                                <div class="input-field col s10 l3 offset-s1 offset-l2">
+                                    <form method="get" action="{% url 'create_hotel_room' %}">
+                                        <label for="group_size" class="active">Group Size</label>
+                                        <select id="group_size" name="group_size">
+                                            <option value="2">Two</option>
+                                            <option value="4">Four</option>
+                                        </select>
+                                        <button type="submit" id="create_group_btn" class="z-depth-3 waves-effect waves-light orange btn">Create Group</button>
+                                    </form>
+                                </div>
+                                <div class="col s12 l2" style="margin: 30px 0 30px 0;">
+                                    <h5><b>-OR-</b></h5>
+                                </div>
+                                <div class="input-field col s10 l3 offset-s1">
+                                    <form method="get" action="{% url 'join_room' %}">
+                                        <label for="room_code">Group Code</label>
+                                        <input type="text" id="room_code" name="room_code" max-length="10" required>
+                                        <button type="submit" id="create_group_btn" class="z-depth-3 waves-effect waves-light orange btn">Join Group</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="row center-align">
+                                <div class="col s10 l8 offset-s1 offset-l2">
+                                    <h5>Group Code: <strong>{{ room_code }}</strong></h5>
+                                    {% if is_room_leader and is_roommate_choosing_open %}
+                                        <a href="#disband_group_modal" class="orange-text hover_black modal-trigger">Disband Group</a>
+                                    {% elif is_roommate_choosing_open %}
+                                        <a href="#disband_group_modal" class="orange-text hover_black modal-trigger">Leave Group</a>
+                                    {% endif %}
+
+                                    {% if is_roommate_choosing_open %}
+                                        <p>{% if is_room_leader %}You are the room leader.<br>{% endif %}
+                                            Distribute this group code to your friends so that they can join your room.
+                                        </p>
+                                    {% endif %}
+                                    <table class="centered highlight responsive-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                {% if is_room_leader %}<th>Remove?</th>{% endif %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for roommate in roommates %}
+                                                <tr>
+                                                    <td>{{ roommate.first_name }} {{ roommate.last_name }}</td>
+                                                    <td>{{ roommate.email }}</td>
+                                                    {% if is_room_leader %}
+                                                    <td>
+                                                        {% if not user.email == roommate.email %}
+                                                            <a href="{% url 'remove_roommate' %}?email={{ roommate.email }}" class="orange-text hover_black">Remove</a>
+                                                        {% endif %}
+                                                    </td>
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <p><b>Capacity: {{ current_room_size }}/{{ room_capacity }}</b></p>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="row center-align" style="margin-bottom: 0;">
                             <div class="col s10 offset-s1">
                                 <h4 style="font-weight: 300;">Hotel</h4>
                                 <p style="font-weight: 300;">You purchased the <strong>Whole Room</strong> package.</p>
-                                <p>NOTE: This page is still under construction.</p>
                             </div>
                         </div>
+                        <div class="row center-align">
+                            <div class="col s10 offset-s1">
+                                <p>You may specify up to three roommates. These names will be given to hotel staff, giving
+                                each of your roommates the ability to request a room key from the front desk.</p>
+                            </div>
+                        </div>
+                        <div class="row center-align">
+                            <div class="col s10 offset-s1">
+                                <p>Please input the first <strong>and</strong> last names of each roommate.</p>
+                                <form id="whole_room_form" method="get">
+                                    <div class="input-field col s12 l4">
+                                        <label for="roommate_one">Roommate 1</label>
+                                        <input type="text" id="roommate_one" name="roommate_one" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_one|default_if_none:'' }}">
+                                    </div>
+                                    <div class="input-field col s12 l4">
+                                        <label for="roommate_two">Roommate 2</label>
+                                        <input type="text" id="roommate_two" name="roommate_two" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_two|default_if_none:'' }}">
+                                    </div>
+                                    <div class="input-field col s12 l4">
+                                        <label for="roommate_three">Roommate 3</label>
+                                        <input type="text" id="roommate_three" name="roommate_three" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_three|default_if_none:'' }}">
+                                    </div>
+                                    <div class="col s12" style="height: 50px;">
+                                        <div class="row" style="margin:0;">
+                                            <div id="whole_room_submit_loader" class="sk-folding-cube" style="display:none">
+                                                <div class="sk-cube1 sk-cube"></div>
+                                                <div class="sk-cube2 sk-cube"></div>
+                                                <div class="sk-cube4 sk-cube"></div>
+                                                <div class="sk-cube3 sk-cube"></div>
+                                            </div>
+                                            <p id="success_text" class="green-text" style="display: none;">Success!</p>
+                                            <button type="submit" id="whole_room_submit_btn" class="z-depth-3 waves-effect waves-light orange btn hover_move_right">
+                                                <i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
                     {% endif %}
+                    <div class="divider" style="margin: 30px 0 30px 0;"></div>
+                    <div class="row center-align" style="margin: 0;">
+                        <p>Need a refund? Click <a href="#refund_request_modal" class="orange-text modal-trigger hover_black"><b>Here</b></a></p>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -219,15 +280,19 @@
         <div class="modal-content">
             <div class="row center-align">
                     <div class="col s10 l8 offset-s1 offset-l2">
-                        <h5>You are about to disband this group</h5>
-                        <p class="orange-text">Are you sure you want to disband?{% if is_room_leader %} Since you are the group leader, all
-                            attendees in your group will also be removed from the group.{% endif %}</p>
+                        <h5>You are about to {% if is_room_leader %}disband{% else %}leave{% endif %} this group</h5>
+                        <p class="orange-text">Are you sure you want to {% if is_room_leader %}disband{% else %}leave{% endif %}?
+                            {% if is_room_leader %} Since you are the group leader, all attendees in your group will also
+                                be removed from the group.{% endif %}
+                        </p>
                         <a href="{% url 'disband_room' %}" class="btn waves-effect waves-light orange">Yes</a>
                         <button class="btn waves-effect waves-light orange modal-close">No</button>
                     </div>
             </div>
         </div>
     </div>
+
+
 
 {% endblock %}
 
@@ -457,9 +522,34 @@
                 coed_roommates: value // as you are getting in php $_POST['action1']
             },
             success: function () {
-                alert('Your preference has been saved.');
+                Materialize.toast('Your preference has been saved.', 8000);
             }
         });
+    });
+    </script>
+
+    <script>
+    $("#whole_room_form").submit(function(e) {
+        $("#whole_room_submit_btn").hide();
+        $("#whole_room_submit_loader").show();
+        var url = '{% url 'whole_room_save_roommates' %}'; // the script where you handle the form input.
+
+        $.ajax({
+            url: url,
+            data: $("#whole_room_form").serialize(), // serializes the form's elements.
+            dataType: 'json',
+            success: function(data)
+            {
+                $("#success_text").delay(1500).show(0);
+                $("#success_text").delay(2500).hide(0);
+            }
+        })
+        .always(function() {
+            $("#whole_room_submit_loader").delay(1500).hide(0);
+            $("#whole_room_submit_btn").delay(4000).show(0);
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
     });
     </script>
 
