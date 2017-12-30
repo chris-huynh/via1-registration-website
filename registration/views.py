@@ -19,6 +19,7 @@ from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 
 import datetime
+from datetime import timedelta
 from random import randint
 
 from registration import regutils
@@ -60,7 +61,7 @@ def home(request):
         is_regular_reg_full = True if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
 
-        # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances of it
+        # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances
         # This string is used in the creation of the invoice in Home.html and Hotel.html
         if request.user.payment_invoice:
             if 'via1-2018-' in request.user.payment_invoice:
@@ -73,8 +74,8 @@ def home(request):
         context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
                    'is_early_reg_full': is_early_reg_full, 'is_regular_reg_full': is_regular_reg_full, 'is_alumni_reg_full': is_alumni_reg_full,
                    'payment_refund_deadline': regutils.payment_refund_deadline, 'todays_date': todays_date,
-                   'open_date': regutils.early_reg_open_date, 'member_school_names': regutils.member_school_names,
-                   'register_types': regutils.RegisterTypes, 'register_prices': regutils.RegisterPrices, 'is_paid_with_pp': is_paid_with_pp}
+                   'member_school_names': regutils.member_school_names, 'register_types': regutils.RegisterTypes,
+                   'register_prices': regutils.RegisterPrices, 'is_paid_with_pp': is_paid_with_pp}
         return render(request, 'registration/home.html', context)
     else:
         return redirect('/registration/login')
@@ -113,12 +114,18 @@ def hotel(request):
             # For now, we know that the paypal invoice is going to start with "via1-2018-", so we'll use that to determine if
             # an attendee paid with PayPal
             if user.hotel_payment_invoice:
-                if 'via1-2018-' in user.hotel_payment_invoice:
-                    is_paid_with_pp = True
+                if 'via1-2018-reg-hotel-' in user.hotel_payment_invoice:
+                    can_use_refund_button = False
+                    purchased_bundle = True
                 else:
-                    is_paid_with_pp = False
+                    purchased_bundle = False
+                    if 'via1-2018-' in user.hotel_payment_invoice:
+                        can_use_refund_button = True
+                    else:
+                        can_use_refund_button = False
             else:
-                is_paid_with_pp = False
+                can_use_refund_button = False
+                purchased_bundle = False
 
             user_info = UserInfo.objects.get(pk=user.id)
 
@@ -149,7 +156,8 @@ def hotel(request):
                        'hotel_payment_types': regutils.HotelPaymentTypes,
                        'roommate_deadline': regutils.roommate_deadline,
                        'is_hotel_payment_refund_open': is_hotel_payment_refund_open,
-                       'is_paid_with_pp': is_paid_with_pp,
+                       'can_use_refund_button': can_use_refund_button,
+                       'purchased_bundle': purchased_bundle,
                        'is_roommate_choosing_open': is_roommate_choosing_open,
                        'is_coed_checked': user_info.coed_roommates,
                        'is_room_leader': user_info.is_room_leader,
@@ -882,6 +890,7 @@ def refund_hotel_request_complete(request, uidb64, token, pp_email):
         return redirect('/registration/refund_request_complete')
 
 
+# TODO Need to decrement regular reg/staff reg count if the code has a 'Is reg/staff' boolean as true
 @login_required()
 def registration_code(request):
     if request.method == 'GET':
@@ -1003,11 +1012,11 @@ def join_room(request):
                 return redirect('hotel')
             else:
                 messages.error(request, 'Sorry, that group is full.')
-                return render(request, 'registration/hotel.html')
+                return redirect('hotel')
 
         else:
             messages.error(request, 'Sorry, that group code is invalid.')
-            return render(request, 'registration/hotel.html')
+            return redirect('hotel')
 
     else:
         return redirect('hotel')
@@ -1061,3 +1070,95 @@ def whole_room_save_roommates(request):
         return JsonResponse({})
     else:
         return redirect('hotel')
+
+
+@login_required()
+def code_generator(request):
+    codes = SpecialRegCodes.objects.order_by('-date_created', '-pk')
+    context = {'code_types': regutils.CodeTypes, 'code_types_list': regutils.code_types,
+               'methods_of_payment_list': regutils.methods_of_payment, 'codes': codes}
+    return render(request, 'registration/code_generator.html', context)
+
+
+@login_required()
+def generate_code(request):
+    if request.user.is_staff:
+        if request.method == 'GET':
+            code = request.GET.get('code').upper()
+
+            if SpecialRegCodes.objects.filter(code__contains=code).exists():
+                messages.info(request, 'That code already exists in the system. Try again.')
+                return redirect('code_generator')
+            else:
+                code_type = request.GET.get('code_type')
+                date_created = timezone.now()
+                includes_hotel = True if request.GET.get('includes_hotel', False) else False
+                number_of_usages = int(request.GET.get('number_of_usages'))
+
+                # Waitlist and Banquet codes should expire within 24 hours of creation
+                if code_type == regutils.CodeTypes.WAITLIST_REG or code_type == regutils.CodeTypes.BANQUET:
+                    date_expired = date_created + timedelta(days=1)
+                    method_of_payment = None
+                    includes_hotel = False
+                elif code_type == regutils.CodeTypes.STAFF_REG:
+                    date_expired = regutils.staff_payment_deadline
+                    method_of_payment = request.GET.get('method_of_payment')
+                elif code_type == regutils.CodeTypes.REGULAR_REG:
+                    date_expired = regutils.regular_reg_close_date
+                    method_of_payment = request.GET.get('method_of_payment')
+                elif code_type == regutils.CodeTypes.FAMILY_LEADER:
+                    date_expired = regutils.payment_refund_deadline
+                    method_of_payment = None
+                    includes_hotel = False
+                else:
+                    date_expired = regutils.payment_refund_deadline
+                    method_of_payment = None
+
+                if request.GET.get('multi_use', False) or number_of_usages == 1:
+                    code_obj = SpecialRegCodes(code=code,
+                                               usages_left=number_of_usages,
+                                               code_type=code_type,
+                                               method_of_payment=method_of_payment,
+                                               includes_hotel=includes_hotel,
+                                               date_created=date_created,
+                                               date_expired=date_expired)
+                    code_obj.save()
+                else:
+                    for i in range(0, number_of_usages):
+                        code_obj = SpecialRegCodes(code=code + '_' + str(i+1),
+                                                   usages_left=1,
+                                                   code_type=code_type,
+                                                   method_of_payment=method_of_payment,
+                                                   includes_hotel=includes_hotel,
+                                                   date_created=date_created,
+                                                   date_expired=date_expired)
+                        code_obj.save()
+
+                return redirect('code_generator')
+        else:
+            return redirect('code_generator')
+    else:
+        return redirect('index')
+
+
+@login_required()
+def remove_code(request):
+    if request.user.is_staff:
+        if request.method == 'GET':
+            code = request.GET.get('code')
+
+            if SpecialRegCodes.objects.filter(code=code).exists():
+                code_obj = SpecialRegCodes.objects.get(code=request.GET.get('code'))
+                code_obj.delete()
+
+                message = 'The code [' + code + '] has been deleted.'
+                messages.info(request, message)
+                return redirect('code_generator')
+            else:
+                messages.info(request, 'That code does not exist.')
+                return redirect('code_generator')
+
+        else:
+            return redirect('code_generator')
+    else:
+        return redirect('index')

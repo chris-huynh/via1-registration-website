@@ -48,6 +48,21 @@ class HotelPaymentTypes:
     WHOLE_ROOM = 'whole_room'
 
 
+# Make sure these strings match the strings in code_types
+class CodeTypes:
+    WAITLIST_REG = 'Waitlist Registration'
+    REGULAR_REG = 'Regular Registration'
+    STAFF_REG = 'Staff Registration'
+    BANQUET = 'Banquet Only'
+    FAMILY_LEADER = 'Family Leader'
+
+
+code_types = ['Waitlist Registration', 'Regular Registration', 'Staff Registration', 'Banquet Only', 'Family Leader']
+
+
+methods_of_payment = ['PayPal', 'PayPal (Bulk)', 'Venmo', 'Other']
+
+
 # Open 12-14-2017 @ 1800/6:00p CENTRAL (timezone is set in settings.py)
 # Close 1-3-2018 @ 11:59:59
 early_reg_open_date = datetime.datetime(2017, 12, 14, 18, 0, 0)

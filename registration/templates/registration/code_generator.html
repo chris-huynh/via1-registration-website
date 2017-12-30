@@ -1,0 +1,261 @@
+{% extends 'registration/home_base.html' %}
+
+{% block title %}VIA-1 - Registration Code Generator{% endblock %}
+
+{% block additional_head %}
+    <style>
+        #gradient_background {
+            z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)) center center / cover no-repeat;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="gradient_background"></div>
+    <div class="container">
+        <div class="row">
+            <div class="z-depth-1 grey lighten-5 col s12" style="padding: 30px 0 30px 0; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; margin-bottom: 5px;">
+                <div class="row center-align">
+                    <div class="col s10 offset-s1">
+                        <h4 style="font-weight: 300;">Registration Code Generator</h4>
+                        <p style="font-weight: 300;">
+                            Use this page to generate registration codes for attendees. When a user inputs a registration code
+                            on the home page, it will automatically mark that user as "registered" in the system. These codes are to only
+                            be generated for special-case attendees such as waitlist, staff, schools that bulk-buy registration, and banquet-only.
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <form method="get" action="{% url 'generate_code' %}">
+                            <div class="input-field col s12 l3">
+                                <label for="code">Code</label>
+                                <input type="text" id="code" name="code" maxlength="20" style="text-transform:uppercase" pattern="[a-zA-Z0-9-]+" oninvalid="setCustomValidity('Please enter letters and numbers only')" oninput="setCustomValidity('')" required>
+                            </div>
+                            <div class="input-field col s12 l3">
+                                <label for="number_of_usages">Number of Usages / Codes</label>
+                                <input type="number" id="number_of_usages" name="number_of_usages" max="100" required>
+                            </div>
+                            <div class="input-field col s12 l3">
+                                <label for="code_type" class="active">Code Type</label>
+                                <select id="code_type" name="code_type" required>
+                                    <option value="" disabled selected>Choose...</option>
+                                    {% for code_type in code_types_list %}
+                                        <option value="{{ code_type }}">{{ code_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {# Only wanna show this if code type is regular, staff, family leader. Banquet and Waitlist will see a special PayPal dialog #}
+                            <div id="method_of_payment_field" class="input-field col s12 l3" style="display: none">
+                                <label for="method_of_payment" class="active">Method of Payment</label>
+                                <select id="method_of_payment" name="method_of_payment">
+                                    <option value="" disabled selected>Choose...</option>
+                                    {% for method in methods_of_payment_list %}
+                                        <option value="{{ method }}">{{ method }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col s12" style="margin-bottom: 10px;">
+                                <input type="checkbox" id="multi_use" name="multi_use" class="checkbox-orange" />
+                                <label for="multi_use" class="orange-text">
+                                    Check this to generate a single code that can be used multiple times (as opposed to multiple, single-use codes)
+                                </label>
+                            </div>
+                            {# Only wanna show this if code type is regular (bulk) or staff #}
+                            <div id="includes_hotel_field" class="col s12" style="margin-bottom: 10px; display: none">
+                                <input type="checkbox" id="includes_hotel" name="includes_hotel" class="checkbox-orange" />
+                                <label for="includes_hotel" class="orange-text">
+                                    Check this if the code should include hotel
+                                </label>
+                            </div>
+                            <div class="col s12 center-align" style="margin-top: 30px;">
+                                <button type="submit" class="z-depth-3 waves-effect waves-light orange btn">Generate</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="z-depth-3 grey lighten-5 col s12" style="padding: 30px 0 30px 0; border: 1px solid #EEE; border-radius: 5px; margin-bottom: 20px;">
+                <div class="row center-align" style="margin-bottom: 0;">
+                    <div class="col s10 offset-s1">
+                        <table class="highlight responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Date Created</th>
+                                    <th>Expires On</th>
+                                    <th># Left</th>
+                                    <th>Code Type</th>
+                                    <th>Includes Hotel?</th>
+                                    <th>Remove?</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for code in codes %}
+                                    <tr>
+                                        <td>{{ code.code }}</td>
+                                        <td>{{ code.date_created }}</td>
+                                        <td>{{ code.date_expired }}</td>
+                                        <td>{{ code.usages_left }}</td>
+                                        <td>{{ code.code_type }}</td>
+                                        <td>{% if code.includes_hotel %}Yes{% else %}No{% endif %}</td>
+                                        <td><a href="{% url 'remove_code' %}?code={{ code.code }}" class="orange-text hover_black">Remove</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if not codes %}
+                            <p>No records found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Hotel Refund Request Pop-Up Modal #}
+    <div id="refund_request_modal" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                {% if can_use_refund_button %}
+                <div class="center-align">
+                    <h5>Hotel Refund Request</h5>
+                    <p>An email will be sent to the Finance Committee upon completion of this form. Note that this form
+                    is for hotel refund ONLY. If you would like to refund registration, use the refund button on the home page.</p>
+                </div>
+                <form method="POST" action="{% url 'refund_hotel_request' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s10 l8 offset-s1 offset-l2">
+                            <label for="pp_name">Full Name On PayPal Account</label>
+                            <input type="text" id="pp_name" name="pp_name" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10 l8 offset-s1 offset-l2">
+                            <label for="pp_email">PayPal Email</label>
+                            <input type="email" id="pp_email" name="pp_email" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="center-align">
+                            <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right">
+                                <i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Submit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                {% else %}
+                <div class="center-align">
+                    <h5>Registration Refund Request</h5>
+                    <p>{% if purchased_bundle %}Our records indicate that you purchased hotel in a registration bundle.
+                    {% else %}Our records indicate that you did not purchase hotel using our PayPal system.
+                    {% endif %}Please contact <b>via1.finance@uvsamidwest.org</b> to request a refund.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# "Are you sure you want to disband" Pop-Up Modal #}
+    <div id="disband_group_modal" class="modal">
+        <div class="modal-content">
+            <div class="row center-align">
+                    <div class="col s10 l8 offset-s1 offset-l2">
+                        <h5>You are about to {% if is_room_leader %}disband{% else %}leave{% endif %} this group</h5>
+                        <p class="orange-text">Are you sure you want to {% if is_room_leader %}disband{% else %}leave{% endif %}?
+                            {% if is_room_leader %} Since you are the group leader, all attendees in your group will also
+                                be removed from the group.{% endif %}
+                        </p>
+                        <a href="{% url 'disband_room' %}" class="btn waves-effect waves-light orange">Yes</a>
+                        <button class="btn waves-effect waves-light orange modal-close">No</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block additional_scripts %}
+    <script>
+    $('#code_type').on('change',function(){
+        if($(this).val()==="{{ code_types.REGULAR_REG }}" || $(this).val()==="{{ code_types.STAFF_REG }}"){
+            $("#method_of_payment_field").show();
+            $("#includes_hotel_field").show();
+        }
+        else{
+            $("#method_of_payment_field").hide();
+            $("#includes_hotel_field").hide();
+        }
+    });
+    </script>
+
+    <script>
+    $("#coed_roommates").change(function () {
+        var value;
+        if($(this).is(":checked")) {
+            value = 'checked'
+        } else {
+            value = 'not_checked'
+        }
+        $.ajax({
+            url: '{% url 'change_coed_preference' %}',
+            async: true,
+            data: {
+                coed_roommates: value // as you are getting in php $_POST['action1']
+            },
+            success: function () {
+                Materialize.toast('Your preference has been saved.', 8000);
+            }
+        });
+    });
+    </script>
+
+    <script>
+    $("#whole_room_form").submit(function(e) {
+        $("#whole_room_submit_btn").hide();
+        $("#whole_room_submit_loader").show();
+        var url = '{% url 'whole_room_save_roommates' %}'; // the script where you handle the form input.
+
+        $.ajax({
+            url: url,
+            data: $("#whole_room_form").serialize(), // serializes the form's elements.
+            dataType: 'json',
+            success: function(data)
+            {
+                $("#success_text").delay(1500).show(0);
+                $("#success_text").delay(2500).hide(0);
+            }
+        })
+        .always(function() {
+            $("#whole_room_submit_loader").delay(1500).hide(0);
+            $("#whole_room_submit_btn").delay(4000).show(0);
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    </script>
+
+    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                $(document).ready(function(){
+                    Materialize.toast('{{ message|safe }}', 8000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

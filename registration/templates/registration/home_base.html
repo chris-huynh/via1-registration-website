@@ -41,6 +41,9 @@
         <li><a href="#!" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Workshops" onclick="Materialize.toast('Page coming soon!', 4000)"><i class="material-icons black-text">speaker_notes</i></a></li>
         <li><a href="#!" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families" onclick="Materialize.toast('Page coming soon!', 4000)"><i class="material-icons black-text">group</i></a></li>
         <li><div class="divider"></div></li>
+        {% if user.is_staff %}
+        <li><a href="{% url 'code_generator' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Code Generator"><i class="material-icons black-text">confirmation_number</i></a></li>
+        {% endif %}
         <li><a href="/registration/logout" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Log Out"><i class="material-icons black-text">subdirectory_arrow_left</i></a></li>
     </ul>
     <a href="#" data-activates="slide-out" class="button-collapse z-depth-2 btn-floating btn-medium waves-effect waves-orange white left" style="margin: 15px; position: absolute; z-index: 998;"><i class="small material-icons black-text">menu</i></a>

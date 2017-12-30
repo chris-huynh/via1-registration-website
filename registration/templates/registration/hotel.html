@@ -35,7 +35,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0px 24px 0px; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; margin-bottom: 80px; animation-delay: 0.2s;">
+            <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0 24px 0; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; margin-bottom: 80px; animation-delay: 0.2s;">
                 {% if not user.has_paid_hotel %}
                     <div class="row center-align" style="margin-bottom: 0;">
                         <div class="col s10 offset-s1">
@@ -235,7 +235,7 @@
     <div id="refund_request_modal" class="modal">
         <div class="modal-content">
             <div class="row">
-                {% if is_paid_with_pp %}
+                {% if can_use_refund_button %}
                 <div class="center-align">
                     <h5>Hotel Refund Request</h5>
                     <p>An email will be sent to the Finance Committee upon completion of this form. Note that this form
@@ -267,8 +267,9 @@
                 {% else %}
                 <div class="center-align">
                     <h5>Registration Refund Request</h5>
-                    <p>Our records indicate that you did not purchase hotel using our PayPal system. Please contact
-                    <b>via1.finance@uvsamidwest.org</b> for further assistance.</p>
+                    <p>{% if purchased_bundle %}Our records indicate that you purchased hotel in a registration bundle.
+                    {% else %}Our records indicate that you did not purchase hotel using our PayPal system.
+                    {% endif %}Please contact <b>via1.finance@uvsamidwest.org</b> to request a refund.</p>
                 </div>
                 {% endif %}
             </div>

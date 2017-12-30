@@ -58,4 +58,7 @@ urlpatterns = [
     url(r'^refund_request_complete/$', TemplateView.as_view(template_name='registration/refund_request_complete.html')),
     url(r'^home/registration_code/$', views.registration_code, name='registration_code'),
     url(r'^home/reg_code_complete/$', login_required(TemplateView.as_view(template_name='registration/reg_code_complete.html'))),
+    url(r'^code_generator/$', views.code_generator, name='code_generator'),
+    url(r'^code_generator/generate_code/$', views.generate_code, name='generate_code'),
+    url(r'^code_generator/remove_code/$', views.remove_code, name='remove_code'),
 ]

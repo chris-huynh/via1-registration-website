@@ -155,9 +155,13 @@ class UserInfo(models.Model):
 
 
 class SpecialRegCodes(models.Model):
-    code = models.CharField(_('special code'), max_length=10, blank=True, null=True)
+    code = models.CharField(_('special code'), max_length=25, blank=True, null=True)
     usages_left = models.IntegerField(_('number of usages left'), default=0, null=True)
+    code_type = models.CharField(_('code type'), max_length=30, blank=True, null=True)
+    method_of_payment = models.CharField(_('method of payment'), max_length=20, blank=True, null=True)
     includes_hotel = models.BooleanField(default=False)
+    date_created = models.DateTimeField(default=None, blank=True, null=True)
+    date_expired = models.DateTimeField(default=None, blank=True, null=True)
 
     def __str__(self):
         return self.code
