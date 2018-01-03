@@ -1,0 +1,204 @@
+{% extends 'registration/home_base.html' %}
+
+{% block title %}VIA-1 - Hotel{% endblock %}
+
+{% block additional_head %}
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <style>
+        {# This is for the background #}
+        #default_background {
+            z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)), url({% static 'registration/login_bg.jpg' %}) center center / cover no-repeat;
+            background-attachment: fixed;
+        }
+        #gradient_background {
+            z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to bottom right,rgba(0, 47, 100, 0.70),rgba(220,66, 37, 0.70)) center center / cover no-repeat;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="default_background" class="hide-on-med-and-down"></div>
+    <div id="gradient_background" class="hide-on-large-only"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="z-depth-4 grey lighten-5 col s10 offset-s1 animated fadeInUpBig" style="padding: 24px 0 24px 0; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; margin-bottom: 80px; animation-delay: 0.2s;">
+                {% if reg_code %}
+                    <div class="row center-align" style="margin-bottom: 0;">
+                        <div class="col s10 offset-s1">
+                            <h4 style="font-weight: 300;">Registration Payment</h4>
+                            <p style="font-weight: 300;">You are using registration code: <b>{{ reg_code.code }}</b></p>
+                            <p style="font-weight: 300;">You must pay before this code expires on <b>{{ reg_code.date_expired }}</b></p>
+                        </div>
+                    </div>
+
+                    <div class="row center-align">
+                        <div class="z-depth-2 col s10 l4 offset-s1 offset-l4 hoverable" style="border-radius: 10px; padding: 20px 35px 20px 35px;">
+                            <h5 class="flow-text" style="font-weight: 600; margin:0">{{ reg_code.code_type }}</h5>
+                            <p style="font-weight: 500; font-size: 24px; margin-bottom: 24px;">
+                                {% if reg_code.code_type == code_types.WAITLIST_REG %}
+                                    ${{ register_prices.REGULAR_REG_PRICE }}
+                                {% elif reg_code.code_type == code_types.FAMILY_LEADER %}
+                                    ${{ register_prices.REGULAR_REG_PRICE }}
+                                {% elif reg_code.code_type == code_types.BANQUET %}
+                                    ${{ register_prices.BANQUET_PRICE }}
+                                {% endif %}
+                            </p>
+
+                            <div id="code_payment_button"></div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row center-align" style="margin-bottom: 0;">
+                        <div class="col s10 offset-s1">
+                            <h4 style="font-weight: 300;">Access Denied</h4>
+                            <p style="font-weight: 300;">You cannot access this page.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block additional_scripts %}
+    {% if not user.has_paid and reg_code %}
+        <script>
+            // Global variable so it can be used in both the payment and onAuthorize contexts
+            var code, invoice;
+
+            paypal.Button.render({
+
+                env: 'production', // 'sandbox' or 'production'
+
+                client: {
+                    sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',
+                    production: 'AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I'
+                },
+
+                commit: true, // Show a 'Pay Now' button
+
+                style: {
+                    color:  'black',
+                    size:   'responsive',
+                    shape:  'rect',
+                    label:  'pay',
+                    tagline: false
+                },
+
+                payment: function(data, actions) {
+                    var price, description;
+
+                    // Generate a random 9-digit number for the invoice
+                    var invoice_number = Math.floor(Math.random() * 899999999 + 100000000);
+
+                    {% if reg_code.code_type == code_types.WAITLIST_REG or reg_code.code_type == code_types.FAMILY_LEADER %}
+                        price = {{ register_prices.REGULAR_REG_PRICE }};
+                        {% if reg_code.code_type == code_types.WAITLIST_REG %}
+                            description = '2018 VIA-1 Waitlist Registration';
+                        {% else %}
+                            description = '2018 VIA-1 Family Leader Registration';
+                        {% endif %}
+                        invoice = 'via1-2018-reg-' + {{ user.id }} + '-' + invoice_number;
+                    {% elif reg_code.code_type == code_types.BANQUET %}
+                        price = {{ register_prices.BANQUET_PRICE }};
+                        description = '2018 VIA-1 Banquet Registration';
+                        invoice = 'via1-2018-banquet-' + {{ user.id }} + '-' + invoice_number;
+                    {% endif %}
+                    code = '{{ reg_code.code }}';
+
+                    return actions.payment.create({
+                        payment: {
+                            transactions: [
+                                {
+                                    amount: {
+                                        total: price,
+                                        currency: 'USD'
+                                    },
+                                    description: description,
+                                    item_list: {
+                                        items: [
+                                            {
+                                                name: description,  // We can just use the description for the item name, too
+                                                price: price,
+                                                currency: 'USD',
+                                                quantity: 1
+                                            }
+                                        ]
+                                    },
+                                    invoice_number: invoice,
+                                    custom: code
+                                }
+                            ],
+                            redirect_urls: {
+                                return_url: '{% url 'home' %}',
+                                cancel_url: '{% url 'home' %}'
+                            }
+                        },
+                        experience: {
+                            input_fields: {
+                                no_shipping: 1
+                            }
+                        }
+                    });
+                },
+
+                onAuthorize: function(data, actions) {
+                    return actions.payment.execute().then(function(payment) {
+                        // This endpoint will check the validity of the request. If valid, the user's status will be changed to paid
+                        // The total attendee count will also be incremented
+                        $.ajax({
+                            url: '{% url 'update_code_attendee' %}',
+                            data: {
+                                'paymentID': data.paymentID,
+                                'code': code,
+                                'payment_invoice': invoice
+                            }
+                        });
+                        // TODO Need to change this. If the user doesn't hit okay immediately, the ajax call above can't complete.
+                        window.alert('Payment complete. It may take several moments for the system to update. A PayPal confirmation has been sent to your email.');
+                        // The payment is complete!
+                        // Redirect user to home page
+                        window.location.replace('{% url 'home' %}')
+                    });
+                },
+
+                onCancel: function(data, actions) {
+                    // Don't have to do anything on cancel
+                },
+
+                onError: function(err) {
+                    window.alert('An error occurred while checking out. Please try again. If the problem persists, contact conference.executive@uvsamidwest.org')
+                    // onError seems to be called for scenarios like invoice ID being used twice etc
+                    // Maybe we want to display a toast that says an error occurred while paying. Try again
+                }
+
+            }, '#code_payment_button');
+        </script>
+    {% endif %}
+
+    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                $(document).ready(function(){
+                    Materialize.toast('{{ message|safe }}', 8000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

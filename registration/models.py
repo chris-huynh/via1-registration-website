@@ -37,7 +37,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     payment_invoice = models.CharField(_('payment invoice id'), max_length=40, blank=True, null=True)
     has_paid_hotel = models.BooleanField(default=False)
     hotel_type = models.CharField(_('hotel type'), max_length=15, blank=True, null=True)
-    hotel_payment_invoice = models.CharField(_('hotel payment invoice id'), max_length=40, blank=True, null=True)
+    hotel_payment_invoice = models.CharField(_('hotel payment invoice id'), max_length=40, blank=True, null=True,
+                                             help_text='This field is also used for method of payment (if the user didnt register the standard way (e.g. reg code, bulk pay, etc.))')
 
     USERNAME_FIELD = 'email'
     objects = UserManager()

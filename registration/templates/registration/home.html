@@ -30,6 +30,10 @@
                 </p>
                 {% endif %}
 
+                {% if not user.has_paid and is_regular_reg_full %}
+                    <p class="flow-text">Still want to attend? Put your name on the waitlist, <a href="#waitlist_form_modal" class="orange-text hover_black modal-trigger" style="font-weight: 500">here</a></p>
+                {% endif %}
+
                 {% if user.has_paid %}
                     <p class="flow-text">The deadline to refund is {{ payment_refund_deadline }} CST</p>
                     <a href="#refund_request_modal" class="btn waves-effect waves-light orange modal-trigger hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>REFUND</a>
@@ -163,7 +167,7 @@
                 <div class="row">
                     <div class="input-field col s10 l4 offset-s1 offset-l4">
                         <label for="reg_code">Code</label>
-                        <input type="text" id="reg_code" name="reg_code" maxlength="10" required>
+                        <input type="text" id="reg_code" name="reg_code" maxlength="25" required>
                         <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Submit</button>
                     </div>
                 </div>
@@ -395,6 +399,20 @@
                 {% endif %}
             </div>
         </div>
+    </div>
+
+    {# Waitlist Form Pop-Up Modal #}
+    <div id="waitlist_form_modal" class="modal">
+        <div class="modal-content">
+            <div class="row center-align">
+                    <div class="hide-on-med-and-down">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform?embedded=true" width="650" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+                    </div>
+                    </div>
+                    <div class="hide-on-large-only">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform?embedded=true" width="250" height="400" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+                    </div>
+            </div>
     </div>
 
 {% endblock %}

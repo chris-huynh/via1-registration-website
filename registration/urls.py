@@ -61,4 +61,6 @@ urlpatterns = [
     url(r'^code_generator/$', views.code_generator, name='code_generator'),
     url(r'^code_generator/generate_code/$', views.generate_code, name='generate_code'),
     url(r'^code_generator/remove_code/$', views.remove_code, name='remove_code'),
+    url(r'^home/code_payment/$', login_required(TemplateView.as_view(template_name='registration/code_payment.html')), name='code_payment'),
+    url(r'home/update_code_attendee/$', views.update_code_attendee, name='update_code_attendee'),
 ]

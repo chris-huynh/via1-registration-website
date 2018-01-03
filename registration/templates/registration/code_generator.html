@@ -19,7 +19,7 @@
 {% block content %}
     <div id="gradient_background"></div>
     <div class="container">
-        <div class="row">
+        <div class="row animated fadeInUpBig" style="animation-delay: 0.2s">
             <div class="z-depth-1 grey lighten-5 col s12" style="padding: 30px 0 30px 0; border: 1px solid #EEE; border-radius: 5px; margin-top: 80px; margin-bottom: 5px;">
                 <div class="row center-align">
                     <div class="col s10 offset-s1">
@@ -122,70 +122,6 @@
         </div>
     </div>
 
-    {# Hotel Refund Request Pop-Up Modal #}
-    <div id="refund_request_modal" class="modal">
-        <div class="modal-content">
-            <div class="row">
-                {% if can_use_refund_button %}
-                <div class="center-align">
-                    <h5>Hotel Refund Request</h5>
-                    <p>An email will be sent to the Finance Committee upon completion of this form. Note that this form
-                    is for hotel refund ONLY. If you would like to refund registration, use the refund button on the home page.</p>
-                </div>
-                <form method="POST" action="{% url 'refund_hotel_request' %}">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="input-field col s10 l8 offset-s1 offset-l2">
-                            <label for="pp_name">Full Name On PayPal Account</label>
-                            <input type="text" id="pp_name" name="pp_name" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s10 l8 offset-s1 offset-l2">
-                            <label for="pp_email">PayPal Email</label>
-                            <input type="email" id="pp_email" name="pp_email" required>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="center-align">
-                            <button type="submit" class="z-depth-3 waves-effect waves-light orange btn hover_move_right">
-                                <i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>Submit
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                {% else %}
-                <div class="center-align">
-                    <h5>Registration Refund Request</h5>
-                    <p>{% if purchased_bundle %}Our records indicate that you purchased hotel in a registration bundle.
-                    {% else %}Our records indicate that you did not purchase hotel using our PayPal system.
-                    {% endif %}Please contact <b>via1.finance@uvsamidwest.org</b> to request a refund.</p>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    {# "Are you sure you want to disband" Pop-Up Modal #}
-    <div id="disband_group_modal" class="modal">
-        <div class="modal-content">
-            <div class="row center-align">
-                    <div class="col s10 l8 offset-s1 offset-l2">
-                        <h5>You are about to {% if is_room_leader %}disband{% else %}leave{% endif %} this group</h5>
-                        <p class="orange-text">Are you sure you want to {% if is_room_leader %}disband{% else %}leave{% endif %}?
-                            {% if is_room_leader %} Since you are the group leader, all attendees in your group will also
-                                be removed from the group.{% endif %}
-                        </p>
-                        <a href="{% url 'disband_room' %}" class="btn waves-effect waves-light orange">Yes</a>
-                        <button class="btn waves-effect waves-light orange modal-close">No</button>
-                    </div>
-            </div>
-        </div>
-    </div>
-
-
-
 {% endblock %}
 
 {% block additional_scripts %}
@@ -199,52 +135,6 @@
             $("#method_of_payment_field").hide();
             $("#includes_hotel_field").hide();
         }
-    });
-    </script>
-
-    <script>
-    $("#coed_roommates").change(function () {
-        var value;
-        if($(this).is(":checked")) {
-            value = 'checked'
-        } else {
-            value = 'not_checked'
-        }
-        $.ajax({
-            url: '{% url 'change_coed_preference' %}',
-            async: true,
-            data: {
-                coed_roommates: value // as you are getting in php $_POST['action1']
-            },
-            success: function () {
-                Materialize.toast('Your preference has been saved.', 8000);
-            }
-        });
-    });
-    </script>
-
-    <script>
-    $("#whole_room_form").submit(function(e) {
-        $("#whole_room_submit_btn").hide();
-        $("#whole_room_submit_loader").show();
-        var url = '{% url 'whole_room_save_roommates' %}'; // the script where you handle the form input.
-
-        $.ajax({
-            url: url,
-            data: $("#whole_room_form").serialize(), // serializes the form's elements.
-            dataType: 'json',
-            success: function(data)
-            {
-                $("#success_text").delay(1500).show(0);
-                $("#success_text").delay(2500).hide(0);
-            }
-        })
-        .always(function() {
-            $("#whole_room_submit_loader").delay(1500).hide(0);
-            $("#whole_room_submit_btn").delay(4000).show(0);
-        });
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
     });
     </script>
 
