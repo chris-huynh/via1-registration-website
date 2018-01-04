@@ -33,8 +33,8 @@ from registration.models import SpecialRegCodes
 import paypalrestsdk
 paypalrestsdk.configure({
     "mode": "sandbox",  # sandbox or live
-    "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
-    "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
+    "client_id": settings.PAYPAL_SANDBOX_CLIENT_ID,
+    "client_secret": settings.PAYPAL_SANDBOX_CLIENT_SECRET})
 
 
 # Need to use get_user_model() because we have a custom auth user model
