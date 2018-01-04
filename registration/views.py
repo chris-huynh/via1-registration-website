@@ -32,9 +32,9 @@ from registration.models import SpecialRegCodes
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
 paypalrestsdk.configure({
-    "mode": "sandbox",  # sandbox or live
-    "client_id": settings.PAYPAL_SANDBOX_CLIENT_ID,
-    "client_secret": settings.PAYPAL_SANDBOX_CLIENT_SECRET})
+    "mode": "live",  # sandbox or live
+    "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
+    "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
 
 
 # Need to use get_user_model() because we have a custom auth user model
@@ -52,7 +52,7 @@ def home(request):
     if request.user.is_authenticated:
         todays_date = datetime.datetime.now()
         is_early_reg_open = True if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
-        is_regular_reg_open = True #if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
+        is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
         conference_caps = ConferenceVars.objects.get(pk=1)
