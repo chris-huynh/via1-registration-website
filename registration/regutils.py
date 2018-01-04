@@ -38,7 +38,7 @@ class RegisterPrices:
 
 class RegisterCaps:
     EARLY_REG_CAP = 80
-    REGULAR_REG_CAP = 176
+    REGULAR_REG_CAP = 175
     ALUMNI_REG_CAP = 30
     STAFF_REG_CAP = 83
 
