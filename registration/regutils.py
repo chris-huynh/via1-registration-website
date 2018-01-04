@@ -7,14 +7,6 @@
 import datetime
 
 
-# TODO Currently Unused. Remove?
-class AttendeeTypes:
-    EARLY_REG_ATTENDEE = '1'
-    REGULAR_REG_ATTENDEE = '2'
-    ALUMNI_REG_ATTENDEE = '3'
-    STAFF_REG_ATTENDEE = '4'
-
-
 class RegisterTypes:
     EARLY_REG = 'early_registration'
     EARLY_REG_HOTEL = 'early_registration_and_hotel'
