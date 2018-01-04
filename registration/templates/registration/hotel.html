@@ -142,8 +142,8 @@
                                     {% endif %}
 
                                     {% if is_roommate_choosing_open %}
-                                        <p>{% if is_room_leader %}You are the room leader.<br>{% endif %}
-                                            Distribute this group code to your friends so that they can join your room.
+                                        <p>{% if is_room_leader %}You are the group leader.<br>{% endif %}
+                                            Distribute this group code to your friends so that they can join your group.
                                         </p>
                                     {% endif %}
                                     <table class="centered highlight responsive-table">
@@ -161,7 +161,7 @@
                                                     <td>{{ roommate.email }}</td>
                                                     {% if is_room_leader %}
                                                     <td>
-                                                        {% if not user.email == roommate.email %}
+                                                        {% if not user.email == roommate.email and is_roommate_choosing_open %}
                                                             <a href="{% url 'remove_roommate' %}?email={{ roommate.email }}" class="orange-text hover_black">Remove</a>
                                                         {% endif %}
                                                     </td>
@@ -183,27 +183,34 @@
                         </div>
                         <div class="row center-align">
                             <div class="col s10 offset-s1">
-                                <p>You may specify up to three roommates. These names will be given to hotel staff, giving
-                                each of your roommates the ability to request a room key from the front desk.</p>
+                                {% if is_roommate_choosing_open %}
+                                    <p>You may specify up to three roommates. These names will be given to hotel staff, giving
+                                        each person the ability to request a room key from the front desk.</p>
+                                {% else %}
+                                    <p>The deadline to choose roommates was <b>{{ roommate_deadline }} CST</b>. You can no longer
+                                        make adjustments to your room.</p>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row center-align">
                             <div class="col s10 offset-s1">
+                                {% if is_roommate_choosing_open %}
                                 <p>Please input the first <strong>and</strong> last names of each roommate.</p>
+                                {% endif %}
                                 <form id="whole_room_form" method="get">
                                     <div class="input-field col s12 l4">
                                         <label for="roommate_one">Roommate 1</label>
-                                        <input type="text" id="roommate_one" name="roommate_one" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_one|default_if_none:'' }}">
+                                        <input type="text" id="roommate_one" name="roommate_one" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_one|default_if_none:'' }}" {% if not is_roommate_choosing_open %}disabled{% endif %}>
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <label for="roommate_two">Roommate 2</label>
-                                        <input type="text" id="roommate_two" name="roommate_two" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_two|default_if_none:'' }}">
+                                        <input type="text" id="roommate_two" name="roommate_two" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_two|default_if_none:'' }}" {% if not is_roommate_choosing_open %}disabled{% endif %}>
                                     </div>
                                     <div class="input-field col s12 l4">
                                         <label for="roommate_three">Roommate 3</label>
-                                        <input type="text" id="roommate_three" name="roommate_three" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_three|default_if_none:'' }}">
+                                        <input type="text" id="roommate_three" name="roommate_three" pattern="[a-zA-Z ]+" maxlength="32" oninvalid="setCustomValidity('Please enter letters and spaces only')" oninput="setCustomValidity('')" value="{{ roommate_three|default_if_none:'' }}" {% if not is_roommate_choosing_open %}disabled{% endif %}>
                                     </div>
-                                    <div class="col s12" style="height: 50px;">
+                                    <div class="col s12" style="height: 50px; {% if not is_roommate_choosing_open %}display: none;{% endif %}">
                                         <div class="row" style="margin:0;">
                                             <div id="whole_room_submit_loader" class="sk-folding-cube" style="display:none">
                                                 <div class="sk-cube1 sk-cube"></div>
@@ -306,7 +313,7 @@
 
             paypal.Button.render({
 
-                env: 'production', // 'sandbox' or 'production'
+                env: 'sandbox', // 'sandbox' or 'production'
 
                 client: {
                     sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',

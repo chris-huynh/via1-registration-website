@@ -16,7 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Has no usage right now.'),
+        help_text=_('Currently gives the user access to the code generator page. Will need to repurpose later'),
     )
     is_active = models.BooleanField(
         _('active'),

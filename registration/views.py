@@ -32,7 +32,7 @@ from registration.models import SpecialRegCodes
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
 paypalrestsdk.configure({
-    "mode": "live",  # sandbox or live
+    "mode": "sandbox",  # sandbox or live
     "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
     "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
 
@@ -43,7 +43,7 @@ User = get_user_model()
 
 def index(request):
     if request.user.is_authenticated:
-        return redirect('/registration/home')
+        return redirect('home')
     else:
         return redirect('/registration/login')
 
@@ -52,7 +52,7 @@ def home(request):
     if request.user.is_authenticated:
         todays_date = datetime.datetime.now()
         is_early_reg_open = True if (regutils.early_reg_open_date < todays_date < regutils.early_reg_close_date) else False
-        is_regular_reg_open = True if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
+        is_regular_reg_open = True #if (regutils.regular_reg_open_date < todays_date < regutils.regular_reg_close_date) else False
         is_alumni_reg_open = True if (regutils.alumni_reg_open_date < todays_date < regutils.alumni_reg_close_date) else False
 
         conference_caps = ConferenceVars.objects.get(pk=1)
@@ -73,7 +73,7 @@ def home(request):
 
         context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
                    'is_early_reg_full': is_early_reg_full, 'is_regular_reg_full': is_regular_reg_full, 'is_alumni_reg_full': is_alumni_reg_full,
-                   'payment_refund_deadline': regutils.payment_refund_deadline, 'todays_date': todays_date,
+                   'payment_refund_deadline': regutils.payment_refund_deadline,
                    'member_school_names': regutils.member_school_names, 'register_types': regutils.RegisterTypes,
                    'register_prices': regutils.RegisterPrices, 'is_paid_with_pp': is_paid_with_pp}
         return render(request, 'registration/home.html', context)
@@ -111,8 +111,8 @@ def hotel(request):
 
             # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances of it
             # This string is used in the creation of the invoice in Home.html and Hotel.html
-            # For now, we know that the paypal invoice is going to start with "via1-2018-", so we'll use that to determine if
-            # an attendee paid with PayPal
+            # For now, we know that the paypal invoice is going to start with "via1-2018-" (and hotel starts with via1-2018-reg-hotel-),
+            # so we'll use that to determine if an attendee paid with PayPal
             if user.hotel_payment_invoice:
                 if 'via1-2018-reg-hotel-' in user.hotel_payment_invoice:
                     can_use_refund_button = False
@@ -130,6 +130,7 @@ def hotel(request):
             user_info = UserInfo.objects.get(pk=user.id)
 
             if user_info.room_code:
+                # Get all users in the database with this user's room code
                 roommates = User.objects.filter(userinfo__room_code=user_info.room_code)
                 room_capacity = user_info.room_code[-1:]     # Get the last character of the room code (last character is the room size)
             else:
@@ -891,70 +892,6 @@ def refund_hotel_request_complete(request, uidb64, token, pp_email):
 
 
 @login_required()
-def registration_code(request):
-    if request.method == 'GET':
-        error = None
-        # Check if reg code is valid
-        if SpecialRegCodes.objects.filter(code=request.GET.get('reg_code')).exists():
-            reg_code = SpecialRegCodes.objects.get(code=request.GET.get('reg_code'))
-            user = request.user
-
-            # Check if reg code is expired
-            if timezone.now() < reg_code.date_expired:
-                if (reg_code.code_type == regutils.CodeTypes.WAITLIST_REG or
-                        reg_code.code_type == regutils.CodeTypes.BANQUET or
-                        reg_code.code_type == regutils.CodeTypes.FAMILY_LEADER):
-                    context = {'reg_code': reg_code, 'code_types': regutils.CodeTypes, 'register_prices': regutils.RegisterPrices}
-                    return render(request, 'registration/code_payment.html', context)
-                else:
-                    conf_vars = ConferenceVars.objects.get(pk=1)
-                    if ((reg_code.code_type == regutils.CodeTypes.REGULAR_REG and
-                        datetime.datetime.now() > regutils.regular_reg_open_date and
-                        conf_vars.regular_attendee_count < regutils.RegisterCaps.REGULAR_REG_CAP) or
-                            reg_code.code_type == regutils.CodeTypes.STAFF_REG):
-                        with transaction.atomic():
-                            user.has_paid = True
-                            user.time_paid = timezone.now()
-                            user.reg_type = 'CODE-' + reg_code.code
-                            user.payment_invoice = reg_code.method_of_payment
-
-                            if reg_code.includes_hotel:
-                                user.has_paid_hotel = True
-                                user.hotel_type = regutils.HotelPaymentTypes.SINGLE_SPOT
-
-                            user.save()
-
-                            if reg_code.code_type == regutils.CodeTypes.REGULAR_REG:
-                                conf_vars.regular_attendee_count += 1
-                                conf_vars.save()
-                            elif reg_code.code_type == regutils.CodeTypes.STAFF_REG:
-                                conf_vars.staff_attendee_count += 1
-                                conf_vars.save()
-
-                            reg_code.usages_left -= 1
-                            # If the last usage was used, delete the code
-                            if reg_code.usages_left <= 0:
-                                reg_code.delete()
-                            else:
-                                reg_code.save()
-                    else:
-                        error = 'The registration code you provided (' + reg_code.code + ') is valid, however, regular registration is either full or the registration period has not begun.'
-
-            else:
-                error = 'The registration code you provided (' + reg_code.code + ') has already expired.'
-                # Since the code is expired, delete it
-                reg_code.delete()
-
-        else:
-            error = 'The code you provided (' + request.GET.get('reg_code') + ') is not valid. Please try again.'
-
-        return render(request, 'registration/reg_code_complete.html', {'error': error, 'code': request.GET.get('reg_code')})
-
-    else:
-        return redirect('index')
-
-
-@login_required()
 def change_coed_preference(request):
     if request.is_ajax():
         user_info = UserInfo.objects.get(pk=request.user.id)
@@ -992,7 +929,9 @@ def create_hotel_room(request):
 def disband_room(request):
     user_info = request.user.userinfo
 
-    if user_info.is_room_leader and user_info.room_code:
+    is_roommate_choosing_open = True if (datetime.datetime.now() < regutils.roommate_deadline) else False
+
+    if user_info.room_code and user_info.is_room_leader and is_roommate_choosing_open:
         room_code = user_info.room_code
 
         user_info.room_code = None
@@ -1017,7 +956,7 @@ def disband_room(request):
         })
         send_mail(subject, "", None, emails, False, None, None, None, message)
 
-    elif user_info.room_code:
+    elif user_info.room_code and is_roommate_choosing_open:
         user_info.room_code = None
         user_info.save()
 
@@ -1026,7 +965,8 @@ def disband_room(request):
 
 @login_required()
 def join_room(request):
-    if request.method == 'GET':
+    is_roommate_choosing_open = True if (datetime.datetime.now() < regutils.roommate_deadline) else False
+    if request.method == 'GET' and is_roommate_choosing_open:
         room_code = request.GET.get('room_code')
         if UserInfo.objects.filter(room_code=room_code).exists():
             user_infos = UserInfo.objects.filter(room_code=room_code)
@@ -1051,7 +991,8 @@ def join_room(request):
 
 @login_required()
 def remove_roommate(request):
-    if request.method == 'GET':
+    is_roommate_choosing_open = True if (datetime.datetime.now() < regutils.roommate_deadline) else False
+    if request.method == 'GET' and is_roommate_choosing_open:
         if request.user.userinfo.is_room_leader:
             user_info = UserInfo.objects.get(user_id__email=request.GET.get('email'))
             user_info.room_code = None
@@ -1075,7 +1016,8 @@ def remove_roommate(request):
 
 @login_required()
 def whole_room_save_roommates(request):
-    if request.method == 'GET':
+    is_roommate_choosing_open = True if (datetime.datetime.now() < regutils.roommate_deadline) else False
+    if request.method == 'GET' and is_roommate_choosing_open:
         user_info = request.user.userinfo
 
         list_of_roommates = ''
@@ -1102,10 +1044,13 @@ def whole_room_save_roommates(request):
 
 @login_required()
 def code_generator(request):
-    codes = SpecialRegCodes.objects.order_by('-date_created', '-pk')
-    context = {'code_types': regutils.CodeTypes, 'code_types_list': regutils.code_types,
-               'methods_of_payment_list': regutils.methods_of_payment, 'codes': codes}
-    return render(request, 'registration/code_generator.html', context)
+    if request.user.is_staff:
+        codes = SpecialRegCodes.objects.order_by('-date_created', '-pk')
+        context = {'code_types': regutils.CodeTypes, 'code_types_list': regutils.code_types,
+                   'methods_of_payment_list': regutils.methods_of_payment, 'codes': codes}
+        return render(request, 'registration/code_generator.html', context)
+    else:
+        return redirect('home')
 
 
 @login_required()
@@ -1188,6 +1133,70 @@ def remove_code(request):
 
         else:
             return redirect('code_generator')
+    else:
+        return redirect('index')
+
+
+@login_required()
+def registration_code(request):
+    if request.method == 'GET':
+        error = None
+        # Check if reg code is valid
+        if SpecialRegCodes.objects.filter(code=request.GET.get('reg_code')).exists():
+            reg_code = SpecialRegCodes.objects.get(code=request.GET.get('reg_code'))
+            user = request.user
+
+            # Check if reg code is expired
+            if timezone.now() < reg_code.date_expired:
+                if (reg_code.code_type == regutils.CodeTypes.WAITLIST_REG or
+                        reg_code.code_type == regutils.CodeTypes.BANQUET or
+                        reg_code.code_type == regutils.CodeTypes.FAMILY_LEADER):
+                    context = {'reg_code': reg_code, 'code_types': regutils.CodeTypes, 'register_prices': regutils.RegisterPrices}
+                    return render(request, 'registration/code_payment.html', context)
+                else:
+                    conf_vars = ConferenceVars.objects.get(pk=1)
+                    if ((reg_code.code_type == regutils.CodeTypes.REGULAR_REG and
+                        datetime.datetime.now() > regutils.regular_reg_open_date and
+                        conf_vars.regular_attendee_count < regutils.RegisterCaps.REGULAR_REG_CAP) or
+                            reg_code.code_type == regutils.CodeTypes.STAFF_REG):
+                        with transaction.atomic():
+                            user.has_paid = True
+                            user.time_paid = timezone.now()
+                            user.reg_type = 'CODE-' + reg_code.code
+                            user.payment_invoice = reg_code.method_of_payment
+
+                            if reg_code.includes_hotel:
+                                user.has_paid_hotel = True
+                                user.hotel_type = regutils.HotelPaymentTypes.SINGLE_SPOT
+
+                            user.save()
+
+                            if reg_code.code_type == regutils.CodeTypes.REGULAR_REG:
+                                conf_vars.regular_attendee_count += 1
+                                conf_vars.save()
+                            elif reg_code.code_type == regutils.CodeTypes.STAFF_REG:
+                                conf_vars.staff_attendee_count += 1
+                                conf_vars.save()
+
+                            reg_code.usages_left -= 1
+                            # If the last usage was used, delete the code
+                            if reg_code.usages_left <= 0:
+                                reg_code.delete()
+                            else:
+                                reg_code.save()
+                    else:
+                        error = 'The registration code you provided (' + reg_code.code + ') is valid, however, regular registration is either full or the registration period has not begun.'
+
+            else:
+                error = 'The registration code you provided (' + reg_code.code + ') has already expired.'
+                # Since the code is expired, delete it
+                reg_code.delete()
+
+        else:
+            error = 'The code you provided (' + request.GET.get('reg_code') + ') is not valid. Please try again.'
+
+        return render(request, 'registration/reg_code_complete.html', {'error': error, 'code': request.GET.get('reg_code')})
+
     else:
         return redirect('index')
 
