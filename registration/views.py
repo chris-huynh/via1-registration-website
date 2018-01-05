@@ -58,7 +58,7 @@ def home(request):
         conference_caps = ConferenceVars.objects.get(pk=1)
         # TODO Gonna leave this as Full indefinitely for now. Since we want it to say Sold Out permanently even if someone refunds
         is_early_reg_full = True  # if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
-        is_regular_reg_full = True if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
+        is_regular_reg_full = True  # if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
 
         # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances
@@ -635,13 +635,13 @@ def update_paid_attendee(request):
 
                 # increment attendee count for appropriate attendee_type
                 conf_vars = ConferenceVars.objects.get(pk=1)
-                if reg_type == regutils.RegisterTypes.EARLY_REG or regutils.RegisterTypes.EARLY_REG_HOTEL:
+                if reg_type == regutils.RegisterTypes.EARLY_REG or reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
                     conf_vars.early_attendee_count += 1
-                elif reg_type == regutils.RegisterTypes.REGULAR_REG or regutils.RegisterTypes.REGULAR_REG_HOTEL:
+                elif reg_type == regutils.RegisterTypes.REGULAR_REG or reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
                     conf_vars.regular_attendee_count += 1
-                elif reg_type == regutils.RegisterTypes.ALUMNI_REG or regutils.RegisterTypes.ALUMNI_REG_HOTEL:
+                elif reg_type == regutils.RegisterTypes.ALUMNI_REG or reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
                     conf_vars.alumni_attendee_count += 1
-                elif reg_type == regutils.RegisterTypes.STAFF_REG or regutils.RegisterTypes.STAFF_REG_HOTEL:
+                elif reg_type == regutils.RegisterTypes.STAFF_REG or reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
                     conf_vars.staff_attendee_count += 1
                 conf_vars.save()
 
