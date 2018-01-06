@@ -32,9 +32,9 @@ from registration.models import SpecialRegCodes
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
 paypalrestsdk.configure({
-    "mode": "sandbox",  # sandbox or live
-    "client_id": settings.PAYPAL_SANDBOX_CLIENT_ID,
-    "client_secret": settings.PAYPAL_SANDBOX_CLIENT_SECRET})
+    "mode": "live",  # sandbox or live
+    "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
+    "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
 
 
 # Need to use get_user_model() because we have a custom auth user model
@@ -58,7 +58,7 @@ def home(request):
         conference_caps = ConferenceVars.objects.get(pk=1)
         # TODO Gonna leave this as Full indefinitely for now. Since we want it to say Sold Out permanently even if someone refunds
         is_early_reg_full = True  # if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
-        is_regular_reg_full = True   if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
+        is_regular_reg_full = True  # if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
 
         # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances
@@ -83,19 +83,24 @@ def home(request):
 
 def profile(request):
     if request.user.is_authenticated:
-        user_info = UserInfo.objects.get(pk=request.user.id)
+        if UserInfo.objects.filter(pk=request.user).exists():
+            user_info = UserInfo.objects.get(pk=request.user.id)
 
-        member_school_names = regutils.member_school_names
-        graduation_years = regutils.graduation_years
-        default_pronouns = regutils.default_pronouns
+            member_school_names = regutils.member_school_names
+            graduation_years = regutils.graduation_years
+            default_pronouns = regutils.default_pronouns
 
-        # If the current value in user_info.school is not null/blank and not in the list of member schools, the Other choice was chosen
-        other_selected = 'false' if (user_info.school in member_school_names) else 'true'
-        other_pronouns_selected = 'false' if (user_info.pronouns in default_pronouns) else 'true'
+            # If the current value in user_info.school is not null/blank and not in the list of member schools, the Other choice was chosen
+            other_selected = 'false' if (user_info.school in member_school_names) else 'true'
+            other_pronouns_selected = 'false' if (user_info.pronouns in default_pronouns) else 'true'
 
-        context = {'user_info': user_info, 'member_school_names': member_school_names, 'other_selected': other_selected,
-                   'other_pronouns_selected': other_pronouns_selected, 'graduation_years': graduation_years}
-        return render(request, 'registration/profile.html', context)
+            context = {'user_info': user_info, 'member_school_names': member_school_names, 'other_selected': other_selected,
+                       'other_pronouns_selected': other_pronouns_selected, 'graduation_years': graduation_years}
+            return render(request, 'registration/profile.html', context)
+        else:
+            user_info = UserInfo(user_id_id=request.user.id)
+            user_info.save()
+            return redirect('profile')
     else:
         return redirect('/registration/login')
 
