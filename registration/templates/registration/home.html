@@ -31,7 +31,7 @@
                 {% endif %}
 
                 {% if not user.has_paid and is_regular_reg_full %}
-                    <p class="flow-text">Still want to attend? Put your name on the waitlist, <a href="#waitlist_form_modal" class="orange-text hover_black modal-trigger" style="font-weight: 500">here</a></p>
+                    <p class="flow-text">Still want to attend? Put your name on the waitlist, <a href="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform" target="_blank" class="orange-text hover_black modal-trigger" style="font-weight: 500">here</a></p>
                 {% endif %}
 
                 {% if user.has_paid %}
@@ -402,18 +402,18 @@
     </div>
 
     {# Waitlist Form Pop-Up Modal #}
-    <div id="waitlist_form_modal" class="modal">
-        <div class="modal-content">
-            <div class="row center-align">
-                    <div class="hide-on-med-and-down">
-                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform?embedded=true" width="650" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
-                    </div>
-                    </div>
-                    <div class="hide-on-large-only">
-                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform?embedded=true" width="250" height="400" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
-                    </div>
-            </div>
-    </div>
+{#    <div id="waitlist_form_modal" class="modal">#}
+{#        <div class="modal-content">#}
+{#            <div class="row center-align">#}
+{#                    <div class="hide-on-med-and-down">#}
+{#                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform?embedded=true" width="650" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>#}
+{#                    </div>#}
+{#                    </div>#}
+{#                    <div class="hide-on-large-only">#}
+{#                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdS0MH4BNCc9qUT0COF2OAmvIbh8xdVQmTXhl-KqWHq32SZLQ/viewform?embedded=true" width="250" height="400" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>#}
+{#                    </div>#}
+{#            </div>#}
+{#    </div>#}
 
 {% endblock %}
 
@@ -575,7 +575,7 @@
 
             paypal.Button.render({
 
-                env: 'production', // 'sandbox' or 'production'
+                env: 'sandbox', // 'sandbox' or 'production'
 
                 client: {
                     sandbox:    'Ab27EY00zHVJxLJOXzg5qsD-BPhmZN5eKEtl9t-JZLx3FWDedGCcv_dY3ThY0WyokpArcbGNB-fKmHOV',

@@ -32,9 +32,9 @@ from registration.models import SpecialRegCodes
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
 paypalrestsdk.configure({
-    "mode": "live",  # sandbox or live
-    "client_id": settings.PAYPAL_LIVE_CLIENT_ID,
-    "client_secret": settings.PAYPAL_LIVE_CLIENT_SECRET})
+    "mode": "sandbox",  # sandbox or live
+    "client_id": settings.PAYPAL_SANDBOX_CLIENT_ID,
+    "client_secret": settings.PAYPAL_SANDBOX_CLIENT_SECRET})
 
 
 # Need to use get_user_model() because we have a custom auth user model
@@ -58,7 +58,7 @@ def home(request):
         conference_caps = ConferenceVars.objects.get(pk=1)
         # TODO Gonna leave this as Full indefinitely for now. Since we want it to say Sold Out permanently even if someone refunds
         is_early_reg_full = True  # if conference_caps.early_attendee_count >= regutils.RegisterCaps.EARLY_REG_CAP else False
-        is_regular_reg_full = True  # if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
+        is_regular_reg_full = True   if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
 
         # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances
