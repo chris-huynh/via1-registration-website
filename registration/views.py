@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
@@ -9,6 +9,10 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db import transaction
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+import base64
 
 # Need these for email activation
 from django.utils.http import urlsafe_base64_encode
@@ -321,6 +325,21 @@ def submit_profile(request):
         user_info.save()
 
         return JsonResponse({})
+
+
+@login_required()
+@csrf_exempt
+def upload_picture(request):
+    if request.method == 'POST':
+        print('hello')
+        data = request.POST
+        print(data)
+        # file = open('pictest.jpg', 'w')
+        # file.write(request.GET.get('croppedImage'))
+        # file.close()
+        return HttpResponse('')
+    else:
+        return HttpResponse('')
 
 
 def register(request):

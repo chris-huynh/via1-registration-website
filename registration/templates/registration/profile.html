@@ -4,6 +4,7 @@
 
 {% block additional_head %}
     <script src="https://use.fontawesome.com/724dc2aee1.js"></script>
+    <link href="{% static 'registration/cropper.min.css' %}" rel="stylesheet"/>
 
     <style>
         {# This is for the background #}
@@ -98,10 +99,12 @@
                             <div class="row">
                                 <div class="col s10 offset-s1">
                                     <div class="row">
-                                        <div class="col s12 l4 center-align grey-text" style="cursor: pointer;">
-                                            <i class="fa fa-user-circle-o fa-5x"></i>
-                                            <p class="center-align">Add Photo coming soon</p>
-                                        </div>
+                                        <a href="#add_photo_modal" class="modal-trigger">
+                                            <div class="col s12 l4 center-align grey-text">
+                                                <i class="fa fa-user-circle-o fa-5x"></i>
+                                                <p class="center-align">Add Photo coming soon</p>
+                                            </div>
+                                        </a>
                                         <div class="input-field col s12 l8">
                                             <div class="row">
                                                 <div class="input-field col s12 l8">
@@ -261,9 +264,25 @@
         </div>
     </div>
 
+    {# Add Photo Pop-Up Modal #}
+    <div id="add_photo_modal" class="modal">
+        <div class="modal-content">
+            <div class="row center-align">
+                <input type="file" name="image" id="image" onchange="readURL(this);"/>
+                <div class="image_container">
+                    <img id="blah" style="max-width: 100%" src="#" alt="your image" />
+                </div>
+                <div id="cropped_result"></div>
+                <button id="crop_button">Crop</button>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block additional_scripts %}
+    <script src="{% static 'registration/cropper.min.js' %}"></script>
+
     <script>
     $("#profile_form").submit(function(e) {
         $("#profile_submit_btn").hide();
@@ -341,6 +360,78 @@
                 .find("option[value='" + shirtValue +"']").attr('selected', true);
         }
     });
+    </script>
+
+    <script type="text/javascript" defer>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#blah').attr('src', e.target.result)
+                };
+                reader.readAsDataURL(input.files[0]);
+                setTimeout(initCropper, 100);
+            }
+        }
+        function initCropper(){
+            var image = document.getElementById('blah');
+            var cropper = new Cropper(image, {
+                aspectRatio: 200 / 200,
+                viewMode: 1,
+                minCropBoxWidth: 200,
+                minCropBoxHeight: 200,
+                crop: function(e) {
+
+                }
+            });
+
+            // On crop button clicked
+            document.getElementById('crop_button').addEventListener('click', function(){
+                var imgurl =  cropper.getCroppedCanvas().toDataURL('image/jpeg');
+                var img = document.createElement("img");
+                img.src = imgurl;
+
+                document.getElementById("cropped_result").appendChild(img);
+
+{#                var trimmed_imgurl = imgurl.replace("data:image/jpeg;base64,", "");#}
+
+{#                $.ajax({#}
+{#                    method: "POST",#}
+{#                    url: '{% url 'upload_picture' %}',#}
+{#                    async: true,#}
+{#                    data: {#}
+{#                        'croppedImage': trimmed_imgurl#}
+{#                    },#}
+{#                    processData: false,#}
+{#                    contentType: false,#}
+{#                    success: function () {#}
+{#                        console.log('Upload success');#}
+{#                    },#}
+{#                    error: function () {#}
+{#                        console.log('Upload error');#}
+{#                    }#}
+{#                });#}
+
+                cropper.getCroppedCanvas().toBlob(function (blob) {
+                      var formData = new FormData();
+                      formData.append('croppedImage', blob);
+                      alert(formData.get('croppedImage'));
+                      // Use `jQuery.ajax` method
+                      $.ajax('{% url 'upload_picture' %}', {
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                          console.log('Upload success');
+                        },
+                        error: function () {
+                          console.log('Upload error');
+                        }
+                      });
+                }, "image/jpeg", 0.95);
+            })
+        }
     </script>
 
 {% endblock %}

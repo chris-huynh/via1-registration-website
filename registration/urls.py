@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^home/$', views.home, name='home'),
     url(r'^profile/$', views.profile, name='profile'),
     url(r'^profile/submit_profile', views.submit_profile, name='submit_profile'),
+    url(r'^profile/upload_picture', views.upload_picture, name='upload_picture'),
     url(r'^hotel/$', views.hotel, name='hotel'),
     url(r'^hotel/create_hotel_room/$', views.create_hotel_room, name='create_hotel_room'),
     url(r'^hotel/change_coed_preference/$', views.change_coed_preference, name='change_coed_preference'),
