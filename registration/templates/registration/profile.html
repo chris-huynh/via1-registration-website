@@ -5,6 +5,7 @@
 {% block additional_head %}
     <script src="https://use.fontawesome.com/724dc2aee1.js"></script>
     <link href="{% static 'registration/cropper.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'registration/imagehover.css' %}" rel="stylesheet">
 
     <style>
         {# This is for the background #}
@@ -42,7 +43,7 @@
                         <h4 style="font-weight: 300;">Your Profile</h4>
                         <p style="font-weight: 300;">This information will let us know more about you.</p>
                         <p class="orange-text" style="font-weight: 300; font-style: italic;"><b>NOTE:</b> Fields with an asterisk(*)
-                            are required to be able to choose workshops.
+                            must be filled out in order to choose workshops.
                         </p>
                     </div>
                 </div>
@@ -99,12 +100,29 @@
                             <div class="row">
                                 <div class="col s10 offset-s1">
                                     <div class="row">
-                                        <a href="#add_photo_modal" class="modal-trigger">
-                                            <div class="col s12 l4 center-align grey-text">
-                                                <i class="fa fa-user-circle-o fa-5x"></i>
-                                                <p class="center-align">Add Photo coming soon</p>
+
+                                            <div class="col s12 l4 center-align">
+                                                <a href="#add_photo_modal" class="modal-trigger">
+                                                <div class="col s12 grey-text">
+                                                {% if user_info.photo_name %}
+                                                    <figure class="imghvr-push-up">
+                                                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/{{ user_info.photo_name }}">
+                                                        <figcaption>
+                                                            <h5 style="font-weight: 300; text-align: center;">UPLOAD</h5>
+                                                        </figcaption>
+                                                    </figure>
+                                                {% else %}
+                                                    <i class="fa fa-user-circle-o fa-5x"></i>
+                                                    <p class="center-align">Click to add a portrait *</p>
+                                                {% endif %}
+                                                </div>
+                                                </a>
+
+                                                <div class="col s12">
+                                                    <a class="orange-text hover_black modal-trigger" href="#photo_guidelines_modal"><i class="material-icons">info_outline</i>Photo Guidelines</a>
+                                                </div>
                                             </div>
-                                        </a>
+
                                         <div class="input-field col s12 l8">
                                             <div class="row">
                                                 <div class="input-field col s12 l8">
@@ -267,14 +285,34 @@
     {# Add Photo Pop-Up Modal #}
     <div id="add_photo_modal" class="modal">
         <div class="modal-content">
-            <div class="row center-align">
-                <input type="file" name="image" id="image" onchange="readURL(this);"/>
-                <div class="image_container">
-                    <img id="blah" style="max-width: 100%" src="#" alt="your image" />
-                </div>
-                <div id="cropped_result"></div>
-                <button id="crop_button">Crop</button>
+            <div class="row file-field input-field">
+                <button class="btn waves-effect waves-light orange" style="margin-right: 5px; margin-bottom: 5px;">
+                    <span>Select...</span>
+                    <input type="file" accept="image/*" name="image" onchange="readURL(this);"/>
+                </button>
+                <button id="crop_button" class="btn waves-effect waves-light orange">Crop</button>
             </div>
+            <div class="row image_container center-align">
+                <img id="crop_canvas" style="max-width: 100%" src=" {% if user_info.photo_name %}https://via1.org/registration/images/attendee_photos/{{ user_info.photo_name }}{% else %}#{% endif %}" />
+            </div>
+            <div class="row">
+                <button id="remove_photo_button" class="btn waves-effect waves-light orange" onclick="removePhoto()">Remove</button>
+            </div>
+        </div>
+    </div>
+
+    {# Photo Guidelines Pop-Up Modal #}
+    <div id="photo_guidelines_modal" class="modal">
+        <div class="modal-content">
+            <h5>Photo Guidelines</h5>
+            <p class="orange-text"><b>NOTE:</b> The photo you upload will be used on your badge and will be displayed on the Families page.</p>
+            <p><b>Photo must meet the following criteria:</b><br>
+                - Dimensions must be greater than or equal to <i>200x200</i> pixels<br>
+                - Professional headshot<br>
+                - Individual photo (e.g. No group photos)<br>
+                - Up-to-date (e.g. No baby photos)<br>
+            </p>
+            <p class="orange-text" style="font-weight: 600; font-style: italic">If you fail to adhere to these guidelines, your photo will be removed.</p>
         </div>
     </div>
 
@@ -367,14 +405,17 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#blah').attr('src', e.target.result)
+                    $('#crop_canvas').attr('src', e.target.result)
                 };
                 reader.readAsDataURL(input.files[0]);
                 setTimeout(initCropper, 100);
             }
         }
         function initCropper(){
-            var image = document.getElementById('blah');
+            var image = document.getElementById('crop_canvas');
+            if (image.cropper) {
+                image.cropper.destroy();
+            }
             var cropper = new Cropper(image, {
                 aspectRatio: 200 / 200,
                 viewMode: 1,
@@ -388,49 +429,35 @@
             // On crop button clicked
             document.getElementById('crop_button').addEventListener('click', function(){
                 var imgurl =  cropper.getCroppedCanvas().toDataURL('image/jpeg');
-                var img = document.createElement("img");
-                img.src = imgurl;
+                var trimmed_imgurl = imgurl.replace("data:image/jpeg;base64,", "");
 
-                document.getElementById("cropped_result").appendChild(img);
-
-{#                var trimmed_imgurl = imgurl.replace("data:image/jpeg;base64,", "");#}
-
-{#                $.ajax({#}
-{#                    method: "POST",#}
-{#                    url: '{% url 'upload_picture' %}',#}
-{#                    async: true,#}
-{#                    data: {#}
-{#                        'croppedImage': trimmed_imgurl#}
-{#                    },#}
-{#                    processData: false,#}
-{#                    contentType: false,#}
-{#                    success: function () {#}
-{#                        console.log('Upload success');#}
-{#                    },#}
-{#                    error: function () {#}
-{#                        console.log('Upload error');#}
-{#                    }#}
-{#                });#}
-
-                cropper.getCroppedCanvas().toBlob(function (blob) {
-                      var formData = new FormData();
-                      formData.append('croppedImage', blob);
-                      alert(formData.get('croppedImage'));
-                      // Use `jQuery.ajax` method
-                      $.ajax('{% url 'upload_picture' %}', {
-                        method: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                          console.log('Upload success');
-                        },
-                        error: function () {
-                          console.log('Upload error');
-                        }
-                      });
-                }, "image/jpeg", 0.95);
+                $.ajax({
+                    type: "POST",
+                    url: '{% url 'upload_picture' %}',
+                    data: {'croppedImage': trimmed_imgurl},
+                    success: function() {
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Photo upload failed. Please try again.');
+                    }
+                });
             })
+        }
+    </script>
+
+    <script type="text/javascript" defer>
+        function removePhoto() {
+            $.ajax({
+                type: "GET",
+                url: '{% url 'remove_picture' %}',
+                success: function() {
+                    location.reload();
+                },
+                error: function() {
+                    alert('Photo could not be removed.');
+                }
+            });
         }
     </script>
 

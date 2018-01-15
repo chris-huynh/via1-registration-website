@@ -80,13 +80,18 @@
        transition: .5s;
     }
 
+    .hover_border_orange:hover {
+        border: 5px solid #e97d15;
+        transition: .2s;
+    }
+
     .hover_black:hover {
        color: #000 !important;
        transition: .5s;
     }
 
     .hover_orange:hover {
-       color: orange;
+       color: #e97d15;
        transition: .5s;
     }
 

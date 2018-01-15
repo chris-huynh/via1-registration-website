@@ -13,6 +13,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 import base64
+import io
+from ftplib import FTP
 
 # Need these for email activation
 from django.utils.http import urlsafe_base64_encode
@@ -331,15 +333,56 @@ def submit_profile(request):
 @csrf_exempt
 def upload_picture(request):
     if request.method == 'POST':
-        print('hello')
-        data = request.POST
-        print(data)
-        # file = open('pictest.jpg', 'w')
-        # file.write(request.GET.get('croppedImage'))
-        # file.close()
+        with transaction.atomic():
+            cropped_image = request.POST['croppedImage']
+            user_info = request.user.userinfo
+            file_name = str(randint(100000, 999999)) + str(request.user.id)
+
+            ftp = FTP(settings.FTP_HOST)
+            ftp.login(settings.FTP_USERNAME, settings.FTP_PASSWORD)
+            ftp.cwd(settings.FTP_PATH)
+
+            bytes_io = io.BytesIO(base64.b64decode(cropped_image))
+            ftp.storbinary('STOR ' + file_name + '.jpeg', bytes_io)
+
+            # Delete old photo
+            if user_info.photo_name:
+                ftp.delete(user_info.photo_name)
+
+            ftp.quit()
+
+            user_info.photo_name = file_name + '.jpeg'
+            user_info.save()
+
         return HttpResponse('')
     else:
         return HttpResponse('')
+
+
+@login_required()
+def remove_picture(request):
+    if request.method == 'GET':
+        user_info = request.user.userinfo
+
+        if user_info.photo_name:
+            with transaction.atomic():
+                ftp = FTP(settings.FTP_HOST)
+                ftp.login(settings.FTP_USERNAME, settings.FTP_PASSWORD)
+                ftp.cwd(settings.FTP_PATH)
+
+                ftp.delete(user_info.photo_name)
+                ftp.quit()
+
+                user_info.photo_name = None
+                user_info.save()
+
+                return HttpResponse('')
+
+        else:
+            return redirect('profile')
+
+    else:
+        return redirect('profile')
 
 
 def register(request):

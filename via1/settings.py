@@ -176,3 +176,9 @@ PAYPAL_SANDBOX_CLIENT_SECRET = "EAUCTgUATGWkIRJGMJBp1iYJ9AnvJPcoOxr-hL8FOuvTOTFs
 
 PAYPAL_LIVE_CLIENT_ID = "AcX7YmOuHyEA6dZhpNEYeaU1hni05wB3dVyPFEEReHgzByz3B-BA8YXclcsY_WiCws3k-2K99JRRl_5I"
 PAYPAL_LIVE_CLIENT_SECRET = "EACFieh0hoaWUjw5NFEGKeg5LTeiOtMrxQUBl7oocj0kgLmGnuChT5LHCbb7SlVHK9bGRK78MwOWZyya"
+
+
+FTP_HOST = 'uvsamidwest.org'
+FTP_USERNAME = 'uvsamw'
+FTP_PASSWORD = 'm1dwestbest'
+FTP_PATH = '/via1.org/www/registration/images/attendee_photos'
