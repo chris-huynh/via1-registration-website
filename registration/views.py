@@ -335,6 +335,7 @@ def upload_picture(request):
     if request.method == 'POST':
         with transaction.atomic():
             cropped_image = request.POST['croppedImage']
+            cropped_image_big = request.POST['croppedImage_big']
             user_info = request.user.userinfo
             file_name = str(randint(100000, 999999)) + str(request.user.id)
 
@@ -343,11 +344,15 @@ def upload_picture(request):
             ftp.cwd(settings.FTP_PATH)
 
             bytes_io = io.BytesIO(base64.b64decode(cropped_image))
+            bytes_io_big = io.BytesIO(base64.b64decode(cropped_image_big))
             ftp.storbinary('STOR ' + file_name + '.jpeg', bytes_io)
+            ftp.storbinary('STOR ' + file_name + '_big.jpeg', bytes_io_big)
 
             # Delete old photo
             if user_info.photo_name:
                 ftp.delete(user_info.photo_name)
+                # Remove last 5 characters from the name (".jpeg") and append "_big.jpeg"
+                ftp.delete(user_info.photo_name[:-5] + '_big.jpeg')
 
             ftp.quit()
 
@@ -371,6 +376,7 @@ def remove_picture(request):
                 ftp.cwd(settings.FTP_PATH)
 
                 ftp.delete(user_info.photo_name)
+                ftp.delete(user_info.photo_name[:-5] + '_big.jpeg')
                 ftp.quit()
 
                 user_info.photo_name = None

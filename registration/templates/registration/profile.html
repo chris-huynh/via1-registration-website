@@ -119,7 +119,7 @@
                                                 </a>
 
                                                 <div class="col s12">
-                                                    <a class="orange-text hover_black modal-trigger" href="#photo_guidelines_modal"><i class="material-icons">info_outline</i>Photo Guidelines</a>
+                                                    <a class="orange-text hover_black modal-trigger" href="#photo_guidelines_modal">Photo Guidelines</a>
                                                 </div>
                                             </div>
 
@@ -304,10 +304,10 @@
     {# Photo Guidelines Pop-Up Modal #}
     <div id="photo_guidelines_modal" class="modal">
         <div class="modal-content">
-            <h5>Photo Guidelines</h5>
+            <h4>Photo Guidelines</h4>
             <p class="orange-text"><b>NOTE:</b> The photo you upload will be used on your badge and will be displayed on the Families page.</p>
             <p><b>Photo must meet the following criteria:</b><br>
-                - Dimensions must be greater than or equal to <i>200x200</i> pixels<br>
+                - Dimensions must be greater than or equal to <i>400x400</i> pixels<br>
                 - Professional headshot<br>
                 - Individual photo (e.g. No group photos)<br>
                 - Up-to-date (e.g. No baby photos)<br>
@@ -428,13 +428,18 @@
 
             // On crop button clicked
             document.getElementById('crop_button').addEventListener('click', function(){
-                var imgurl =  cropper.getCroppedCanvas().toDataURL('image/jpeg');
+                var imgurl =  cropper.getCroppedCanvas({width: 200, height: 200}).toDataURL('image/jpeg');
+                var imgurl_big = cropper.getCroppedCanvas({width: 400, height: 400}).toDataURL('image/jpeg');
                 var trimmed_imgurl = imgurl.replace("data:image/jpeg;base64,", "");
+                var trimmed_imgurl_big = imgurl_big.replace("data:image/jpeg;base64,", "");
 
                 $.ajax({
                     type: "POST",
                     url: '{% url 'upload_picture' %}',
-                    data: {'croppedImage': trimmed_imgurl},
+                    data: {
+                        'croppedImage': trimmed_imgurl,
+                        'croppedImage_big': trimmed_imgurl_big
+                    },
                     success: function() {
                         location.reload();
                     },
