@@ -422,7 +422,10 @@
                 minCropBoxWidth: 200,
                 minCropBoxHeight: 200,
                 crop: function(e) {
-
+                    if (e.detail.width < 400 || e.detail.height < 400) {
+                        image.cropper.destroy();
+                        alert('This image is too small. Please upload an image larger than 400x400 pixels.');
+                    }
                 }
             });
 

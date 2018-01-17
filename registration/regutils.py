@@ -31,7 +31,7 @@ class RegisterPrices:
 class RegisterCaps:
     EARLY_REG_CAP = 80
     REGULAR_REG_CAP = 175
-    ALUMNI_REG_CAP = 20
+    ALUMNI_REG_CAP = 25     # Soft-cap. An additional 5 spots are being reserved for Alumni, to be distributed manually
     STAFF_REG_CAP = 83
 
 
@@ -68,7 +68,7 @@ regular_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 # Open 1-4-2017 @ 6:00p CENTRAL
 # Close 1-18-2018 @ 11:59p
 alumni_reg_open_date = datetime.datetime(2018, 1, 4, 18, 0, 0)
-alumni_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
+alumni_reg_close_date = datetime.datetime(2018, 2, 7, 23, 59, 59)
 
 
 payment_refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
