@@ -122,6 +122,7 @@ class UserInfo(models.Model):
     snapchat = models.CharField(_('snapchat handle'), max_length=25, blank=True, null=True)
     linkedin = models.CharField(_('linkedin handle'), max_length=25, blank=True, null=True)
     banquet_meal = models.CharField(_('banquet meal'), max_length=50, blank=True, null=True)
+    banquet_dessert = models.CharField(_('banquet dessert'), max_length=50, blank=True, null=True)
     food_allergies = models.CharField(_('food allergies'), max_length=65, blank=True, null=True)
     emergency_contact = models.CharField(_('emergency contact'), max_length=50, blank=True, null=True)
     emergency_contact_number = models.CharField(_('emergency contact phone number'), max_length=10, blank=True, null=True)

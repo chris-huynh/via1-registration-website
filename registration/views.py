@@ -287,6 +287,12 @@ def submit_profile(request):
             else:
                 user_info.banquet_meal = form['banquet_meal']
 
+        if form.get('banquet_dessert', False) and user_info.banquet_dessert != form['banquet_dessert']:
+            if form['banquet_dessert'] == '':
+                user_info.banquet_dessert = None
+            else:
+                user_info.banquet_dessert = form['banquet_dessert']
+
         if user_info.food_allergies != form['food_allergies'] and not (user_info.food_allergies is None and form['food_allergies'] == ''):
             if form['food_allergies'] == '':
                 user_info.food_allergies = None
@@ -317,7 +323,6 @@ def submit_profile(request):
             else:
                 user_info.shirt_size = form['shirt_size']
 
-        print(form['vias_attended'])
         if user_info.vias_attended != form['vias_attended']:
             if form['vias_attended'] == '':
                 user_info.vias_attended = None

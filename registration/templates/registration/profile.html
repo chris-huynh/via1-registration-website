@@ -212,17 +212,45 @@
                                     <div class="row">
                                         <div class="input-field col s12 l6">
                                             <i class="fa fa-cutlery prefix" aria-hidden="true"></i>
-                                            <label for="banquet_meal">Banquet Meal *(TBD)</label>
+                                            <label for="banquet_meal" class="active">Banquet Entrée *</label>
                                             <select id="banquet_meal" name="banquet_meal">
-                                                {% for meal in banquet_meals %}
-                                                    <option value="{{ meal }}"></option>
-                                                {% endfor %}
+                                                <option value="" disabled selected>Choose...</option>
+                                                <option value="chicken">Grilled Breast of Chicken with Brie and Carmelized Shallot Cream Sauce</option>
+                                                <option value="fish">Spicy Glazed Salmon</option>
+                                                <option value="vegetarian">Wild Mushroom Risotto (Vegetarian)</option>
+                                                <option value="none">None</option>
                                             </select>
+                                            <a class="right orange-text hover_black modal-trigger" style="font-size: 13px; font-style: italic" href="#banquet_meal_help_modal"><b>Help!</b> None of these choices fit my dietary restrictions</a>
                                         </div>
                                         <div class="input-field col s12 l6">
+                                            <label for="banquet_dessert" class="active">Banquet Dessert *</label>
+                                            <select id="banquet_dessert" name="banquet_dessert">
+                                                <option value="" disabled selected>Choose...</option>
+                                                <option value="cheesecake">New York Cheesecake with Raspberry Sauce</option>
+                                                <option value="chocolate cake">Chocolate Cake</option>
+                                                <option value="none">None</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 l4">
                                             <i class="fa fa-frown-o prefix" aria-hidden="true"></i>
                                             <label for="food_allergies">Food Allergies</label>
                                             <input type="text" id="food_allergies" name="food_allergies" maxlength="65" value="{{ user_info.food_allergies|default_if_none:'' }}">
+                                        </div>
+                                        <div class="input-field col s12 l4">
+                                            <label for="shirt_size" class="active">T-Shirt Size *</label>
+                                            <select id="shirt_size" name="shirt_size">
+                                                <option value="" disabled selected>Choose...</option>
+                                                <option value="small">Small</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="large">Large</option>
+                                                <option value="extra_large">Extra Large</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-field col s12 l4">
+                                            <label for="vias_attended">Number of VIA-1s Attended *</label>
+                                            <input type="number" id="vias_attended" name="vias_attended" max="16" value="{{ user_info.vias_attended|default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -240,22 +268,6 @@
                                             <i class="fa fa-user prefix" aria-hidden="true"></i>
                                             <label for="emergency_contact_relation">Relationship *</label>
                                             <input type="text" id="emergency_contact_relation" name="emergency_contact_relation" maxlength="20" value="{{ user_info.emergency_contact_relation|default_if_none:'' }}">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s12 l6">
-                                            <label for="shirt_size" class="active">T-Shirt Size *</label>
-                                            <select id="shirt_size" name="shirt_size">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <option value="small">Small</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="large">Large</option>
-                                                <option value="extra_large">Extra Large</option>
-                                            </select>
-                                        </div>
-                                        <div class="input-field col s12 l6">
-                                            <label for="vias_attended">Number of VIA-1s Attended *</label>
-                                            <input type="number" id="vias_attended" name="vias_attended" max="16" value="{{ user_info.vias_attended|default_if_none:'' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -313,6 +325,18 @@
                 - Up-to-date (e.g. No baby photos)<br>
             </p>
             <p class="orange-text" style="font-weight: 600; font-style: italic">If you fail to adhere to these guidelines, your photo will be removed.</p>
+        </div>
+    </div>
+
+    {# Banquet Meal Details Pop-Up Modal #}
+    <div id="banquet_meal_help_modal" class="modal">
+        <div class="modal-content">
+            <h4>Need Help?</h4>
+            <p>If none of the entrée choices fit wthin your dietary restrictions, make sure you select the "None"
+                choice and then send an email to <b>conference.executive@uvsamidwest.org</b> discuss alternatives.</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="z-depth-3 modal-action modal-close waves-effect waves-light btn orange">Got it!</a>
         </div>
     </div>
 
@@ -390,6 +414,18 @@
             $("#pronouns").val(pronounValue)
                 .find("option[value=other]").attr('selected', true);
             $("#other_pronouns_field").show();
+        }
+
+        var banquetValue = '{{ user_info.banquet_meal }}';
+        if (banquetValue !== 'None') {
+            $("#banquet_meal").val(banquetValue)
+                .find("option[value='" + banquetValue +"']").attr('selected', true);
+        }
+
+        var dessertValue = '{{ user_info.banquet_dessert }}';
+        if (dessertValue !== 'None') {
+            $("#banquet_dessert").val(dessertValue)
+                .find("option[value='" + dessertValue +"']").attr('selected', true);
         }
 
         var shirtValue = '{{ user_info.shirt_size }}';
