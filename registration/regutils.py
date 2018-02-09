@@ -76,6 +76,8 @@ staff_payment_deadline = datetime.datetime(2018, 2, 7, 23, 59, 59)
 
 roommate_deadline = datetime.datetime(2018, 3, 1, 23, 59, 59)
 
+# this is a dummy date -- wait until we get the real one
+workshop_deadline = datetime.datetime(2018, 3, 15, 23, 59, 59)
 
 graduation_years = [
     2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,

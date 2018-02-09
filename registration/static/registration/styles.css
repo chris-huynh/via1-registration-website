@@ -251,3 +251,161 @@
         display: inline-block;
         margin-right: 10px;
     }
+
+    .flex_with_wrap {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .presenter_box {
+        padding: 15px 15px 0 15px !important;
+        border-radius: 7px !important;
+    }
+
+    .workshop_title {
+        font-weight: 300 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .workshop_capacity {
+        margin-left: 15px !important;
+        font-weight: bold;
+    }
+
+    .workshop_choose {
+        margin-right: 15px !important;
+        cursor: pointer !important;
+        font-weight: bold !important;
+    }
+
+    .workshop_closed {
+        margin-right: 15px !important;
+        font-weight: bold !important;
+    }
+
+    .workshop_detail_subtitle {
+        font-weight: 300;
+        text-transform: uppercase;
+        word-spacing: -3px;
+    }
+
+    .workshop_detail_subtitle span {
+        font-weight: 500;
+    }
+
+    /*For workshop presenter blocks*/
+    figure.effect-test figcaption {
+        color: #fff;
+        padding: 2em;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    figure.effect-test figcaption::before,
+    figure.effect-test figcaption::after {
+        pointer-events: none;
+    }
+
+    figure.effect-test figcaption,
+    figure.effect-test figcaption > a {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    figure.effect-test {
+        /*border: 1px solid #e97d15;*/
+        border-radius: 7px;
+        position: relative;
+        overflow: hidden;
+        margin: 0 auto;
+        max-width: 400px;
+        max-height: 400px;
+        background: -webkit-linear-gradient(bottom, rgba(0,0,0,6) 25%, rgba(255, 153, 0, 0.8) 75%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0.6) 25%, rgba(255,153,0,0.8) 75%);
+        cursor: pointer;
+        border-radius: 10px;
+    }
+
+    figure.effect-test img {
+        opacity: 1;
+        -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+        transition: opacity 0.35s, transform 0.35s;
+        -webkit-transform: scale3d(1.05,1.05,1);
+        transform: scale3d(1.05,1.05,1);
+    }
+
+    figure.effect-test:hover img {
+        opacity: 0.6;
+        -webkit-transform: scale3d(1,1,1);
+        transform: scale3d(1,1,1);
+    }
+
+    figure.effect-test figcaption::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.5);
+        content: '';
+        -webkit-transition: -webkit-transform 0.6s;
+        transition: transform 0.6s;
+        -webkit-transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,-100%,0);
+        transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,-100%,0);
+    }
+
+    figure.effect-test:hover figcaption::before {
+        -webkit-transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,100%,0);
+        transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,100%,0);
+    }
+
+    figure.effect-test h2 {
+        margin: 0;
+        font-weight: 100;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        color: #fff;
+        opacity: 0;
+        text-align: center;
+        -webkit-transition: opacity 0.35s;
+        transition: opacity 0.35s;
+        word-spacing: -5px;
+    }
+
+    figure.effect-test h2 span {
+        font-weight: 400;
+    }
+
+    figure.effect-test:hover h2 {
+        opacity: 1;
+        -webkit-transition-delay: 0.1s;
+        transition-delay: 0.1s;
+    }
+
+    figure.effect-test p {
+        position: absolute;
+        color: #fff;
+        right: 0;
+        bottom: 0;
+        margin: 3em;
+        padding: 0 1em;
+        max-width: 150px;
+        font-weight: 100;
+        border-right: 4px solid #fff;
+        text-align: right;
+        font-weight: 300;
+        opacity: 0;
+        -webkit-transition: opacity 0.35s;
+        transition: opacity 0.35s;
+    }
+
+    figure.effect-test:hover p {
+        opacity: 1;
+        -webkit-transition-delay: 0.1s;
+        transition-delay: 0.1s;
+    }

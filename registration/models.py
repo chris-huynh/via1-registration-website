@@ -75,8 +75,10 @@ class Families(models.Model):
 
 
 class Workshops(models.Model):
-    name = models.CharField(_('workshop name'), max_length=65, blank=True, null=True)
-    presenter = models.CharField(_('presenter name'), max_length=60, blank=True, null=True)
+    name = models.CharField(_('workshop name'), max_length=100, blank=True, null=True)
+    first_name = models.CharField(_('presenter first name'), max_length=30, blank=True, null=True)
+    last_name = models.CharField(_('presenter last name'), max_length=30, blank=True, null=True)
+    presenter_description = models.TextField(_('presenter description'), blank=True, null=True)
     description = models.TextField(_('workshop description'), blank=True, null=True)
     capacity = models.IntegerField(_('workshop capacity'), blank=True, null=True)
     attendee_count = models.IntegerField(
@@ -132,6 +134,7 @@ class UserInfo(models.Model):
     workshop_one = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_one')
     workshop_two = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_two')
     workshop_three = models.ForeignKey(Workshops, on_delete=models.SET_NULL, blank=True, null=True, default=None, related_name='workshop_three')
+    is_family_leader = models.BooleanField(default=False)
     family = models.ForeignKey(Families, on_delete=models.SET_NULL, blank=True, null=True, default=None)
     photo_name = models.CharField(_('photo name'), max_length=20, blank=True, null=True)
     coed_roommates = models.BooleanField(

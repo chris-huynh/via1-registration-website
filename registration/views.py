@@ -34,6 +34,7 @@ from registration import regutils
 from registration.models import ConferenceVars
 from registration.models import UserInfo
 from registration.models import SpecialRegCodes
+from registration.models import Workshops
 
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
@@ -187,6 +188,60 @@ def hotel(request):
             return redirect('home')
     else:
         return redirect('login')
+
+
+def workshops(request):
+    session_one_workshops = Workshops.objects.filter(session=1).order_by('id')
+    session_two_workshops = Workshops.objects.filter(session=2).order_by('id')
+
+    todays_date = datetime.datetime.now()
+    is_workshops_open = True if (todays_date < regutils.workshop_deadline) else False
+
+    context = {'is_workshops_open': is_workshops_open, 'workshops_deadline': regutils.workshop_deadline,
+               'session_one': session_one_workshops, 'session_two': session_two_workshops}
+    return render(request, 'registration/workshops.html', context)
+
+
+@login_required()
+def choose_workshop(request, wid):
+    if request.method == 'GET':
+        if datetime.datetime.now() < regutils.workshop_deadline:
+            workshop = Workshops.objects.get(pk=wid)
+            if workshop.attendee_count < workshop.capacity:
+                user_info = request.user.userinfo
+
+                with transaction.atomic():
+                    if workshop.session == 1:
+                        if user_info.workshop_one == workshop:
+                            messages.info(request, 'You are already attending this workshop.')
+                            return redirect('workshops')
+
+                        if user_info.workshop_one is not None:
+                            prev_workshop = Workshops.objects.get(pk=user_info.workshop_one.id)
+                            prev_workshop.attendee_count -= 1
+                            prev_workshop.save()
+
+                        user_info.workshop_one = workshop
+                    elif workshop.session == 2:
+                        user_info.workshop_two = workshop
+                    elif workshop.session == 3:
+                        user_info.workshop_three = workshop
+
+                    user_info.save()
+
+                    workshop.attendee_count += 1
+                    workshop.save()
+
+                    messages.info(request, 'Workshop saved!')
+                    return redirect('workshops')
+            else:
+                messages.error(request, 'This workshop is already at capacity.')
+                return redirect('workshops')
+        else:
+            messages.error(request, 'The deadline to choose workshops has passed.')
+            return redirect('workshops')
+    else:
+        return redirect('workshops')
 
 
 @login_required()

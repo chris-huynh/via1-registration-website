@@ -1,0 +1,321 @@
+{% extends 'registration/home_base.html' %}
+
+{% block title %}VIA-1 - Profile{% endblock %}
+
+{% block additional_head %}
+    <script src="https://use.fontawesome.com/724dc2aee1.js"></script>
+    <link href="{% static 'registration/cropper.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'registration/imagehover.css' %}" rel="stylesheet">
+
+    <style>
+    body, html {
+        background: #eeeeee;
+        overflow-y: visible !important;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col s10 offset-s1 center-align">
+                <h3 style="font-weight: 300; margin-top: 50px;">Workshops</h3>
+                <p class="grey-text text-darken-2">Select a workshop from each session. The deadline to choose workshops
+                    is <b class="orange-text">{{ workshops_deadline }} CST</b>. Hover (or tap) and click on a portrait to
+                    view more information about the presenter and workshop.</p>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 80px;">
+            <div class="col s10 offset-s1 center-align">
+                <h5 style="font-weight: 300;">YOUR<span style="font-weight: 500;">SESSIONS</span></h5>
+                <div class="col s10 l5 offset-s1 offset-l1">
+                    <div class="col s12">
+                        <h5 style="font-weight: 300;"><span style="font-weight: 500;">ONE</span></h5>
+                    </div>
+                    <div class="col s12">
+                        <p class="orange-text">Select a workshop below</p>
+                    </div>
+                </div>
+                <div class="col s10 l5 offset-s1">
+                    <div class="col s12">
+                        <h5 style="font-weight: 300;"><span style="font-weight: 500;">TWO</span></h5>
+                    </div>
+                    <div class="col s12">
+                        <p class="orange-text">Select a workshop below</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row flex_with_wrap" style="margin-bottom: 50px;">
+            <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
+                <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">ONE</span> <i class="material-icons hover_move_right icon_only_right" style="cursor: pointer;">keyboard_arrow_down</i></h4>
+            </div>
+            {% for workshop in session_one %}
+                <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
+                    <div class="z-depth-1 col s10 offset-s1 grey lighten-5 presenter_box animated fadeIn" style="animation-delay: .5s;">
+                        <figure class="effect-test z-depth-2">
+                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/4882356_big.jpeg">
+                            <figcaption>
+                                <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
+                                <p>Click for details</p>
+                                <a href="#workshop_{{ workshop.id }}" class="modal-trigger"></a>
+                            </figcaption>
+                        </figure>
+                        <p class="grey-text text-darken-2 workshop_title">{{ workshop.name }}</p>
+                        <div class="row" style="margin-bottom: auto;">
+                            <div class="divider"></div>
+                            <p class="left workshop_capacity">{{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
+                            {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
+                                <a href="{% url 'choose_workshop' workshop.id %}"><p class="right orange-text hover_black workshop_choose hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></p></a>
+                            {% else %}
+                                <p class="right red-text workshop_closed">CLOSED</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row flex_with_wrap">
+            <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
+                <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">TWO</span> <i class="material-icons hover_move_right icon_only_right" style="cursor: pointer;">keyboard_arrow_down</i></h4>
+            </div>
+            {% for workshop in session_two %}
+                <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
+                    <div class="z-depth-1 col s10 offset-s1 grey lighten-5 presenter_box animated fadeIn" style="animation-delay: .5s;">
+                        <figure class="effect-test z-depth-2">
+                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/4882356_big.jpeg">
+                            <figcaption>
+                                <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
+                                <p>Click for details</p>
+                                <a href="#workshop_{{ workshop.id }}" class="modal-trigger"></a>
+                            </figcaption>
+                        </figure>
+                        <p class="grey-text text-darken-2 workshop_title">{{ workshop.name }}</p>
+                        <div class="row" style="margin-bottom: auto;">
+                            <div class="divider"></div>
+                            <p class="left workshop_capacity">{{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
+                            {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
+                                <a href="{% url 'choose_workshop' workshop.id %}"><p class="right orange-text hover_black workshop_choose hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></p></a>
+                            {% else %}
+                                <p class="right red-text workshop_closed">CLOSED</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# Workshop "more details" modals #}
+    {% for workshop in session_one %}
+        <div id="workshop_{{ workshop.id }}" class="modal modal-fixed-footer">
+            <div class="modal-content center-align flow-text">
+                <div class="row">
+                    <h4 style="font-weight: 300;">{{ workshop.name }}</h4>
+                    <h5 class="workshop_detail_subtitle orange-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h5>
+                </div>
+                <div class="row">
+                    <div class="divider"></div>
+                </div>
+                <div class="row">
+                    <div class="col l10 offset-l1">
+                        <h5 class="workshop_detail_subtitle">Workshop <span>Description</span></h5>
+                        <p>{{ workshop.description }}</p>
+                    </div>
+                    <div class="col l10 offset-l1">
+                        <h5 class="workshop_detail_subtitle">THE <span>PRESENTER</span></h5>
+                        <p>{{ workshop.presenter_description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p class="left workshop_capacity">CAPACITY: {{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
+                {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
+                    <a href="{% url 'choose_workshop' workshop.id %}" class="z-depth-3 modal-action modal-close waves-effect waves-light btn orange hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></a>
+                {% else %}
+                    <p class="right red-text workshop_closed">CLOSED</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+
+{% block additional_scripts %}
+    <script src="{% static 'registration/cropper.min.js' %}"></script>
+
+    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                $(document).ready(function(){
+                    Materialize.toast('{{ message|safe }}', 8000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+    $("#profile_form").submit(function(e) {
+        $("#profile_submit_btn").hide();
+        $("#profile_submit_loader").show();
+        var url = '{% url 'submit_profile' %}'; // the script where you handle the form input.
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $("#profile_form").serialize(), // serializes the form's elements.
+            dataType: 'json',
+            success: function(data)
+            {
+                $("#success_text").delay(1500).show(0);
+                $("#success_text").fadeOut(4000, "linear", function() {
+                    // Animation complete.
+                });
+            }
+        })
+        .always(function() {
+            $("#profile_submit_loader").delay(1500).hide(0);
+            $("#profile_submit_btn").delay(4000).show(0);
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    </script>
+
+    <script>
+    $('#school').on('change',function(){
+        if( $(this).val()==="other"){
+            $("#other_field").show()
+        }
+        else{
+            $("#other_field").hide()
+        }
+    });
+
+    $('#pronouns').on('change',function(){
+        if( $(this).val()==="other"){
+            $("#other_pronouns_field").show()
+        }
+        else{
+            $("#other_pronouns_field").hide()
+        }
+    });
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        var schoolValue  = '{{ user_info.school }}';
+
+        if (!{{ other_selected }}) {
+            $("#school").val(schoolValue)
+                .find("option[value='" + schoolValue +"']").attr('selected', true);
+        } else if ({{ other_selected }} && schoolValue !== '' && schoolValue != 'None') {
+            $("#school").val(schoolValue)
+                .find("option[value=other]").attr('selected', true);
+            $("#other_field").show();
+        }
+
+        var pronounValue = '{{ user_info.pronouns }}';
+        if (!{{ other_pronouns_selected }}) {
+            $("#pronouns").val(pronounValue)
+                .find("option[value='" + pronounValue +"']").attr('selected', true);
+        } else if ({{ other_pronouns_selected }} && pronounValue !== '' && pronounValue != 'None') {
+            $("#pronouns").val(pronounValue)
+                .find("option[value=other]").attr('selected', true);
+            $("#other_pronouns_field").show();
+        }
+
+        var banquetValue = '{{ user_info.banquet_meal }}';
+        if (banquetValue !== 'None') {
+            $("#banquet_meal").val(banquetValue)
+                .find("option[value='" + banquetValue +"']").attr('selected', true);
+        }
+
+        var dessertValue = '{{ user_info.banquet_dessert }}';
+        if (dessertValue !== 'None') {
+            $("#banquet_dessert").val(dessertValue)
+                .find("option[value='" + dessertValue +"']").attr('selected', true);
+        }
+
+        var shirtValue = '{{ user_info.shirt_size }}';
+        if (shirtValue !== 'None') {
+            $("#shirt_size").val(shirtValue)
+                .find("option[value='" + shirtValue +"']").attr('selected', true);
+        }
+    });
+    </script>
+
+    <script type="text/javascript" defer>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#crop_canvas').attr('src', e.target.result)
+                };
+                reader.readAsDataURL(input.files[0]);
+                setTimeout(initCropper, 100);
+            }
+        }
+        function initCropper(){
+            var image = document.getElementById('crop_canvas');
+            if (image.cropper) {
+                image.cropper.destroy();
+            }
+            var cropper = new Cropper(image, {
+                aspectRatio: 200 / 200,
+                viewMode: 1,
+                minCropBoxWidth: 200,
+                minCropBoxHeight: 200,
+                crop: function(e) {
+                    if (e.detail.width < 400 || e.detail.height < 400) {
+                        image.cropper.destroy();
+                        alert('This image is too small. Please upload an image larger than 400x400 pixels.');
+                    }
+                }
+            });
+
+            // On crop button clicked
+            document.getElementById('crop_button').addEventListener('click', function(){
+                var imgurl =  cropper.getCroppedCanvas({width: 200, height: 200}).toDataURL('image/jpeg');
+                var imgurl_big = cropper.getCroppedCanvas({width: 400, height: 400}).toDataURL('image/jpeg');
+                var trimmed_imgurl = imgurl.replace("data:image/jpeg;base64,", "");
+                var trimmed_imgurl_big = imgurl_big.replace("data:image/jpeg;base64,", "");
+
+                $.ajax({
+                    type: "POST",
+                    url: '{% url 'upload_picture' %}',
+                    data: {
+                        'croppedImage': trimmed_imgurl,
+                        'croppedImage_big': trimmed_imgurl_big
+                    },
+                    success: function() {
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Photo upload failed. Please try again.');
+                    }
+                });
+            })
+        }
+    </script>
+
+    <script type="text/javascript" defer>
+        function removePhoto() {
+            $.ajax({
+                type: "GET",
+                url: '{% url 'remove_picture' %}',
+                success: function() {
+                    location.reload();
+                },
+                error: function() {
+                    alert('Photo could not be removed.');
+                }
+            });
+        }
+    </script>
+
+{% endblock %}
