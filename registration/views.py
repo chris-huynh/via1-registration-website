@@ -191,16 +191,25 @@ def hotel(request):
 
 
 def workshops(request):
-    session_one_workshops = Workshops.objects.filter(session=1).order_by('id')
-    session_two_workshops = Workshops.objects.filter(session=2).order_by('id')
+    if request.user.is_authenticated():
+        session_one_workshops = Workshops.objects.filter(session=1).order_by('id')
+        session_two_workshops = Workshops.objects.filter(session=2).order_by('id')
 
-    todays_date = datetime.datetime.now()
-    is_workshops_open = True if (todays_date < regutils.workshop_deadline) else False
+        # Flexbox behaves strangely and mis-aligns the workshop cards on the last row if the row isn't full.
+        # To fix the alignment, we figure out how many "hidden" cards we need to make by taking the remainder of mod 3 and
+        # subtracting it from 3. See logic in workshops.html to see how these numbers are used.
+        session_one_remainder = 3 - session_one_workshops.count() % 3
+        session_two_remainder = 3 - session_two_workshops.count() % 3
 
-    context = {'is_workshops_open': is_workshops_open, 'workshops_deadline': regutils.workshop_deadline,
-               'session_one': session_one_workshops, 'session_two': session_two_workshops}
-    return render(request, 'registration/workshops.html', context)
+        todays_date = datetime.datetime.now()
+        is_workshops_open = True if (todays_date < regutils.workshop_deadline) else False
 
+        context = {'is_workshops_open': is_workshops_open, 'workshops_deadline': regutils.workshop_deadline,
+                   'session_one': session_one_workshops, 'session_two': session_two_workshops,
+                   'session_one_remainder': range(session_one_remainder), 'session_two_remainder': range(session_two_remainder)}
+        return render(request, 'registration/workshops.html', context)
+    else:
+        return redirect('login')
 
 @login_required()
 def choose_workshop(request, wid):
@@ -213,7 +222,7 @@ def choose_workshop(request, wid):
                 with transaction.atomic():
                     if workshop.session == 1:
                         if user_info.workshop_one == workshop:
-                            messages.info(request, 'You are already attending this workshop.')
+                            messages.info(request, 'You are already signed up for this workshop.')
                             return redirect('workshops')
 
                         if user_info.workshop_one is not None:
@@ -223,8 +232,26 @@ def choose_workshop(request, wid):
 
                         user_info.workshop_one = workshop
                     elif workshop.session == 2:
+                        if user_info.workshop_two == workshop:
+                            messages.info(request, 'You are already signed up for this workshop.')
+                            return redirect('workshops')
+
+                        if user_info.workshop_two is not None:
+                            prev_workshop = Workshops.objects.get(pk=user_info.workshop_two.id)
+                            prev_workshop.attendee_count -= 1
+                            prev_workshop.save()
+
                         user_info.workshop_two = workshop
                     elif workshop.session == 3:
+                        if user_info.workshop_three == workshop:
+                            messages.info(request, 'You are already signed up for this workshop.')
+                            return redirect('workshops')
+
+                        if user_info.workshop_three is not None:
+                            prev_workshop = Workshops.objects.get(pk=user_info.workshop_three.id)
+                            prev_workshop.attendee_count -= 1
+                            prev_workshop.save()
+
                         user_info.workshop_three = workshop
 
                     user_info.save()
@@ -232,7 +259,7 @@ def choose_workshop(request, wid):
                     workshop.attendee_count += 1
                     workshop.save()
 
-                    messages.info(request, 'Workshop saved!')
+                    messages.info(request, 'Workshop choice saved!')
                     return redirect('workshops')
             else:
                 messages.error(request, 'This workshop is already at capacity.')

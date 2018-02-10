@@ -99,6 +99,7 @@ class Workshops(models.Model):
         (SESSION_THREE, '3'),
     )
     session = models.IntegerField(choices=SESSION_CHOICES, default=SESSION_ONE)
+    presenter_photo = models.CharField(_('presenter photo name'), max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.name
