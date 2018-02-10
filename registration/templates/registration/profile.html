@@ -298,10 +298,10 @@
     <div id="add_photo_modal" class="modal">
         <div class="modal-content">
             <div class="row file-field input-field">
-                <button class="btn waves-effect waves-light orange" style="margin-right: 5px; margin-bottom: 5px;">
+                <div class="btn waves-effect waves-light orange" style="margin-right: 5px; margin-bottom: 5px;">
                     <span>Select...</span>
                     <input type="file" accept="image/*" name="image" onchange="readURL(this);"/>
-                </button>
+                </div>
                 <button id="crop_button" class="btn waves-effect waves-light orange">Crop</button>
             </div>
             <div class="row image_container center-align">
@@ -455,10 +455,12 @@
             var cropper = new Cropper(image, {
                 aspectRatio: 200 / 200,
                 viewMode: 1,
-                minCropBoxWidth: 200,
-                minCropBoxHeight: 200,
+                minCropBoxWidth: 400,
+                minCropBoxHeight: 400,
                 crop: function(e) {
-                    if (e.detail.width < 400 || e.detail.height < 400) {
+                    // Even though we want 400x400+ images, the cropper seems to always make a slightly smaller field
+                    // (around 394x394) -- so we'll just reduce the condition to 350 to be safe.)
+                    if (e.detail.width < 350 || e.detail.height < 350) {
                         image.cropper.destroy();
                         alert('This image is too small. Please upload an image larger than 400x400 pixels.');
                     }

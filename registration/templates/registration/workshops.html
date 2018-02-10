@@ -21,7 +21,7 @@
             <div class="col s10 offset-s1 center-align">
                 <h3 style="font-weight: 300; margin-top: 50px;">Workshops</h3>
                 <p class="grey-text text-darken-2">Select a workshop from each session. The deadline to choose workshops
-                    is <b class="orange-text">{{ workshops_deadline }} CST</b>. Click or tap on a portrait to
+                    is <b class="orange-text">{{ workshops_deadline }} CST</b>. Click or tap on a portrait below to
                     view more information about the presenter and workshop.</p>
             </div>
         </div>
@@ -36,7 +36,11 @@
                             {% if user.userinfo.workshop_one %}
                             <div class="col s6">
                                 <figure class="effect-test z-depth-3">
-                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/4882356_big.jpeg">
+                                    {% if user.userinfo.workshop_one.presenter_photo %}
+                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_one.presenter_photo }}">
+                                    {% else %}
+                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                                    {% endif %}
                                     <figcaption>
                                         <a href="#workshop_{{ user.userinfo.workshop_one.id }}" class="modal-trigger"></a>
                                     </figcaption>
@@ -64,7 +68,11 @@
                             {% if user.userinfo.workshop_two %}
                             <div class="col s6">
                                 <figure class="effect-test z-depth-3">
-                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/4882356_big.jpeg">
+                                    {% if user.userinfo.workshop_two.presenter_photo %}
+                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_two.presenter_photo }}">
+                                    {% else %}
+                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                                    {% endif %}
                                     <figcaption>
                                         <a href="#workshop_{{ user.userinfo.workshop_two.id }}" class="modal-trigger"></a>
                                     </figcaption>
@@ -90,6 +98,7 @@
             </div>
         </div>
 
+        {% if user_profile_complete %}
         <div class="row" style="margin-bottom: 30px;">
             <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
                 <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">ONE</span> <i id="session_one_section_toggle" class="material-icons hover_orange" style="cursor: pointer;">keyboard_arrow_down</i></h4>
@@ -100,7 +109,11 @@
             <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
                 <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
                     <figure class="effect-test z-depth-3">
-                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/4882356_big.jpeg">
+                        {% if workshop.presenter_photo %}
+                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
+                        {% else %}
+                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                        {% endif %}
                         <figcaption>
                             <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
                             <p>Click for details</p>
@@ -144,7 +157,11 @@
             <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
                 <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
                     <figure class="effect-test z-depth-3">
-                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/4882356_big.jpeg">
+                        {% if workshop.presenter_photo %}
+                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
+                        {% else %}
+                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                        {% endif %}
                         <figcaption>
                             <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
                             <p>Click for details</p>
@@ -177,6 +194,15 @@
             {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="row center-align">
+            <div class="col s12">
+                <h5 style="font-weight: 300;">
+                    To access workshop selections, please complete your <a class="orange-text hover_black" style="font-weight: 500;" href="{% url 'profile' %}">USER PROFILE</a> first.
+                </h5>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     {# Workshop "more details" modals #}

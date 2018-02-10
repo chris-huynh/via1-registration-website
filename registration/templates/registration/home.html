@@ -123,9 +123,8 @@
                 {# Alumni registration card #}
                 <div class="z-depth-1 col s12 m4 l4 hoverable" style="margin-bottom: 15px; padding-bottom: 25px">
                     <p class="flow-text" style="font-weight: 600; margin-bottom: 0;">ALUMNI <a class="orange-text hover_black modal-trigger" href="#alumni_info_modal"><i class="material-icons">info_outline</i></a></p>
-                    <b class="orange-text" style="font-size: 16px">Jan. 4 - Feb. 7</b>
+                    <b class="orange-text" style="font-size: 16px">Jan. 4 - Feb. 12</b>
                     <p style="font-style: italic">Verify your alumni status <a href="#alumni_verify_modal" class="modal-trigger modal-close orange-text hover_black" style="font-weight: bold;">here</a> to access this option<br>
-{#                    <p style="font-style: italic">Alumni verification process coming soon!<br>#}
                     Status: {% if user.is_alumni %} <b class="green-text">VERIFIED</b> {% elif user.alumni_verif_in_prog %} <b class="blue-text">PROCESSING...</b> {% else %} <b class="red-text">UNVERIFIED</b> {% endif %}
                     </p>
                     <p style="font-weight: 500; font-size: 24px; margin-bottom: 0;">${{ register_prices.ALUMNI_REG_PRICE }}</p>

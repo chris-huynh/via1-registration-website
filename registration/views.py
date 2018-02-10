@@ -192,24 +192,41 @@ def hotel(request):
 
 def workshops(request):
     if request.user.is_authenticated():
-        session_one_workshops = Workshops.objects.filter(session=1).order_by('id')
-        session_two_workshops = Workshops.objects.filter(session=2).order_by('id')
+        if request.user.has_paid:
+            session_one_workshops = Workshops.objects.filter(session=1).order_by('id')
+            session_two_workshops = Workshops.objects.filter(session=2).order_by('id')
 
-        # Flexbox behaves strangely and mis-aligns the workshop cards on the last row if the row isn't full.
-        # To fix the alignment, we figure out how many "hidden" cards we need to make by taking the remainder of mod 3 and
-        # subtracting it from 3. See logic in workshops.html to see how these numbers are used.
-        session_one_remainder = 3 - session_one_workshops.count() % 3
-        session_two_remainder = 3 - session_two_workshops.count() % 3
+            # Flexbox behaves strangely and mis-aligns the workshop cards on the last row if the row isn't full.
+            # To fix the alignment, we figure out how many "hidden" cards we need to make by taking the remainder of mod 3 and
+            # subtracting it from 3. See logic in workshops.html to see how these numbers are used.
+            session_one_remainder = 3 - session_one_workshops.count() % 3
+            session_two_remainder = 3 - session_two_workshops.count() % 3
 
-        todays_date = datetime.datetime.now()
-        is_workshops_open = True if (todays_date < regutils.workshop_deadline) else False
+            todays_date = datetime.datetime.now()
+            is_workshops_open = True if (todays_date < regutils.workshop_deadline) else False
 
-        context = {'is_workshops_open': is_workshops_open, 'workshops_deadline': regutils.workshop_deadline,
-                   'session_one': session_one_workshops, 'session_two': session_two_workshops,
-                   'session_one_remainder': range(session_one_remainder), 'session_two_remainder': range(session_two_remainder)}
-        return render(request, 'registration/workshops.html', context)
+            user = request.user
+
+            # Explicitly compare vias_attended to None because 0 also evaluates to "false", which we don't want
+            if (user.userinfo.photo_name and user.userinfo.school and user.userinfo.pronouns and user.userinfo.banquet_meal
+                and user.userinfo.banquet_dessert and user.userinfo.shirt_size and user.userinfo.vias_attended is not None
+                and user.userinfo.emergency_contact and user.userinfo.emergency_contact_number
+                    and user.userinfo.emergency_contact_relation):
+                user_profile_complete = True
+            else:
+                user_profile_complete = False
+
+            context = {'is_workshops_open': is_workshops_open, 'workshops_deadline': regutils.workshop_deadline,
+                       'session_one': session_one_workshops, 'session_two': session_two_workshops,
+                       'session_one_remainder': range(session_one_remainder), 'session_two_remainder': range(session_two_remainder),
+                       'user_profile_complete': user_profile_complete}
+            return render(request, 'registration/workshops.html', context)
+        else:
+            messages.info(request, 'You must be registered for conference to access the workshops page')
+            return redirect('home')
     else:
         return redirect('login')
+
 
 @login_required()
 def choose_workshop(request, wid):
@@ -1297,6 +1314,7 @@ def remove_code(request):
         return redirect('index')
 
 
+# TODO: Send confirmation email for registration, similar to update_code_attendee
 @login_required()
 def registration_code(request):
     if request.method == 'GET':
