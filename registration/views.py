@@ -936,13 +936,13 @@ def refund_request_complete(request, uidb64, token, pp_email):
     if user is not None and refund_request_token.check_token(user, token):
         # Decrement attendee count for appropriate attendee_type
         conf_vars = ConferenceVars.objects.get(pk=1)
-        if user.reg_type == regutils.RegisterTypes.EARLY_REG or regutils.RegisterTypes.EARLY_REG_HOTEL:
+        if user.reg_type == regutils.RegisterTypes.EARLY_REG or user.reg_type == regutils.RegisterTypes.EARLY_REG_HOTEL:
             conf_vars.early_attendee_count -= 1
-        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG or regutils.RegisterTypes.REGULAR_REG_HOTEL:
+        elif user.reg_type == regutils.RegisterTypes.REGULAR_REG or user.reg_type == regutils.RegisterTypes.REGULAR_REG_HOTEL:
             conf_vars.regular_attendee_count -= 1
-        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG or regutils.RegisterTypes.ALUMNI_REG_HOTEL:
+        elif user.reg_type == regutils.RegisterTypes.ALUMNI_REG or user.reg_type == regutils.RegisterTypes.ALUMNI_REG_HOTEL:
             conf_vars.alumni_attendee_count -= 1
-        elif user.reg_type == regutils.RegisterTypes.STAFF_REG or regutils.RegisterTypes.STAFF_REG_HOTEL:
+        elif user.reg_type == regutils.RegisterTypes.STAFF_REG or user.reg_type == regutils.RegisterTypes.STAFF_REG_HOTEL:
             conf_vars.staff_attendee_count -= 1
         conf_vars.save()
 
@@ -1245,9 +1245,13 @@ def generate_code(request):
                 includes_hotel = True if request.GET.get('includes_hotel', False) else False
                 number_of_usages = int(request.GET.get('number_of_usages'))
 
-                # Waitlist and Banquet codes should expire within 24 hours of creation
+                # Waitlist and Banquet codes should expire within 24 hours of creation by default
                 if code_type == regutils.CodeTypes.WAITLIST_REG or code_type == regutils.CodeTypes.BANQUET:
                     date_expired = date_created + timedelta(days=1)
+                    method_of_payment = None
+                    includes_hotel = False
+                elif code_type == regutils.CodeTypes.FAMILY_LEADER:
+                    date_expired = regutils.payment_refund_deadline
                     method_of_payment = None
                     includes_hotel = False
                 elif code_type == regutils.CodeTypes.STAFF_REG:
@@ -1256,13 +1260,16 @@ def generate_code(request):
                 elif code_type == regutils.CodeTypes.REGULAR_REG:
                     date_expired = regutils.regular_reg_close_date
                     method_of_payment = request.GET.get('method_of_payment')
-                elif code_type == regutils.CodeTypes.FAMILY_LEADER:
+                elif code_type == regutils.CodeTypes.SPECIAL:
                     date_expired = regutils.payment_refund_deadline
-                    method_of_payment = None
-                    includes_hotel = False
+                    method_of_payment = request.GET.get('method_of_payment')
                 else:
                     date_expired = regutils.payment_refund_deadline
                     method_of_payment = None
+
+                # If extended_deadline option was selected, just overwrite the previously set expiration date
+                if request.GET.get('extended_deadline', False):
+                    date_expired = date_created + timedelta(days=60)
 
                 if request.GET.get('multi_use', False) or number_of_usages == 1:
                     code_obj = SpecialRegCodes(code=code,
@@ -1315,6 +1322,7 @@ def remove_code(request):
 
 
 # TODO: Send confirmation email for registration, similar to update_code_attendee
+# Also might want to rename this... to like "consume_code" or "use_code"
 @login_required()
 def registration_code(request):
     if request.method == 'GET':
@@ -1336,7 +1344,7 @@ def registration_code(request):
                     if ((reg_code.code_type == regutils.CodeTypes.REGULAR_REG and
                         datetime.datetime.now() > regutils.regular_reg_open_date and
                         conf_vars.regular_attendee_count < regutils.RegisterCaps.REGULAR_REG_CAP) or
-                            reg_code.code_type == regutils.CodeTypes.STAFF_REG):
+                            (reg_code.code_type == regutils.CodeTypes.STAFF_REG or reg_code.code_type == regutils.CodeTypes.SPECIAL)):
                         with transaction.atomic():
                             user.has_paid = True
                             user.time_paid = timezone.now()
@@ -1349,11 +1357,16 @@ def registration_code(request):
 
                             user.save()
 
+                            # Perhaps we wanna add counters into conf_vars for every other missing attendee type
+                            # (family leaders, etc)
                             if reg_code.code_type == regutils.CodeTypes.REGULAR_REG:
                                 conf_vars.regular_attendee_count += 1
                                 conf_vars.save()
                             elif reg_code.code_type == regutils.CodeTypes.STAFF_REG:
                                 conf_vars.staff_attendee_count += 1
+                                conf_vars.save()
+                            elif reg_code.code_type == regutils.CodeTypes.SPECIAL and reg_code.method_of_payment == 'Scholarship':
+                                conf_vars.regular_attendee_count += 1
                                 conf_vars.save()
 
                             reg_code.usages_left -= 1

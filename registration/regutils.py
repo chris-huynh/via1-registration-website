@@ -47,12 +47,13 @@ class CodeTypes:
     STAFF_REG = 'Staff Registration'
     BANQUET = 'Banquet Only'
     FAMILY_LEADER = 'Family Leader'
+    SPECIAL = 'Special'
 
 
-code_types = ['Waitlist Registration', 'Regular Registration', 'Staff Registration', 'Banquet Only', 'Family Leader']
+code_types = ['Waitlist Registration', 'Regular Registration', 'Staff Registration', 'Banquet Only', 'Family Leader', 'Special']
 
 
-methods_of_payment = ['PayPal', 'PayPal (Bulk)', 'Venmo', 'Other']
+methods_of_payment = ['PayPal', 'PayPal (Bulk)', 'Venmo', 'Scholarship', 'Other']
 
 
 # Open 12-14-2017 @ 1800/6:00p CENTRAL (timezone is set in settings.py)

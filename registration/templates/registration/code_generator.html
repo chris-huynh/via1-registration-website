@@ -28,7 +28,8 @@
                             Use this page to generate registration codes for attendees. When a user inputs a registration
                             code on the home page, it will automatically mark that user as "registered" in the system OR
                             bring them to a PayPal payment page, depending on the code type. These codes are to only be
-                            generated for special-case attendees such as waitlist, staff, schools that bulk-buy registration, or banquet-only.
+                            generated for special-case attendees such as waitlist, staff, schools that bulk-buy registration,
+                            or banquet-only. There's also a "Special" code type, which can be used for scholarship winners.
                         </p>
                     </div>
                 </div>
@@ -63,6 +64,12 @@
                                 </select>
                             </div>
 
+                            <div class="col s12" style="margin-bottom: 10px;">
+                                <input type="checkbox" id="extended_deadline" name="extended_deadline" class="checkbox-orange" />
+                                <label for="extended_deadline" class="orange-text">
+                                    Check this to make this code have an extended deadline (60 days)
+                                </label>
+                            </div>
                             <div class="col s12" style="margin-bottom: 10px;">
                                 <input type="checkbox" id="multi_use" name="multi_use" class="checkbox-orange" />
                                 <label for="multi_use" class="orange-text">
@@ -128,7 +135,8 @@
 {% block additional_scripts %}
     <script>
     $('#code_type').on('change',function(){
-        if($(this).val()==="{{ code_types.REGULAR_REG }}" || $(this).val()==="{{ code_types.STAFF_REG }}"){
+        if($(this).val()==="{{ code_types.REGULAR_REG }}" || $(this).val()==="{{ code_types.STAFF_REG }}" ||
+        $(this).val()==="{{ code_types.SPECIAL }}"){
             $("#method_of_payment_field").show();
             $("#includes_hotel_field").show();
         }
