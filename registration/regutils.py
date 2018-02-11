@@ -67,9 +67,9 @@ regular_reg_open_date = datetime.datetime(2018, 1, 4, 18, 0, 0)
 regular_reg_close_date = datetime.datetime(2018, 1, 18, 23, 59, 59)
 
 # Open 1-4-2017 @ 6:00p CENTRAL
-# Close 2-12-2018 @ 11:59p To allow ~48 hours to give any remaining spots to waitlist
+# Close 2-14-2018 @ 11:59p
 alumni_reg_open_date = datetime.datetime(2018, 1, 4, 18, 0, 0)
-alumni_reg_close_date = datetime.datetime(2018, 2, 12, 23, 59, 59)
+alumni_reg_close_date = datetime.datetime(2018, 2, 14, 23, 59, 59)
 
 
 payment_refund_deadline = datetime.datetime(2018, 2, 14, 23, 59, 59)
