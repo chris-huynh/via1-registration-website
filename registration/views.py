@@ -68,6 +68,8 @@ def home(request):
         is_regular_reg_full = True  # if conference_caps.regular_attendee_count >= regutils.RegisterCaps.REGULAR_REG_CAP else False
         is_alumni_reg_full = True if conference_caps.alumni_attendee_count >= regutils.RegisterCaps.ALUMNI_REG_CAP else False
 
+        is_refund_open = True if todays_date < regutils.payment_refund_deadline else False
+
         # Very hacky. We don't want to have a hardcoded string -- perhaps add it to regutils and replace all instances
         # This string is used in the creation of the invoice in Home.html and Hotel.html
         if request.user.payment_invoice:
@@ -80,7 +82,7 @@ def home(request):
 
         context = {'is_early_reg_open': is_early_reg_open, 'is_regular_reg_open': is_regular_reg_open, 'is_alumni_reg_open': is_alumni_reg_open,
                    'is_early_reg_full': is_early_reg_full, 'is_regular_reg_full': is_regular_reg_full, 'is_alumni_reg_full': is_alumni_reg_full,
-                   'payment_refund_deadline': regutils.payment_refund_deadline,
+                   'payment_refund_deadline': regutils.payment_refund_deadline, 'is_refund_open': is_refund_open,
                    'member_school_names': regutils.member_school_names, 'register_types': regutils.RegisterTypes,
                    'register_prices': regutils.RegisterPrices, 'is_paid_with_pp': is_paid_with_pp}
         return render(request, 'registration/home.html', context)
@@ -167,6 +169,7 @@ def hotel(request):
             context = {'hotel_price': regutils.RegisterPrices.HOTEL_PRICE,
                        'hotel_price_whole': regutils.RegisterPrices.HOTEL_PRICE * 4,
                        'hotel_payment_types': regutils.HotelPaymentTypes,
+                       'payment_deadline': regutils.payment_refund_deadline,
                        'roommate_deadline': regutils.roommate_deadline,
                        'is_hotel_payment_refund_open': is_hotel_payment_refund_open,
                        'can_use_refund_button': can_use_refund_button,
@@ -783,6 +786,7 @@ def is_conference_full(request):
     return JsonResponse(data)
 
 
+# TODO: Check date against deadline
 @login_required()
 def update_paid_attendee(request):
     if request.is_ajax():
@@ -859,6 +863,7 @@ def update_paid_attendee(request):
                 return JsonResponse({})
 
 
+# TODO: Check date against deadline? Probably wanna do the date check in javascript, too (to prevent them from even accessing the payment)
 @login_required()
 def update_hotel_paid(request):
     if request.is_ajax():

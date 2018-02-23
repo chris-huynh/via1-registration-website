@@ -21,7 +21,7 @@
                 <p class="flow-text">Your Registration Status: {% if user.has_paid %} <strong class="orange-text">PAID</strong> {% else %} <strong class="orange-text">UNPAID</strong> {% endif %}</p>
                 {% if user.has_paid %}
                 <p class="flow-text">Next Step:
-                    {% if user.has_paid_hotel %}
+                    {% if user.has_paid_hotel or not is_refund_open %}
                         {# TODO Gonna want to change this to Choose Workshops once that page is released #}
                         <a class="orange-text hover_move_right" style="font-weight: 500" href="{% url 'profile' %}">UPDATE PROFILE<i class="tiny material-icons hover_move_right icon_only_right" style="margin:0">chevron_right</i></a>
                     {% elif not user.has_paid_hotel %}
@@ -35,8 +35,10 @@
                 {% endif %}
 
                 {% if user.has_paid %}
-                    <p class="flow-text">The deadline to refund is {{ payment_refund_deadline }} CST</p>
-                    <a href="#refund_request_modal" class="btn waves-effect waves-light orange modal-trigger hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>REFUND</a>
+                    {% if is_refund_open %}
+                        <p class="flow-text">The deadline to refund is {{ payment_refund_deadline }} CST</p>
+                        <a href="#refund_request_modal" class="btn waves-effect waves-light orange modal-trigger hover_move_right"><i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i>REFUND</a>
+                    {% endif %}
                 {% else %}
                     <a href="#payment-section" class="white-text" style="cursor: pointer"><i class="material-icons medium hover_orange hover_move_down">keyboard_arrow_down</i></a>
                 {% endif %}
