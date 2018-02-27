@@ -106,7 +106,6 @@ class Workshops(models.Model):
 
 
 # Additional user fields
-# Don't forget 3 workshop columns(foreign), family_id (foreign?)
 class UserInfo(models.Model):
     user_id = models.OneToOneField(
         User,

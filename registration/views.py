@@ -1363,7 +1363,9 @@ def registration_code(request):
                             user.save()
 
                             # Perhaps we wanna add counters into conf_vars for every other missing attendee type
-                            # (family leaders, etc)
+                            # (family leaders, Special code, etc.)
+                            # Incrementing regular count for Special Code + Scholarship type is confusing, which
+                            # reinforces this idea
                             if reg_code.code_type == regutils.CodeTypes.REGULAR_REG:
                                 conf_vars.regular_attendee_count += 1
                                 conf_vars.save()

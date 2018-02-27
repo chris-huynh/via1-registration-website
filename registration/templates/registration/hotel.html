@@ -43,7 +43,7 @@
                             <p style="font-weight: 300;">Your hotel purchase includes two nights at the
                                 <a class="orange-text hover_black" href="https://www.marriott.com/hotels/travel/cvgkg-kingsgate-marriott-conference-center-at-the-university-of-cincinnati/" target="_blank">
                                     Kingsgate Marriott Conference Center
-                                </a>. The deadline to purchase hotel is <b>{{ payment_deadline }} CST</b>.
+                                </a>. The deadline to purchase hotel is <b class="orange-text">{{ payment_deadline }} CST</b>.
                             </p>
                             <p class="orange-text" style="font-weight:300; font-style: italic"><b>NOTE:</b> You will be able to
                             choose your roommates once you have paid for hotel.</p>
@@ -82,13 +82,13 @@
                                 <h4 style="font-weight: 300;">Hotel</h4>
                                 <p style="font-weight: 300;">You purchased a <strong>Single Spot</strong>.</p>
                                 {% if is_roommate_choosing_open %}
-                                    <p>The deadline to choose roommates is <b>{{ roommate_deadline }} CST</b>.
+                                    <p>The deadline to choose roommates is <b class="orange-text">{{ roommate_deadline }} CST</b>.
                                         Any attendees that are not in a full group (4/4) by this date will be automatically
                                         paired with other attendees. Note that each hotel room will have 4 occupants
                                         (e.g. two groups of size two will be paired to make a larger group of 4).
                                     </p>
                                 {% else %}
-                                    <p>The deadline to choose roommates was <b>{{ roommate_deadline }} CST</b>. You can no longer
+                                    <p>The deadline to choose roommates was <b class="orange-text">{{ roommate_deadline }} CST</b>. You can no longer
                                     create, modify, or join groups.</p>
                                 {% endif %}
                             </div>
@@ -243,11 +243,18 @@
     <div id="refund_request_modal" class="modal">
         <div class="modal-content">
             <div class="row">
-                {% if can_use_refund_button %}
+                {% if not is_hotel_payment_refund_open %}
+                <div class="center-align">
+                    <h5>Registration Refund Request</h5>
+                    <p>The refund deadline <b class="orange-text">({{ payment_deadline }} CST)</b> has passed.
+                        You can no longer request refunds.</p>
+                </div>
+                {% elif can_use_refund_button %}
                 <div class="center-align">
                     <h5>Hotel Refund Request</h5>
                     <p>An email will be sent to the Finance Committee upon completion of this form. Note that this form
-                    is for hotel refund ONLY. If you would like to refund registration, use the refund button on the home page.</p>
+                    is for hotel refund ONLY. If you would like to refund registration, use the refund button on the home page.<br>
+                    <b>NOTE: </b>Once the refund has been requested, it CANNOT be reversed.</p>
                 </div>
                 <form method="POST" action="{% url 'refund_hotel_request' %}">
                     {% csrf_token %}
