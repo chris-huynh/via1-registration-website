@@ -75,7 +75,7 @@ class Families(models.Model):
 
 
 class Workshops(models.Model):
-    name = models.CharField(_('workshop name'), max_length=100, blank=True, null=True)
+    name = models.CharField(_('workshop name'), max_length=150, blank=True, null=True)
     first_name = models.CharField(_('presenter first name'), max_length=30, blank=True, null=True)
     last_name = models.CharField(_('presenter last name'), max_length=30, blank=True, null=True)
     presenter_description = models.TextField(_('presenter description'), blank=True, null=True)
