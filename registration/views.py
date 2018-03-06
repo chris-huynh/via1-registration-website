@@ -206,6 +206,7 @@ def workshops(request):
             session_two_remainder = 3 - session_two_workshops.count() % 3
 
             todays_date = datetime.datetime.now()
+            is_workshops_released = True if (todays_date > regutils.workshop_release_date) else False
             is_workshops_open = True if (todays_date < regutils.workshop_deadline) else False
 
             user = request.user
@@ -219,7 +220,8 @@ def workshops(request):
             else:
                 user_profile_complete = False
 
-            context = {'is_workshops_open': is_workshops_open, 'workshops_deadline': regutils.workshop_deadline,
+            context = {'is_workshops_open': is_workshops_open, 'is_workshops_released': is_workshops_released,
+                       'workshops_release_date': regutils.workshop_release_date, 'workshops_deadline': regutils.workshop_deadline,
                        'session_one': session_one_workshops, 'session_two': session_two_workshops,
                        'session_one_remainder': range(session_one_remainder), 'session_two_remainder': range(session_two_remainder),
                        'user_profile_complete': user_profile_complete}

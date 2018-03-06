@@ -26,185 +26,194 @@
             </div>
         </div>
 
-        <div class="row" style="margin-bottom: 80px;">
-            <div class="col s12 center-align">
-                <h4 style="font-weight: 300; margin-bottom: 30px;">YOUR<span style="font-weight: 500;">SESSIONS</span></h4>
+        {% if is_workshops_released %}
+            <div class="row" style="margin-bottom: 80px;">
+                <div class="col s12 center-align">
+                    <h4 style="font-weight: 300; margin-bottom: 30px;">YOUR<span style="font-weight: 500;">SESSIONS</span></h4>
 
-                <div class="row flex_with_wrap">
-                    <div class="col s12 l6 center-align flex_with_wrap" style="margin-bottom: 50px">
-                        <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_choice_box animated fadeInLeft" style="animation-delay: .3s;">
-                            {% if user.userinfo.workshop_one %}
-                            <div class="col s6">
-                                <figure class="effect-test z-depth-3">
-                                    {% if user.userinfo.workshop_one.presenter_photo %}
-                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_one.presenter_photo }}">
-                                    {% else %}
-                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
-                                    {% endif %}
-                                    <figcaption>
-                                        <a href="#workshop_{{ user.userinfo.workshop_one.id }}" class="modal-trigger"></a>
-                                    </figcaption>
-                                </figure>
-                            </div>
-                            <div class="col s6">
+                    <div class="row flex_with_wrap">
+                        <div class="col s12 l6 center-align flex_with_wrap" style="margin-bottom: 50px">
+                            <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_choice_box animated fadeInLeft" style="animation-delay: .3s;">
+                                {% if user.userinfo.workshop_one %}
+                                <div class="col s6">
+                                    <figure class="effect-test z-depth-3">
+                                        {% if user.userinfo.workshop_one.presenter_photo %}
+                                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_one.presenter_photo }}">
+                                        {% else %}
+                                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                                        {% endif %}
+                                        <figcaption>
+                                            <a href="#workshop_{{ user.userinfo.workshop_one.id }}" class="modal-trigger"></a>
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <div class="col s6">
+                                    <p>SESSION ONE</p>
+                                    <div class="row">
+                                        <div class="divider"></div>
+                                        <p class="grey-text text-darken-2" style="font-weight: 300;">{{ user.userinfo.workshop_one.name }}</p>
+                                    </div>
+                                </div>
+                                {% else %}
                                 <p>SESSION ONE</p>
-                                <div class="row">
+                                <div clss="row">
                                     <div class="divider"></div>
-                                    <p class="grey-text text-darken-2" style="font-weight: 300;">{{ user.userinfo.workshop_one.name }}</p>
+                                    <p class="orange-text" style="font-weight: 300;">Choose a workshop below</p>
                                 </div>
+                                {% endif %}
                             </div>
-                            {% else %}
-                            <p>SESSION ONE</p>
-                            <div clss="row">
-                                <div class="divider"></div>
-                                <p class="orange-text" style="font-weight: 300;">Choose a workshop below</p>
-                            </div>
-                            {% endif %}
                         </div>
-                    </div>
 
-                    <div class="col s12 l6 center-align flex_with_wrap" style="margin-bottom: 50px">
-                        <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_choice_box animated fadeInRight" style="animation-delay: .3s;">
-                            {% if user.userinfo.workshop_two %}
-                            <div class="col s6">
-                                <figure class="effect-test z-depth-3">
-                                    {% if user.userinfo.workshop_two.presenter_photo %}
-                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_two.presenter_photo }}">
-                                    {% else %}
-                                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
-                                    {% endif %}
-                                    <figcaption>
-                                        <a href="#workshop_{{ user.userinfo.workshop_two.id }}" class="modal-trigger"></a>
-                                    </figcaption>
-                                </figure>
-                            </div>
-                            <div class="col s6">
+                        <div class="col s12 l6 center-align flex_with_wrap" style="margin-bottom: 50px">
+                            <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_choice_box animated fadeInRight" style="animation-delay: .3s;">
+                                {% if user.userinfo.workshop_two %}
+                                <div class="col s6">
+                                    <figure class="effect-test z-depth-3">
+                                        {% if user.userinfo.workshop_two.presenter_photo %}
+                                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_two.presenter_photo }}">
+                                        {% else %}
+                                        <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                                        {% endif %}
+                                        <figcaption>
+                                            <a href="#workshop_{{ user.userinfo.workshop_two.id }}" class="modal-trigger"></a>
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <div class="col s6">
+                                    <p>SESSION TWO</p>
+                                    <div class="row">
+                                        <div class="divider"></div>
+                                        <p class="grey-text text-darken-2" style="font-weight: 300;">{{ user.userinfo.workshop_two.name }}</p>
+                                    </div>
+                                </div>
+                                {% else %}
                                 <p>SESSION TWO</p>
-                                <div class="row">
+                                <div clss="row">
                                     <div class="divider"></div>
-                                    <p class="grey-text text-darken-2" style="font-weight: 300;">{{ user.userinfo.workshop_two.name }}</p>
+                                    <p class="orange-text" style="font-weight: 300;">Choose a workshop below</p>
                                 </div>
+                                {% endif %}
                             </div>
-                            {% else %}
-                            <p>SESSION TWO</p>
-                            <div clss="row">
-                                <div class="divider"></div>
-                                <p class="orange-text" style="font-weight: 300;">Choose a workshop below</p>
-                            </div>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        {% if user_profile_complete %}
-        <div class="row" style="margin-bottom: 30px;">
-            <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
-                <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">ONE</span> <i id="session_one_section_toggle" class="material-icons hover_orange" style="cursor: pointer;">keyboard_arrow_down</i></h4>
-            </div>
-            <div id="session_one_section">
-            {% if session_one %}
-            {% for workshop in session_one %}
-            <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
-                <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
-                    <figure class="effect-test z-depth-3">
-                        {% if workshop.presenter_photo %}
-                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
-                        {% else %}
-                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
-                        {% endif %}
-                        <figcaption>
-                            <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
-                            <p>Click for details</p>
-                            <a href="#workshop_{{ workshop.id }}" class="modal-trigger"></a>
-                        </figcaption>
-                    </figure>
-                    <p class="grey-text text-darken-2 workshop_title">{{ workshop.name }}</p>
-                    <div class="row" style="margin-bottom: auto;">
-                        <div class="divider"></div>
-                        <p class="left workshop_capacity">{{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
-                        {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
-                            <a href="{% url 'choose_workshop' workshop.id %}"><p class="right orange-text hover_black workshop_choose hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></p></a>
-                        {% else %}
-                            <p class="right red-text workshop_closed">CLOSED</p>
-                        {% endif %}
+            {% if user_profile_complete %}
+            <div class="row" style="margin-bottom: 30px;">
+                <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
+                    <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">ONE</span> <i id="session_one_section_toggle" class="material-icons hover_orange" style="cursor: pointer;">keyboard_arrow_down</i></h4>
+                </div>
+                <div id="session_one_section">
+                {% if session_one %}
+                {% for workshop in session_one %}
+                <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
+                    <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
+                        <figure class="effect-test z-depth-3">
+                            {% if workshop.presenter_photo %}
+                                <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
+                            {% else %}
+                                <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                            {% endif %}
+                            <figcaption>
+                                <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
+                                <p>Click for details</p>
+                                <a href="#workshop_{{ workshop.id }}" class="modal-trigger"></a>
+                            </figcaption>
+                        </figure>
+                        <p class="grey-text text-darken-2 workshop_title">{{ workshop.name }}</p>
+                        <div class="row" style="margin-bottom: auto;">
+                            <div class="divider"></div>
+                            <p class="left workshop_capacity">{{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
+                            {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
+                                <a href="{% url 'choose_workshop' workshop.id %}"><p class="right orange-text hover_black workshop_choose hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></p></a>
+                            {% else %}
+                                <p class="right red-text workshop_closed">CLOSED</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-            {# Create hidden cards to fix the flexbox alignment #}
-            {% for i in session_one_remainder %}
-                <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px; visibility: hidden">
-                    <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated fadeIn" style="animation-delay: .5s;"></div>
+                {% endfor %}
+                {# Create hidden cards to fix the flexbox alignment #}
+                {% for i in session_one_remainder %}
+                    <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px; visibility: hidden">
+                        <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated fadeIn" style="animation-delay: .5s;"></div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <div class="col s10 l12 offset-s1 flex_with_wrap">
+                <p class="orange-text">Workshops have not yet been released. Please check back later!</p>
                 </div>
-            {% endfor %}
-            {% else %}
-            <div class="col s10 l12 offset-s1 flex_with_wrap">
-            <p class="orange-text">Workshops have not yet been released. Please check back later!</p>
+                {% endif %}
+                </div>
             </div>
-            {% endif %}
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
-                <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">TWO</span> <i id="session_two_section_toggle" class="material-icons hover_orange" style="cursor: pointer;">keyboard_arrow_down</i></h4>
-            </div>
-            <div id="session_two_section">
-            {% if session_two %}
-            {% for workshop in session_two %}
-            <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
-                <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
-                    <figure class="effect-test z-depth-3">
-                        {% if workshop.presenter_photo %}
-                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
-                        {% else %}
-                            <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
-                        {% endif %}
-                        <figcaption>
-                            <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
-                            <p>Click for details</p>
-                            <a href="#workshop_{{ workshop.id }}" class="modal-trigger"></a>
-                        </figcaption>
-                    </figure>
-                    <p class="grey-text text-darken-2 workshop_title">{{ workshop.name }}</p>
-                    <div class="row" style="margin-bottom: auto;">
-                        <div class="divider"></div>
-                        <p class="left workshop_capacity">{{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
-                        {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
-                            <a href="{% url 'choose_workshop' workshop.id %}"><p class="right orange-text hover_black workshop_choose hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></p></a>
-                        {% else %}
-                            <p class="right red-text workshop_closed">CLOSED</p>
-                        {% endif %}
+            <div class="row">
+                <div class="col s12" style="border-bottom: 1px solid #ccc; margin-bottom: 30px;">
+                    <h4 style="font-weight: 300; padding-left: 1em;">SESSION<span style="font-weight: 500;">TWO</span> <i id="session_two_section_toggle" class="material-icons hover_orange" style="cursor: pointer;">keyboard_arrow_down</i></h4>
+                </div>
+                <div id="session_two_section">
+                {% if session_two %}
+                {% for workshop in session_two %}
+                <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
+                    <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
+                        <figure class="effect-test z-depth-3">
+                            {% if workshop.presenter_photo %}
+                                <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
+                            {% else %}
+                                <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                            {% endif %}
+                            <figcaption>
+                                <h2 class="flow-text">{{ workshop.first_name }} <span>{{ workshop.last_name }}</span></h2>
+                                <p>Click for details</p>
+                                <a href="#workshop_{{ workshop.id }}" class="modal-trigger"></a>
+                            </figcaption>
+                        </figure>
+                        <p class="grey-text text-darken-2 workshop_title">{{ workshop.name }}</p>
+                        <div class="row" style="margin-bottom: auto;">
+                            <div class="divider"></div>
+                            <p class="left workshop_capacity">{{ workshop.attendee_count }}/{{ workshop.capacity }}</p>
+                            {% if is_workshops_open and workshop.attendee_count < workshop.capacity %}
+                                <a href="{% url 'choose_workshop' workshop.id %}"><p class="right orange-text hover_black workshop_choose hover_move_right">Choose<i class="material-icons right hover_move_right icon_only_right" style="margin:0">chevron_right</i></p></a>
+                            {% else %}
+                                <p class="right red-text workshop_closed">CLOSED</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-            {# Create hidden cards to fix the flexbox alignment #}
-            {% for i in session_two_remainder %}
-                <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px; visibility: hidden">
-                    <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated fadeIn" style="animation-delay: .5s;"></div>
+                {% endfor %}
+                {# Create hidden cards to fix the flexbox alignment #}
+                {% for i in session_two_remainder %}
+                    <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px; visibility: hidden">
+                        <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated fadeIn" style="animation-delay: .5s;"></div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <div class="col s10 l12 offset-s1 flex_with_wrap">
+                <p class="orange-text">Workshops have not yet been released. Please check back later!</p>
                 </div>
-            {% endfor %}
+                {% endif %}
+                </div>
+            </div>
             {% else %}
-            <div class="col s10 l12 offset-s1 flex_with_wrap">
-            <p class="orange-text">Workshops have not yet been released. Please check back later!</p>
+            <div class="row center-align">
+                <div class="col s12">
+                    <h5 style="font-weight: 300;">
+                        To access workshop selections, please complete your <a class="orange-text hover_black" style="font-weight: 500;" href="{% url 'profile' %}">USER PROFILE</a> first.
+                    </h5>
+                </div>
             </div>
             {% endif %}
-            </div>
-        </div>
         {% else %}
-        <div class="row center-align">
-            <div class="col s12">
-                <h5 style="font-weight: 300;">
-                    To access workshop selections, please complete your <a class="orange-text hover_black" style="font-weight: 500;" href="{% url 'profile' %}">USER PROFILE</a> first.
-                </h5>
+            <div class="row center-align">
+                <div class="col s10 l12 offset-s1">
+                    <p class="orange-text">Workshops will be released on <b>{{ workshops_release_date }} CST</b>. Please check back later!</p>
+                </div>
             </div>
-        </div>
         {% endif %}
     </div>
 
+    {% if is_workshops_released %}
     {# Workshop "more details" modals #}
     {% for workshop in session_one %}
         <div id="workshop_{{ workshop.id }}" class="modal modal-fixed-footer">
@@ -270,6 +279,7 @@
             </div>
         </div>
     {% endfor %}
+    {% endif %}
 
 {% endblock %}
 
