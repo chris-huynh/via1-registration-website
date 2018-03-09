@@ -112,6 +112,7 @@ class UserInfo(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+    waiver_policy_agreement = models.BooleanField(default=False)
     phone_number = models.CharField(_('phone number'), max_length=10, blank=True, null=True)
     birth_date = models.DateField(_('birth date'), default=None, blank=True, null=True)
     school = models.CharField(_('school'), max_length=65, blank=True, null=True)

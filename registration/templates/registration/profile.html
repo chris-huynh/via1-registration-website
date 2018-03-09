@@ -42,6 +42,7 @@
                     <div class="col s10 offset-s1">
                         <h4 style="font-weight: 300;">Your Profile</h4>
                         <p style="font-weight: 300;">This information will let us know more about you.</p>
+                        <a href="#waiver_and_policy_modal" class="modal-trigger orange-text hover_black"><strong>View waiver and policy agreements *</strong></a>
                         <p class="orange-text" style="font-weight: 300; font-style: italic;"><b>NOTE:</b> Fields with an asterisk(*)
                             must be filled out in order to choose workshops.
                         </p>
@@ -335,8 +336,40 @@
             <p>If none of the entrée choices fit wthin your dietary restrictions, make sure you select "None" as your
                 choice and then send an email to <b>conference.executive@uvsamidwest.org</b> discuss alternatives.</p>
         </div>
+    </div>
+
+    {# Waiver and Policy Pop-Up Modal #}
+    <div id="waiver_and_policy_modal" class="modal">
+        <div class="modal-content center-align">
+            <div class="row">
+                <h4 style="font-weight: 500;">ATTENTION</h4>
+                <p>Please review the following documents before proceeding:</p>
+                <p>Note that you must accept the terms to select workshops.</p>
+            </div>
+
+            <div class="row">
+                <a href="https://drive.google.com/file/d/1RptRC_eJCinlRrnB_VGmuq7MdWBsZDBs/view" class="orange-text hover_black" target="_blank">
+                    <strong>1. Waiver of Liability and Release of Media Agreement</strong>
+                </a>
+                <br>
+                <a href="https://drive.google.com/file/d/1nvO-68M1LW5KUGB4i2soHWsr9R05eckt/view" class="orange-text hover_black" target="_blank">
+                    <strong>2. UVSA-Midwest VIA-1 2018 Substance Abuse Policy</strong>
+                </a>
+            </div>
+
+            <div class="row">
+                <div class="col l10 offset-l1">
+                    {% if not terms_accepted %}
+                    <input type="checkbox" id="waiver_policy_agreement" class="checkbox-orange" name="waiver_policy_agreement" {% if terms_accepted %}checked{% endif %} />
+                    <label for="waiver_policy_agreement" class="orange-text" style="font-style: italic">By checking this box, you are acknowledging that you have read the documents and accept the terms of each document.</label>
+                    {% else %}
+                        <p>You have already <b class="orange-text">accepted</b> the terms of these documents.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         <div class="modal-footer">
-            <a href="#!" class="z-depth-3 modal-action modal-close waves-effect waves-light btn orange">Got it!</a>
+            <a href="#!" class="z-depth-3 modal-action modal-close waves-effect waves-light btn orange">Close</a>
         </div>
     </div>
 
@@ -436,6 +469,16 @@
     });
     </script>
 
+    <script>
+    // If waiver and policy hasn't been accepted, show dialog upon page load
+    $(document).ready(function() {
+        $('.modal').modal();
+        {% if not terms_accepted %}
+        $('#waiver_and_policy_modal').modal('open');
+        {% endif %}
+    });
+    </script>
+
     <script type="text/javascript" defer>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -505,6 +548,27 @@
                 }
             });
         }
+    </script>
+
+    <script>
+    $("#waiver_policy_agreement").change(function () {
+        var value;
+        if($(this).is(":checked")) {
+            value = 'checked'
+        } else {
+            value = 'not_checked'
+        }
+        $.ajax({
+            url: '{% url 'change_waiver_policy_agreement' %}',
+            async: true,
+            data: {
+                waiver_policy_agreement: value
+            },
+            success: function () {
+                Materialize.toast('You have accepted the terms.', 8000);
+            }
+        });
+    });
     </script>
 
 {% endblock %}

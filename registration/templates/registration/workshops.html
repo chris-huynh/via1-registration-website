@@ -3,7 +3,6 @@
 {% block title %}VIA-1 - Workshops{% endblock %}
 
 {% block additional_head %}
-    <link href="{% static 'registration/cropper.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'registration/imagehover.css' %}" rel="stylesheet">
 
     <style>
@@ -284,7 +283,12 @@
 {% endblock %}
 
 {% block additional_scripts %}
-    <script src="{% static 'registration/cropper.min.js' %}"></script>
+    <script>
+        // For Materalize modal windows
+        $(document).ready(function(){
+            $('.modal').modal();
+        });
+    </script>
 
     {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
     {% if messages %}

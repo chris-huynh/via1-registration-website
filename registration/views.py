@@ -104,7 +104,8 @@ def profile(request):
             other_pronouns_selected = 'false' if (user_info.pronouns in default_pronouns) else 'true'
 
             context = {'user_info': user_info, 'member_school_names': member_school_names, 'other_selected': other_selected,
-                       'other_pronouns_selected': other_pronouns_selected, 'graduation_years': graduation_years}
+                       'other_pronouns_selected': other_pronouns_selected, 'graduation_years': graduation_years,
+                       'terms_accepted': user_info.waiver_policy_agreement}
             return render(request, 'registration/profile.html', context)
         else:
             user_info = UserInfo(user_id_id=request.user.id)
@@ -215,7 +216,7 @@ def workshops(request):
             if (user.userinfo.photo_name and user.userinfo.school and user.userinfo.pronouns and user.userinfo.banquet_meal
                 and user.userinfo.banquet_dessert and user.userinfo.shirt_size and user.userinfo.vias_attended is not None
                 and user.userinfo.emergency_contact and user.userinfo.emergency_contact_number
-                    and user.userinfo.emergency_contact_relation):
+                    and user.userinfo.emergency_contact_relation and user.userinfo.waiver_policy_agreement):
                 user_profile_complete = True
             else:
                 user_profile_complete = False
@@ -231,6 +232,18 @@ def workshops(request):
             return redirect('home')
     else:
         return redirect('login')
+
+
+@login_required()
+def families(request):
+    family_leaders = User.objects.filter(userinfo__is_family_leader=True)
+
+    # create list of family leader names, their family names, and their photo with _big.jpeg appended
+    # user_info.photo_name[:-5] + '_big.jpeg'
+
+    context = {'family_leaders': family_leaders}
+
+    return render(request, 'registration/families.html', context)
 
 
 @login_required()
@@ -498,6 +511,26 @@ def remove_picture(request):
 
     else:
         return redirect('profile')
+
+
+@login_required()
+def change_waiver_policy_agreement(request):
+    if request.is_ajax():
+        user_info = UserInfo.objects.get(pk=request.user.id)
+        # We do not want to allow people to "un-accept" the terms
+        if user_info.waiver_policy_agreement is False:
+            waiver_policy_agreement = request.GET.get('waiver_policy_agreement')
+            if waiver_policy_agreement == 'checked':
+                user_info.waiver_policy_agreement = True
+            else:
+                user_info.waiver_policy_agreement = False
+
+            user_info.save()
+            return JsonResponse({'success': True})
+        else:
+            response = HttpResponse(content_type='application/json')
+            response.status_code = 400
+            return response
 
 
 def register(request):
@@ -1080,7 +1113,7 @@ def change_coed_preference(request):
     if request.is_ajax():
         user_info = UserInfo.objects.get(pk=request.user.id)
         coed_roommates = request.GET.get('coed_roommates')
-        print(coed_roommates)
+
         if coed_roommates == 'checked':
             user_info.coed_roommates = True
         else:

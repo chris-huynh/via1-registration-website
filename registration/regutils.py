@@ -79,7 +79,7 @@ roommate_deadline = datetime.datetime(2018, 3, 1, 23, 59, 59)
 
 # these are dummy dates -- replace with real ones soon
 workshop_release_date = datetime.datetime(2018, 3, 12, 18, 0, 0)
-workshop_deadline = datetime.datetime(2018, 3, 25, 23, 59, 59)
+workshop_deadline = datetime.datetime(2018, 3, 19, 23, 59, 59)
 
 graduation_years = [
     2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,

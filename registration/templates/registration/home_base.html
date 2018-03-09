@@ -39,7 +39,7 @@
         <li><a href="{% url 'profile' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Profile"><i class="material-icons black-text">person</i></a></li>
         <li><a href="{% url 'hotel' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Hotel"><i class="material-icons black-text">hotel</i></a></li>
         <li><a href="{% url 'workshops' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Workshops"><i class="material-icons black-text">speaker_notes</i></a></li>
-        <li><a href="#!" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families" onclick="Materialize.toast('Page coming soon!', 4000)"><i class="material-icons black-text">group</i></a></li>
+        <li><a href="{% url 'families' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Families"><i class="material-icons black-text">group</i></a></li>
         <li><div class="divider"></div></li>
         {% if user.is_staff %}
         <li><a href="{% url 'code_generator' %}" class="menu_item waves-effect waves-orange tooltipped" data-position="right" data-delay="75" data-tooltip="Code Generator"><i class="material-icons black-text">confirmation_number</i></a></li>
@@ -90,11 +90,6 @@
             if (windowWidth < 992) {
                 $('.tooltipped').tooltip('remove');
             }
-        });
-
-        // For Materalize modal windows
-        $(document).ready(function(){
-            $('.modal').modal();
         });
 
         // Parallax Scrolling

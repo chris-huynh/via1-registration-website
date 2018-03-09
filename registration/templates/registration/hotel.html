@@ -188,7 +188,7 @@
                                     <p>You may specify up to three roommates. These names will be given to hotel staff, giving
                                         each person the ability to request a room key from the front desk.</p>
                                 {% else %}
-                                    <p>The deadline to choose roommates was <b>{{ roommate_deadline }} CST</b>. You can no longer
+                                    <p>The deadline to choose roommates was <b class="orange-text">{{ roommate_deadline }} CST</b>. You can no longer
                                         make adjustments to your room.</p>
                                 {% endif %}
                             </div>
@@ -524,6 +524,13 @@
     {% endif %}
 
     <script>
+        // For Materalize modal windows
+        $(document).ready(function(){
+            $('.modal').modal();
+        });
+    </script>
+
+    <script>
     $("#coed_roommates").change(function () {
         var value;
         if($(this).is(":checked")) {
@@ -535,7 +542,7 @@
             url: '{% url 'change_coed_preference' %}',
             async: true,
             data: {
-                coed_roommates: value // as you are getting in php $_POST['action1']
+                coed_roommates: value
             },
             success: function () {
                 Materialize.toast('Your preference has been saved.', 8000);

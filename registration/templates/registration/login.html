@@ -118,6 +118,13 @@
 {% endblock %}
 
 {% block additional_scripts %}
+    <script>
+        // For Materalize modal windows
+        $(document).ready(function(){
+            $('.modal').modal();
+        });
+    </script>
+
     {# If LOGIN errors exist, they'll appear here #}
     {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
