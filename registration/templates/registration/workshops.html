@@ -35,7 +35,7 @@
                             <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_choice_box animated fadeInLeft" style="animation-delay: .3s;">
                                 {% if user.userinfo.workshop_one %}
                                 <div class="col s6">
-                                    <figure class="effect-test z-depth-3">
+                                    <figure class="photo-shine z-depth-3">
                                         {% if user.userinfo.workshop_one.presenter_photo %}
                                         <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_one.presenter_photo }}">
                                         {% else %}
@@ -67,7 +67,7 @@
                             <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_choice_box animated fadeInRight" style="animation-delay: .3s;">
                                 {% if user.userinfo.workshop_two %}
                                 <div class="col s6">
-                                    <figure class="effect-test z-depth-3">
+                                    <figure class="photo-shine z-depth-3">
                                         {% if user.userinfo.workshop_two.presenter_photo %}
                                         <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ user.userinfo.workshop_two.presenter_photo }}">
                                         {% else %}
@@ -108,7 +108,7 @@
                 {% for workshop in session_one %}
                 <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
                     <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
-                        <figure class="effect-test z-depth-3">
+                        <figure class="photo-shine z-depth-3">
                             {% if workshop.presenter_photo %}
                                 <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
                             {% else %}
@@ -156,7 +156,7 @@
                 {% for workshop in session_two %}
                 <div class="col s12 l4 center-align flex_with_wrap" style="margin-bottom: 50px">
                     <div class="z-depth-1 col s10 offset-s1 grey lighten-5 workshop_box animated zoomIn" style="animation-delay: .3s;">
-                        <figure class="effect-test z-depth-3">
+                        <figure class="photo-shine z-depth-3">
                             {% if workshop.presenter_photo %}
                                 <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/{{ workshop.presenter_photo }}">
                             {% else %}

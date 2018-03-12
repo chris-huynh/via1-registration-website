@@ -13,6 +13,7 @@ class UserAdmin(admin.ModelAdmin):
 
 class UserInfoAdmin(admin.ModelAdmin):
     list_filter = ['school', 'family', 'banquet_meal', 'shirt_size', 'pronouns']
+    list_max_show_all = 1000
 
 
 # Register your models here.

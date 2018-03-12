@@ -9,8 +9,6 @@
     <style>
     body, html {
         background: #eeeeee;
-        {# Without this, the screen will keep scrolling to the top when someone opens a workshop dialog #}
-        overflow-y: visible !important;
     }
     </style>
 {% endblock %}
@@ -20,27 +18,43 @@
         <div class="row" style="margin-bottom: 50px;">
             <div class="col s10 offset-s1 center-align">
                 <h3 style="font-weight: 300; margin-top: 50px;">Families</h3>
-                <p class="orange-text">Click or tap on a family leader portrait below to view more information
-                about their family.</p>
+                <p class="grey-text text-darken-2"><b class="orange-text">Click</b> or <b class="orange-text">tap</b> on a family leader portrait below to view more information
+                about them and their family.</p>
             </div>
         </div>
 
         <div class="row center-align">
             <div class="col s10 offset-s1">
-                <h4 style="font-weight: 300;">Coming soon!</h4>
+                <h4 style="font-weight: 300;">Family information coming soon!</h4>
             </div>
         </div>
+
+{#        {% if family_leaders %}#}
 {#        <div class="row" style="margin-bottom: 50px;">#}
 {#            {% for fl in family_leaders %}#}
-{#            <div class="col s10 l3 offset-s1 center-align" style="margin-bottom: 20px;">#}
-{#                {% if fl.userinfo.photo_name %}#}
-{#                <img id="profile_pic" class="responsive-img z-depth-1 hoverable" src="https://via1.org/registration/images/attendee_photos/{{ fl.userinfo.photo_name }}">#}
+{#            <div class="col s10 l3 offset-s1 center-align animated fadeInUp" style="margin-bottom: 20px; animation-delay: {{ fl.animation_delay }}s">#}
+{#                <figure class="effect-bubba z-depth-1 hoverable">#}
+{#                {% if fl.photo_name %}#}
+{#                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/attendee_photos/{{ fl.photo_name }}">#}
 {#                {% else %}#}
-{#                <img id="profile_pic" class="responsive-img z-depth-1 hoverable" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">#}
+{#                    <img id="profile_pic" class="responsive-img" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">#}
 {#                {% endif %}#}
+{#                    <figcaption>#}
+{#                        <h2 class="flow-text">{{ fl.first_name }} <span>{{ fl.last_name }}</span></h2>#}
+{#                        <p>{{ fl.family_name }}</p>#}
+{#                        <a href="#!"></a>#}
+{#                    </figcaption>#}
+{#                </figure>#}
 {#            </div>#}
 {#            {% endfor %}#}
 {#        </div>#}
+{#        {% else %}#}
+{#        <div class="row center-align">#}
+{#            <div class="col s10 offset-s1">#}
+{#                <h4 style="font-weight: 300;">Family information coming soon!</h4>#}
+{#            </div>#}
+{#        </div>#}
+{#        {% endif %}#}
     </div>
 {% endblock %}
 

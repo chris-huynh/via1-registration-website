@@ -232,3 +232,12 @@ member_school_presidents.append(MemberSchoolPresident('Henry Tran', 'tranht@uwm.
 # Missing UW - Lacrosse ?? are they even a member school anymore?
 # TEST
 #member_school_presidents.append(MemberSchoolPresident('Testy Tester', 'tomng2012@gmail.com', 'University of Testing - ayy lmao'))
+
+
+class FamilyLeader(object):
+    def __init__(self, first_name, last_name, family_name, photo_name, animation_delay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.family_name = family_name
+        self.photo_name = photo_name
+        self.animation_delay = animation_delay

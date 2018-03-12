@@ -236,12 +236,23 @@ def workshops(request):
 
 @login_required()
 def families(request):
+    # Alternatively, we could've retrieved Family.objects.all() and went from there...
     family_leaders = User.objects.filter(userinfo__is_family_leader=True)
 
-    # create list of family leader names, their family names, and their photo with _big.jpeg appended
-    # user_info.photo_name[:-5] + '_big.jpeg'
+    fl_objects = []
+    animation_delay = 0
+    for fl in family_leaders:
+        if fl.userinfo.family is not None:
+            if fl.userinfo.photo_name:
+                photo_name = fl.userinfo.photo_name[:-5] + '_big.jpeg'
+            else:
+                photo_name = None
 
-    context = {'family_leaders': family_leaders}
+            animation_delay += 0.15
+
+            fl_objects.append(regutils.FamilyLeader(fl.first_name, fl.last_name, fl.userinfo.family.name, photo_name, animation_delay))
+
+    context = {'family_leaders': fl_objects}
 
     return render(request, 'registration/families.html', context)
 
