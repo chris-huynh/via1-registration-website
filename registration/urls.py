@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^workshops/$', views.workshops, name='workshops'),
     url(r'^workshops/choose_workshop/(?P<wid>[0-9]+)/$', views.choose_workshop, name='choose_workshop'),
     url(r'^families/$', views.families, name='families'),
+    url(r'^families/(?P<fid>[0-9]+)/$', views.family, name='family'),
     url(r'^register/$', views.register, name='register'),
     url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
     url(r'^password_reset/done/$', auth_views.password_reset_done, name='password_reset_done'),

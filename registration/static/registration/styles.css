@@ -85,6 +85,11 @@
         transition: .2s;
     }
 
+    .hover_orange:hover {
+       color: #e97d15 !important;
+       transition: .5s;
+    }
+
     .hover_black:hover {
        color: #000 !important;
        transition: .5s;
@@ -113,6 +118,16 @@
 
     .hover_move_right:hover .icon_only_right {
         right: -7px;
+    }
+
+    .hover_move_left {
+        position: relative;
+        left: 0;
+        transition: left ease 0.5s;
+    }
+
+    .hover_move_left:hover .icon_only_left {
+        left: -7px;
     }
 
     ul li.active {
@@ -467,15 +482,15 @@
     }
 
     figure.effect-bubba figcaption::before {
-        border-top: 1px solid #fff;
-        border-bottom: 1px solid #fff;
+        border-top: 2px solid #fff;
+        border-bottom: 2px solid #fff;
         -webkit-transform: scale(0,1);
         transform: scale(0,1);
     }
 
     figure.effect-bubba figcaption::after {
-        border-right: 1px solid #fff;
-        border-left: 1px solid #fff;
+        border-right: 2px solid #fff;
+        border-left: 2px solid #fff;
         -webkit-transform: scale(1,0);
         transform: scale(1,0);
     }

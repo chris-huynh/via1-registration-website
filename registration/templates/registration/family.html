@@ -1,0 +1,121 @@
+{% extends 'registration/home_base.html' %}
+
+{% block title %}VIA-1 - Families{% endblock %}
+
+{% block additional_head %}
+    <script src="https://use.fontawesome.com/724dc2aee1.js"></script>
+    <link href="{% static 'registration/imagehover.css' %}" rel="stylesheet">
+
+    <style>
+    body, html {
+        background: #eeeeee;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="margin-bottom: 80px;">
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col s10 offset-s1 center-align">
+                <h3 style="text-transform: uppercase; font-weight: 300; margin-top: 50px;">{{ family_name }} <span style="font-weight: 500;">FAMILY</span></h3>
+                <p class="grey-text text-darken-2"><b class="orange-text">Hover</b> or <b class="orange-text">hold down</b>
+                on a family member to see more information about them.</p>
+            </div>
+        </div>
+
+        <div class="row center-align">
+            <a href="{% url 'families' %}" class="black-text hover_orange hover_move_left" style="cursor: pointer; font-weight: 500;"><i class="material-icons hover_move_left icon_only_left" style="margin:0; vertical-align: bottom;">chevron_left</i>Back to Family Leaders</a>
+            <p><i class="fa fa-anchor" aria-hidden="true"></i> <b class="orange-text">: Family Leader</b></p>
+        </div>
+
+        {% if family_members %}
+        <div class="row center-align" style="margin-bottom: 50px;">
+            <div class="col s10 l3 offset-s1 animated fadeInUp" style="margin-bottom: 20px;">
+                <figure class="imghvr-push-up">
+                {% if family_leader.photo_name %}
+                    <img id="profile_pic" class="responsive-img" style="border: 2px solid orange" src="https://via1.org/registration/images/attendee_photos/{{ family_leader.photo_name }}">
+                {% else %}
+                    <img id="profile_pic" class="responsive-img" style="border: 2px solid orange" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                {% endif %}
+                    <figcaption style="padding-top: 20px;">
+                        <p style="margin:0;">{{ family_leader.school|default_if_none:"" }}</p>
+                        <p style="margin:0;">{{ family_leader.major|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-facebook-square" aria-hidden="true"></i> {{ family_leader.facebook|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-instagram" aria-hidden="true"></i> {{ family_leader.instagram|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-twitter-square" aria-hidden="true"></i> {{ family_leader.twitter|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-snapchat-square" aria-hidden="true"></i> {{ family_leader.snapchat|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-linkedin" aria-hidden="true"></i> {{ family_leader.linkedin|default_if_none:"" }}</p>
+                    </figcaption>
+                </figure>
+                <p style="text-transform: uppercase; font-weight: 300; text-align: center; margin: 0;"><i class="fa fa-anchor" aria-hidden="true"></i> {{ family_leader.first_name }}<b>{{ family_leader.last_name }}</b></p>
+                <p style="text-transform: uppercase; font-weight: 300; text-align: center; margin: 0;">{{ family_leader.pronouns|default_if_none:"" }}</p>
+            </div>
+
+            {% for member in family_members %}
+            <div class="col s10 l3 offset-s1 animated fadeInUp" style="margin-bottom: 20px; animation-delay: {{ member.animation_delay }}s">
+                <figure class="imghvr-push-up">
+                {% if member.photo_name %}
+                    <img id="profile_pic" class="responsive-img" style="border: 2px solid orange" src="https://via1.org/registration/images/attendee_photos/{{ member.photo_name }}">
+                {% else %}
+                    <img id="profile_pic" class="responsive-img" style="border: 2px solid orange" src="https://via1.org/registration/images/presenter_photos/no_photo.jpeg">
+                {% endif %}
+                    <figcaption style="padding-top: 20px;">
+                        <p style="margin:0;">{{ member.school|default_if_none:"" }}</p>
+                        <p style="margin:0;">{{ member.major|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-facebook-square" aria-hidden="true"></i> {{ member.facebook|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-instagram" aria-hidden="true"></i> {{ member.instagram|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-twitter-square" aria-hidden="true"></i> {{ member.twitter|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-snapchat-square" aria-hidden="true"></i> {{ member.snapchat|default_if_none:"" }}</p>
+                        <p style="margin:0;"><i class="fa fa-linkedin" aria-hidden="true"></i> {{ member.linkedin|default_if_none:"" }}</p>
+                    </figcaption>
+                </figure>
+                <p style="text-transform: uppercase; font-weight: 300; text-align: center; margin: 0;">{{ member.first_name }}<b>{{ member.last_name }}</b></p>
+                <p style="text-transform: uppercase; font-weight: 300; text-align: center; margin: 0;">{{ member.pronouns|default_if_none:"&nbsp;" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row center-align">
+            <div class="col s10 offset-s1">
+                <h4 style="font-weight: 300;">Family information coming soon!</h4>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script src="{% static 'registration/cropper.min.js' %}"></script>
+
+    {# If messages exist, they will appear here. Use the messages package in views.py to create messages #}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                $(document).ready(function(){
+                    Materialize.toast('{{ message|safe }}', 8000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+    $(document).ready(function(){
+        {% if user.userinfo.workshop_one %}
+            $("#session_one_section").hide();
+        {% endif %}
+
+        {% if user.userinfo.workshop_two %}
+            $("#session_two_section").hide();
+        {% endif %}
+    });
+
+    $("#session_one_section_toggle").click(function(){
+        $("#session_one_section").toggle(300);
+    });
+
+    $("#session_two_section_toggle").click(function(){
+        $("#session_two_section").toggle(300);
+    });
+    </script>
+
+{% endblock %}

@@ -35,6 +35,7 @@ from registration.models import ConferenceVars
 from registration.models import UserInfo
 from registration.models import SpecialRegCodes
 from registration.models import Workshops
+from registration.models import Families
 
 # Need to change client ID and client secret to live ids (also found in settings.py)
 import paypalrestsdk
@@ -250,11 +251,46 @@ def families(request):
 
             animation_delay += 0.15
 
-            fl_objects.append(regutils.FamilyLeader(fl.first_name, fl.last_name, fl.userinfo.family.name, photo_name, animation_delay))
+            fl_objects.append(regutils.FamilyLeader(fl.first_name, fl.last_name, fl.userinfo.family_id, fl.userinfo.family.name, photo_name, animation_delay))
 
     context = {'family_leaders': fl_objects}
 
     return render(request, 'registration/families.html', context)
+
+
+@login_required()
+def family(request, fid):
+    family = Families.objects.get(pk=fid)
+
+    family_members = User.objects.filter(userinfo__family=family).order_by('pk')
+
+    family_member_objects = []
+    animation_delay = 0
+    for member in family_members:
+        if member.userinfo.photo_name:
+            photo_name = member.userinfo.photo_name[:-5] + '_big.jpeg'
+        else:
+            photo_name = None
+
+        if member.userinfo.is_family_leader is False:
+            animation_delay += 0.15
+
+            family_member_objects.append(regutils.FamilyMember(member.first_name, member.last_name, member.userinfo.pronouns,
+                                                               member.userinfo.school, member.userinfo.major, member.userinfo.facebook,
+                                                               member.userinfo.instagram, member.userinfo.twitter, member.userinfo.snapchat,
+                                                               member.userinfo.linkedin, photo_name, animation_delay))
+        else:
+            fl_object = regutils.FamilyMember(family.leader.first_name, family.leader.last_name,
+                                              family.leader.userinfo.pronouns,
+                                              family.leader.userinfo.school, family.leader.userinfo.major,
+                                              family.leader.userinfo.facebook,
+                                              family.leader.userinfo.instagram, family.leader.userinfo.twitter,
+                                              family.leader.userinfo.snapchat,
+                                              family.leader.userinfo.linkedin, photo_name, None)
+
+    context = {'family_name': family.name, 'family_leader': fl_object, 'family_members': family_member_objects}
+
+    return render(request, 'registration/family.html', context)
 
 
 @login_required()

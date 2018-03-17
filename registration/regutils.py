@@ -87,9 +87,9 @@ graduation_years = [
 
 
 default_pronouns = [
-    'he_him_his',
-    'she_her_hers',
-    'they_them_theirs'
+    'He, Him, His',
+    'She, Her, Hers',
+    'They, Them, Theirs'
 ]
 
 
@@ -235,9 +235,26 @@ member_school_presidents.append(MemberSchoolPresident('Henry Tran', 'tranht@uwm.
 
 
 class FamilyLeader(object):
-    def __init__(self, first_name, last_name, family_name, photo_name, animation_delay):
+    def __init__(self, first_name, last_name, family_id, family_name, photo_name, animation_delay):
         self.first_name = first_name
         self.last_name = last_name
+        self.family_id = family_id
         self.family_name = family_name
+        self.photo_name = photo_name
+        self.animation_delay = animation_delay
+
+
+class FamilyMember(object):
+    def __init__(self, first_name, last_name, pronouns, school, major, facebook, instagram, twitter, snapchat, linkedin, photo_name, animation_delay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pronouns = pronouns
+        self.school = school
+        self.major = major
+        self.facebook = facebook
+        self.instagram = instagram
+        self.twitter = twitter
+        self.snapchat = snapchat
+        self.linkedin = linkedin
         self.photo_name = photo_name
         self.animation_delay = animation_delay

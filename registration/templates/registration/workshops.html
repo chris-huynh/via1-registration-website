@@ -20,7 +20,8 @@
             <div class="col s10 offset-s1 center-align">
                 <h3 style="font-weight: 300; margin-top: 50px;">Workshops</h3>
                 <p class="grey-text text-darken-2">Select a workshop from each session. The deadline to choose workshops
-                    is <b class="orange-text">{{ workshops_deadline }} CST</b>. Click or tap on a portrait below to
+                    is <b class="orange-text">{{ workshops_deadline }} CST</b>. Anyone without workshop selections by this
+                    deadline will be automatically placed into an available workshop. Click or tap on a portrait below to
                     view more information about the presenter and workshop.</p>
             </div>
         </div>
@@ -260,11 +261,11 @@
                 <div class="row">
                     <div class="col l10 offset-l1">
                         <h5 class="workshop_detail_subtitle">Workshop <span>Description</span></h5>
-                        <p>{{ workshop.description }}</p>
+                        <p>{{ workshop.description|linebreaks }}</p>
                     </div>
                     <div class="col l10 offset-l1">
                         <h5 class="workshop_detail_subtitle">THE <span>PRESENTER</span></h5>
-                        <p>{{ workshop.presenter_description }}</p>
+                        <p>{{ workshop.presenter_description|linebreaks }}</p>
                     </div>
                 </div>
             </div>
