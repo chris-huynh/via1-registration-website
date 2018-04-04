@@ -242,14 +242,39 @@ def families(request):
 
     fl_objects = []
     animation_delay = 0
+
+    # Find the Alumni family and append it to the list first
     for fl in family_leaders:
-        if fl.userinfo.family is not None:
+        if fl.userinfo.family is not None and fl.userinfo.family.name == 'Alumni':
             if fl.userinfo.photo_name:
                 photo_name = fl.userinfo.photo_name[:-5] + '_big.jpeg'
             else:
                 photo_name = None
 
-            animation_delay += 0.15
+            animation_delay += 0.075
+
+            fl_objects.append(regutils.FamilyLeader(fl.first_name, fl.last_name, fl.userinfo.family_id, fl.userinfo.family.name, photo_name, animation_delay))
+
+    for fl in family_leaders:
+        if fl.userinfo.family is not None and not (fl.userinfo.family.name == 'Alumni' or fl.userinfo.family.name == 'Staff'):
+            if fl.userinfo.photo_name:
+                photo_name = fl.userinfo.photo_name[:-5] + '_big.jpeg'
+            else:
+                photo_name = None
+
+            animation_delay += 0.075
+
+            fl_objects.append(regutils.FamilyLeader(fl.first_name, fl.last_name, fl.userinfo.family_id, fl.userinfo.family.name, photo_name, animation_delay))
+
+    # Find the Staff family and append it to the list LAST
+    for fl in family_leaders:
+        if fl.userinfo.family is not None and fl.userinfo.family.name == 'Staff':
+            if fl.userinfo.photo_name:
+                photo_name = fl.userinfo.photo_name[:-5] + '_big.jpeg'
+            else:
+                photo_name = None
+
+            animation_delay += 0.075
 
             fl_objects.append(regutils.FamilyLeader(fl.first_name, fl.last_name, fl.userinfo.family_id, fl.userinfo.family.name, photo_name, animation_delay))
 
@@ -262,7 +287,12 @@ def families(request):
 def family(request, fid):
     family = Families.objects.get(pk=fid)
 
-    family_members = User.objects.filter(userinfo__family=family).order_by('pk')
+    if family.name == 'Staff':
+        is_staff_family = True
+    else:
+        is_staff_family = False
+
+    family_members = User.objects.filter(userinfo__family=family).order_by('first_name')
 
     family_member_objects = []
     animation_delay = 0
@@ -273,7 +303,9 @@ def family(request, fid):
             photo_name = None
 
         if member.userinfo.is_family_leader is False:
-            animation_delay += 0.15
+            # Only want to use animation delays if the family is small enough. Staff families are generally 70+ in size
+            if not is_staff_family:
+                animation_delay += 0.075
 
             family_member_objects.append(regutils.FamilyMember(member.first_name, member.last_name, member.userinfo.pronouns,
                                                                member.userinfo.school, member.userinfo.major, member.userinfo.facebook,
